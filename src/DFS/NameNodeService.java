@@ -13,5 +13,6 @@ public interface NameNodeService extends Remote {
 	
 	public Map<String, Set<FileSplit>>  listAllFiles() throws RemoteException;
 		
+	public Iterable<FileSplit> getDataNodesToDownload(String fileName) throws RemoteException;
 	
 }

@@ -1,6 +1,8 @@
 package DFS;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -81,10 +83,18 @@ public class FileSplit implements Serializable, Comparable<FileSplit> {
 		return Integer.compare(this.blockIndex, o.getBlockIndex());
 	}
 	
-	public Iterable<String> getHosts() {
-		return paths.keySet();
+	public List<String> getHosts() {
+		return new ArrayList<String>(paths.keySet());
 	}
 	
+	public NodeID getOneHost() {
+		List<String> hosts = getHosts();
+		if (hosts.size() == 0) {
+			return null;
+		}
+		String host = getHosts().get(0);
+		return NodeID.constructFromString(host);
+	}
 	
 	public String getPath(String host) {
 		return paths.get(host);

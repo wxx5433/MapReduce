@@ -50,6 +50,13 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
+	public static NodeID constructFromString(String host) {
+		int divideIndex = host.indexOf(":");
+		String ip = host.substring(0, divideIndex);
+		int port = Integer.parseInt(host.substring(divideIndex + 1));
+		return new NodeID(ip, port);
+	}
 
 	@Override
 	public int hashCode() {

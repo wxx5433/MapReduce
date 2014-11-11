@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
@@ -74,8 +75,17 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 * @param fileName
 	 * @return
 	 */
-	public Iterable<NodeID> getDataNodesToDownload(String fileName) {
-		
+	public Iterable<FileSplit> getDataNodesToDownload(String fileName) {
+		Queue<FileSplit> result = new PriorityQueue<FileSplit>();
+		// cannot find the file
+		if (!nameSpace.containsKey(fileName)) {
+			return result;
+		}
+		Map<Integer, FileSplit> splits = nameSpace.get(fileName);
+		for (Map.Entry<Integer, FileSplit> split: splits.entrySet()) {
+			result.add(split.getValue());   // add FileSplit
+		}
+		return result;
 	}
 
 	/**

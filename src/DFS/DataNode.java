@@ -69,7 +69,7 @@ public class DataNode {
 			DataNode dataNode = new DataNode(ip, port, rootDir);
 			NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
 			// register the dataNode to the NameNode
-			Service.registerDataNode(nameNodeID, new NodeID(ip, port));
+			Service.registerDataNode(nameNodeID, new NodeID(ip, port, rootDir));
 			dataNode.bindService();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -2,9 +2,11 @@ package DFS;
 
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -78,10 +80,52 @@ public class DFSClient {
 	 * @param fileName The name of the file to download
 	 * @param localPath Local path where the download file should be put.
 	 */
-	public void getFile(String fileName, String localPath) {
+	public void getFile(String fileName, String localPath, String targetName) {
 		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
 		NameNodeService nameNodeService = Service.getNameNodeService(nameNodeID);
-		nameNodeService.get
+		Iterable<FileSplit> splits = null;
+		try {
+			splits = nameNodeService.getDataNodesToDownload(fileName);
+		} catch (RemoteException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try {
+			fw = new FileWriter(localPath + File.separator + targetName);
+			bw = new BufferedWriter(fw);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		boolean firstLine = true;
+		for (FileSplit split: splits) {
+			NodeID dataNodeID = split.getOneHost();
+			DataNodeService dataNodeService = Service.getDataNodeService(dataNodeID);
+			try {
+				List<String> lines = dataNodeService.readBLock(
+							split.getPath(dataNodeID.toString()));
+				for (String line: lines) {
+					if (firstLine) {
+						bw.write(line);
+						firstLine = false;
+					} else {
+						bw.write("\n" + line);
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try {
+			bw.close();
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -117,5 +161,6 @@ public class DFSClient {
 		DFSClient client = new DFSClient();
 		client.uploadFile(".", "test");
 		client.listAllFiles();
+		client.getFile("test", ".", "result");
 	}
 }
