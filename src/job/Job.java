@@ -1,6 +1,9 @@
 package job;
 
 import java.io.IOException;
+
+import Configuration.ConfigurationStrings;
+import Configuration.MyConfiguration;
 import job.JobClient;
 import job.JobConf;
 import job.JobID;
@@ -8,8 +11,6 @@ import job.JobStatus;
 import job.RunningJob;
 import tool.Mapper;
 import tool.Reducer;
-import configuration.ConfigurationStrings;
-import configuration.MyConfiguration;
 
 public class Job {
 

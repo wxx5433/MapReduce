@@ -6,14 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import Configuration.MyConfiguration;
 import jobtracker.JobTracker;
 import node.Node;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import task.TaskInProgress;
-import configuration.MyConfiguration;
 
 public class JobInProgress {
 	/**
@@ -26,7 +22,7 @@ public class JobInProgress {
 		}
 	}
 
-	static final Log LOG = LogFactory.getLog(JobInProgress.class);
+//	static final Log LOG = LogFactory.getLog(JobInProgress.class);
 	Job job = null;
 	TaskInProgress maps[] = new TaskInProgress[0];
 	TaskInProgress reduces[] = new TaskInProgress[0];
@@ -99,7 +95,7 @@ public class JobInProgress {
 		// return;
 		// }
 
-		LOG.info("Initializing " + jobId);
+//		LOG.info("Initializing " + jobId);
 		final long startTimeFinal = this.startTime;
 		// log job info as the user running the job
 
@@ -137,9 +133,9 @@ public class JobInProgress {
 		}
 
 		// Log the number of map and reduce tasks
-		LOG.info("Job " + jobId + " initialized successfully with "
-				+ numMapTasks + " map tasks and " + numReduceTasks
-				+ " reduce tasks.");
+//		LOG.info("Job " + jobId + " initialized successfully with "
+//				+ numMapTasks + " map tasks and " + numReduceTasks
+//				+ " reduce tasks.");
 	}
 
 }

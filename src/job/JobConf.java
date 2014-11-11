@@ -1,6 +1,7 @@
 package job;
 
-import configuration.MyConfiguration;
+import Configuration.MyConfiguration;
+
 
 public class JobConf {
 

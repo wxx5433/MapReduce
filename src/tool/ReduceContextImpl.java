@@ -3,10 +3,10 @@ package tool;
 import java.io.IOException;
 import java.util.List;
 
+import Configuration.MyConfiguration;
 import task.RecordReader;
 import task.RecordWriter;
 import task.TaskAttemptID;
-import configuration.MyConfiguration;
 
 public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 		ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {

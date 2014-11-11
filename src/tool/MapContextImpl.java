@@ -2,10 +2,10 @@ package tool;
 
 import java.io.IOException;
 
+import Configuration.MyConfiguration;
 import task.RecordReader;
 import task.RecordWriter;
 import task.TaskAttemptID;
-import configuration.MyConfiguration;
 
 public class MapContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 		MapContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {

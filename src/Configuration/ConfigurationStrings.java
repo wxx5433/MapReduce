@@ -1,4 +1,4 @@
-package configuration;
+package Configuration;
 
 public class ConfigurationStrings {
 	public static final String MAPPER_CLASS = "mapper.class";
