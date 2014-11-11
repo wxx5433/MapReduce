@@ -1,7 +1,9 @@
-package dfs;
+package dataNode;
 
 import java.rmi.RemoteException;
 import java.util.List;
+
+import fileSplit.LocalSplitOperator;
 
 public class DataNodeServiceImpl implements DataNodeService {
 
@@ -15,13 +17,13 @@ public class DataNodeServiceImpl implements DataNodeService {
 	 */
 	@Override
 	public void writeBlock(String filePath, List<String> contents) throws Exception {
-		LocalBlockOperator lbo = new LocalBlockOperator();
+		LocalSplitOperator lbo = new LocalSplitOperator();
 		lbo.writeBlock(filePath, contents);
 	}
 
 	@Override
 	public List<String> readBLock(String filePath) throws Exception {
-		LocalBlockOperator lbo = new LocalBlockOperator();
+		LocalSplitOperator lbo = new LocalSplitOperator();
 		System.out.println("Successfully get data from DataNode!!");
 		return lbo.readBlock(filePath);
 	}

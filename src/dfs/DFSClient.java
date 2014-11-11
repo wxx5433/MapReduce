@@ -14,7 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nameNode.NameNodeService;
+import node.NodeID;
 import configuration.Configuration;
+import dataNode.DataNodeService;
+import fileSplit.FileSplit;
 
 public class DFSClient {
 

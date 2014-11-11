@@ -1,4 +1,4 @@
-package dfs;
+package dataNode;
 
 import java.rmi.Remote;
 import java.util.List;

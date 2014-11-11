@@ -1,4 +1,4 @@
-package dfs;
+package fileSplit;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import configuration.Configuration;
 
-public class LocalBlockOperator {
+public class LocalSplitOperator {
 
 	/**
 	 * This method will be invoked on the DataNode to write a block 

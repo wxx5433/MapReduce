@@ -1,9 +1,12 @@
-package dfs;
+package nameNode;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Set;
+
+import node.NodeID;
+import fileSplit.FileSplit;
 
 public interface NameNodeService extends Remote {
 

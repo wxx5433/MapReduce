@@ -5,6 +5,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import dataNode.DataNodeService;
+import nameNode.NameNodeService;
+import node.NodeID;
+
 public abstract class Service {
 	/** get nameNodeService stub
 	 * @param nameNodeID

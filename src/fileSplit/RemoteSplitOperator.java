@@ -1,11 +1,13 @@
-package dfs;
+package fileSplit;
 
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.util.List;
 
-public class RemoteBlockOperator {
+import dataNode.DataNodeService;
+
+public class RemoteSplitOperator {
 
 	public void writeBlock(FileSplit fb, List<String> contents) throws Exception {
 		// write to all servers. 
