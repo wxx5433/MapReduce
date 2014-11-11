@@ -1,10 +1,12 @@
 package dataNode;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import nameNode.NameNodeService;
 import node.NodeID;
 import configuration.Configuration;
 import dfs.Service;
@@ -36,20 +38,23 @@ public class DataNode {
 		
 	}
 	
-//	public void register() {
-//		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
-//		try {
-//			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp());
-//			String name = "rmi://" + nameNodeID.toString() + "/NameNodeService";
-//			NameNodeService nameNodeService = (NameNodeService) registry.lookup(name);
-//			nameNodeService.registerDataNode(this.dataNodeID.getIp(), 
-//					this.dataNodeID.getPort(), this.dataNodeID.getRootPath());
-//		} catch (RemoteException e) {
-//			e.printStackTrace();
-//		} catch (NotBoundException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	/**
+	 * Register the DataNode to NameNode
+	 */
+	public void registerToNameNode() {
+		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		try {
+			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp());
+			String name = "rmi://" + nameNodeID.toString() + "/NameNodeService";
+			NameNodeService nameNodeService = (NameNodeService) registry.lookup(name);
+			nameNodeService.registerDataNode(this.dataNodeID.getIp(), 
+					this.dataNodeID.getPort(), this.dataNodeID.getRootPath());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Stop DataNode
@@ -69,9 +74,8 @@ public class DataNode {
 			int port = Integer.parseInt(args[1]);
 			String rootDir = args[2];
 			DataNode dataNode = new DataNode(ip, port, rootDir);
-			NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
 			// register the dataNode to the NameNode
-			Service.registerDataNode(nameNodeID, new NodeID(ip, port, rootDir));
+			dataNode.registerToNameNode();
 			dataNode.bindService();
 		} catch (Exception e) {
 			e.printStackTrace();

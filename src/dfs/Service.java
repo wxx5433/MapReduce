@@ -44,22 +44,4 @@ public abstract class Service {
 		return null;
 	}
 	
-	/**
-	 * Register a dataNode to the NameNode
-	 * @param nameNodeID
-	 * @param dataNodeID
-	 */
-	public static void registerDataNode(NodeID nameNodeID, NodeID dataNodeID) {
-		try {
-			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp());
-			String name = "rmi://" + nameNodeID.toString() + "/NameNodeService";
-			NameNodeService nameNodeService = (NameNodeService) registry.lookup(name);
-			nameNodeService.registerDataNode(dataNodeID.getIp(), 
-						dataNodeID.getPort(), dataNodeID.getRootPath());
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
-		}
-	}
 }
