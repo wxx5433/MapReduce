@@ -16,16 +16,16 @@ public class DataNodeServiceImpl implements DataNodeService {
 	 * so we only need to use localBlockWriter.
 	 */
 	@Override
-	public void writeBlock(String filePath, List<String> contents) throws Exception {
+	public void writeSplit(String filePath, List<String> contents) throws Exception {
 		LocalSplitOperator lbo = new LocalSplitOperator();
-		lbo.writeBlock(filePath, contents);
+		lbo.writeSplit(filePath, contents);
 	}
 
 	@Override
-	public List<String> readBLock(String filePath) throws Exception {
+	public List<String> readSplit(String filePath) throws Exception {
 		LocalSplitOperator lbo = new LocalSplitOperator();
 		System.out.println("Successfully get data from DataNode!!");
-		return lbo.readBlock(filePath);
+		return lbo.readSplit(filePath);
 	}
 
 }
