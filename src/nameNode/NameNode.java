@@ -36,6 +36,13 @@ public class NameNode {
 		System.out.println("NameNode service started!!");
 	}
 	
+	/**
+	 * Stop the NameNode
+	 */
+	public void stop() {
+		System.exit(-1);
+	}
+	
 	public static void main(String[] args) {
 		try {
 			Configuration.setup();
