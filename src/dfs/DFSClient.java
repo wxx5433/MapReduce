@@ -19,6 +19,7 @@ import node.NodeID;
 import configuration.Configuration;
 import dataNode.DataNodeService;
 import fileSplit.FileSplit;
+import fileSplit.RemoteSplitOperator;
 
 public class DFSClient {
 
@@ -57,16 +58,11 @@ public class DFSClient {
 					int blockIndex = lineCount / splitSize;
 					// ask the nameNode where to upload the chunks
 					Iterable<NodeID> dataNodes = nameNodeService.getDataNodesToUpload(fileName, blockIndex);
-					// upload the chunk's replica to these nodes. 
-					for (NodeID dataNodeID: dataNodes) {
-						DataNodeService dataNodeService = Service.getDataNodeService(dataNodeID);
-						String dataNodePath = dataNodeID.getRootPath() + File.separator + 
-								fileName + "_" + blockIndex;
-						try {
-							dataNodeService.writeBlock(dataNodePath, contents);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+					RemoteSplitOperator rso = new RemoteSplitOperator();
+					try {
+						rso.writeSplit(dataNodes, fileName, blockIndex, contents);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 					contents.clear();
 				}
@@ -96,32 +92,15 @@ public class DFSClient {
 	public void getFile(String fileName, String localPath, String targetName) {
 		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
 		NameNodeService nameNodeService = Service.getNameNodeService(nameNodeID);
-		Iterable<FileSplit> splits = null;
+		// ask the NameNode where all the chunks of this file are located
 		try {
-			// ask the NameNode where all the chunks of this file are located
-			splits = nameNodeService.getDataNodesToDownload(fileName);
-		} catch (RemoteException e1) {
-			System.out.println("Fail to get splits from nameNode");
-			e1.printStackTrace();
-		}
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		try {
-			fw = new FileWriter(localPath + File.separator + targetName);
-			bw = new BufferedWriter(fw);
-		} catch (IOException e1) {
-			System.out.println("Fail to open the target file to write");
-			e1.printStackTrace();
-		}
-		boolean firstLine = true;
-		// write all splits to the client's local disk
-		for (FileSplit split: splits) {
-			NodeID dataNodeID = split.getOneHost();
-			DataNodeService dataNodeService = Service.getDataNodeService(dataNodeID);
-			try {
-				// read split from dataNode. It's an RMI 
-				List<String> lines = dataNodeService.readBLock(
-						split.getPath(dataNodeID.toString()));
+			Iterable<FileSplit>	splits = nameNodeService.getDataNodesToDownload(fileName);
+			FileWriter fw = new FileWriter(localPath + File.separator + targetName);
+			BufferedWriter bw = new BufferedWriter(fw);
+			boolean firstLine = true;
+			for (FileSplit split: splits) {
+				RemoteSplitOperator rso = new RemoteSplitOperator();
+				List<String> lines = rso.readSplit(split, localPath, targetName);
 				for (String line: lines) {
 					if (firstLine) {
 						bw.write(line);
@@ -130,14 +109,11 @@ public class DFSClient {
 						bw.write("\n" + line);
 					}
 				}
-			} catch (Exception e) {
-				System.out.println("Fail to download split from dataNode");
-				e.printStackTrace();
 			}
-		}
-		try {
 			bw.close();
 			fw.close();
+		} catch (RemoteException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
