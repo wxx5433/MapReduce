@@ -1,0 +1,15 @@
+masterIP=127.0.0.1
+masterPort=5433
+slaveIP=127.0.0.1
+slavePort=4321
+rootDir=/Users/wxx/IDE/workspace/MapReduce/node1
+slaveIP=127.0.0.1
+slavePort=4322
+rootDir=/Users/wxx/IDE/workspace/MapReduce/node2
+slaveIP=127.0.0.1
+slavePort=4323
+rootDir=/Users/wxx/IDE/workspace/MapReduce/node3
+mapSlots=4
+reduceSlots=2
+splitSize=3
+replicaNum=2
