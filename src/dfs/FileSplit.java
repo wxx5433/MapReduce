@@ -1,4 +1,4 @@
-package DFS;
+package dfs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import Configuration.Configuration;
+import configuration.Configuration;
 
 /**
  * Every file uploaded to DFS will be split into several parts. 

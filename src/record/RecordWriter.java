@@ -1,4 +1,4 @@
-package Util;
+package record;
 
 public class RecordWriter {
 

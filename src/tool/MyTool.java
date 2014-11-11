@@ -1,6 +1,6 @@
 package tool;
 
-import Configuration.MyConfigurable;
+import configuration.MyConfigurable;
 
 
 public interface MyTool extends MyConfigurable {

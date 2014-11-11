@@ -1,6 +1,4 @@
-package DFS;
-
-import Configuration.Configuration;
+package dfs;
 
 import java.io.File;
 import java.rmi.RemoteException;
@@ -15,6 +13,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
+
+import configuration.Configuration;
 
 public class NameNodeServiceImpl implements NameNodeService {
 

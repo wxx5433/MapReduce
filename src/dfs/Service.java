@@ -1,4 +1,4 @@
-package DFS;
+package dfs;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;

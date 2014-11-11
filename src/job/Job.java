@@ -2,8 +2,8 @@ package job;
 
 import java.io.IOException;
 
-import Configuration.ConfigurationStrings;
-import Configuration.MyConfiguration;
+import configuration.ConfigurationStrings;
+import configuration.MyConfiguration;
 import job.JobClient;
 import job.JobConf;
 import job.JobID;

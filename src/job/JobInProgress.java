@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import Configuration.MyConfiguration;
+import configuration.MyConfiguration;
 import jobtracker.JobTracker;
 import node.Node;
 import task.TaskInProgress;

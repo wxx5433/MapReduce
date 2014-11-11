@@ -1,6 +1,6 @@
 package tool;
 
-import Configuration.MyConfiguration;
+import configuration.MyConfiguration;
 
 
 public class MyToolRunner {

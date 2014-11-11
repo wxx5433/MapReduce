@@ -1,4 +1,4 @@
-package DFS;
+package dfs;
 
 
 import java.io.BufferedReader;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import Configuration.Configuration;
+import configuration.Configuration;
 
 public class DFSClient {
 

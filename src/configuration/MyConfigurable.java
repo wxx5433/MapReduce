@@ -1,4 +1,4 @@
-package Configuration;
+package configuration;
 
 public interface MyConfigurable {
 	/** Set the configuration to be used by this object. */

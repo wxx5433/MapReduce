@@ -3,7 +3,7 @@ package tool;
 import java.io.IOException;
 import java.util.List;
 
-import Configuration.MyConfiguration;
+import configuration.MyConfiguration;
 import task.RecordReader;
 import task.RecordWriter;
 import task.TaskAttemptID;

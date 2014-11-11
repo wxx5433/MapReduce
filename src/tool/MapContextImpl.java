@@ -2,7 +2,7 @@ package tool;
 
 import java.io.IOException;
 
-import Configuration.MyConfiguration;
+import configuration.MyConfiguration;
 import task.RecordReader;
 import task.RecordWriter;
 import task.TaskAttemptID;
