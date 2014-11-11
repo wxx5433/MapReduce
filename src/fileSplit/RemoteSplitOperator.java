@@ -28,7 +28,7 @@ public class RemoteSplitOperator {
 			String dataNodePath = dataNodeID.getRootPath() + File.separator + 
 					fileName + "_" + blockIndex;
 			try {
-				dataNodeService.writeBlock(dataNodePath, contents);
+				dataNodeService.writeSplit(dataNodePath, contents);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -42,7 +42,7 @@ public class RemoteSplitOperator {
 		List<String> lines = null;
 		try {
 			// read split from dataNode. It's an RMI 
-			lines = dataNodeService.readBLock(
+			lines = dataNodeService.readSplit(
 					split.getPath(dataNodeID.toString()));
 		} catch (Exception e) {
 			System.out.println("Fail to download split from dataNode");
