@@ -88,7 +88,7 @@ public class FileSplit extends InputSplit implements Serializable, Comparable<Fi
 	}
 	
 	@Override
-	public NodeID getOneHost() {
+	public NodeID getOneDataNode() {
 		List<String> hosts = getHosts();
 		if (hosts.size() == 0) {
 			return null;

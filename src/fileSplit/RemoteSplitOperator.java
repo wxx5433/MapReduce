@@ -37,7 +37,7 @@ public class RemoteSplitOperator {
 
 	public List<String> readSplit(FileSplit split, 
 			String localPath, String targetName) throws IOException {
-		NodeID dataNodeID = split.getOneHost();
+		NodeID dataNodeID = split.getOneDataNode();
 		DataNodeService dataNodeService = Service.getDataNodeService(dataNodeID);
 		List<String> lines = null;
 		try {
