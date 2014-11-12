@@ -19,8 +19,7 @@ import configuration.Configuration;
  * @author Xiaoxiang Wu (xiaoxiaw)
  * @author Ye Zhou (yezhou)
  */
-public class FileSplit implements Serializable, Comparable<FileSplit> {
-
+public class FileSplit extends InputSplit implements Serializable, Comparable<FileSplit> {
 
 	private static final long serialVersionUID = -8773858158603105299L;
 
@@ -88,6 +87,7 @@ public class FileSplit implements Serializable, Comparable<FileSplit> {
 		return new ArrayList<String>(paths.keySet());
 	}
 	
+	@Override
 	public NodeID getOneHost() {
 		List<String> hosts = getHosts();
 		if (hosts.size() == 0) {
