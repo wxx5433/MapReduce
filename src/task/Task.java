@@ -1,5 +1,6 @@
 package task;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import job.Job;
@@ -23,6 +24,8 @@ public interface Task extends Serializable {
 
 	public TaskAttemptID getTaskID();
 
-	void run(JobConf job);
+	void run(JobConf job) throws ClassNotFoundException,
+			InstantiationException, IOException, InterruptedException,
+			IllegalAccessException;
 
 }

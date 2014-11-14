@@ -1,13 +1,23 @@
 package task;
 
+import java.io.IOException;
+
 import job.Job;
 import job.JobConf;
+import node.NodeID;
+import tool.MapContext;
+import tool.MapContextImpl;
+import tool.Mapper;
+import tool.WrappedMapper;
+import configuration.ConfigurationStrings;
+import configuration.MyConfiguration;
 
 public class MapTask implements Task {
 	private String inputFilePath;
 	private String outputFilePath;
 	private Job job;
 	private TaskAttemptID taskAttemptID;
+	private NodeID nodeID;
 
 	public MapTask() {
 	}
@@ -57,38 +67,56 @@ public class MapTask implements Task {
 		return taskAttemptID;
 	}
 
+	public NodeID getNodeID() {
+		return nodeID;
+	}
+
+	public MapTask setNodeID(NodeID nodeID) {
+		this.nodeID = nodeID;
+		return this;
+	}
+
 	@Override
-	public void run(JobConf jobConf) {
+	public void run(JobConf jobConf) throws ClassNotFoundException,
+			InstantiationException, IOException, InterruptedException,
+			IllegalAccessException {
 		runMapper(jobConf);
 	}
 
-	@SuppressWarnings("unchecked")
-	private void runMapper(JobConf jobConf) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private <INKEY, INVALUE, OUTKEY, OUTVALUE> void runMapper(JobConf jobConf)
+			throws IOException, InterruptedException, ClassNotFoundException,
+			InstantiationException, IllegalAccessException {
 
 		// make a mapper
-		// Class<?> mapper = Class
-		// .forName(jobConf.getMapperClass());
-		// // rebuild the input split
-		// RecordReader reader = new RecordReader(this.inputFilePath,
-		// MyConfiguration.splitBlockLinesNum);
-		//
-		// RecordWriter output = new RecordWriter(this.outputFilePath,
-		// MyConfiguration.splitBlockLinesNum);
-		//
-		// MapContext mapContext = new MapContextImpl<INKEY, INVALUE, OUTKEY,
-		// OUTVALUE>(MyConfiguration.getInstance(),
-		// jobConf, getTaskID(), input, output, committer, reporter, split);
-		// (MyConfiguration conf, TaskAttemptID taskid,
-		// RecordReader reader, RecordWriter writer, MyInputSplit split
-		// org.apache.hadoop.mapreduce.Mapper<INKEY, INVALUE, OUTKEY,
-		// OUTVALUE>.Context mapperContext = new WrappedMapper<INKEY, INVALUE,
-		// OUTKEY, OUTVALUE>()
-		// .getMapContext(mapContext);
-		//
-		// input.initialize(split, mapperContext);
-		// mapper.run(mapperContext);
-		// statusUpdate(umbilical);
-		// input.close();
-		// output.close(mapperContext);
+		Class<?> mapperClass = Class.forName(jobConf
+				.getMapperClass(ConfigurationStrings.MAPPER_CLASS));
+
+		Mapper mapper = (Mapper) mapperClass.newInstance();
+		// rebuild the input split
+		
+		InputFormat inputFormat = Class.forName(jobConf.get)
+		
+		RecordReader input = new RecordReader(this.inputFilePath,
+				ConfigurationStrings.splitBlockLinesNum);
+
+		RecordWriter output = new RecordWriter(this.outputFilePath,
+				ConfigurationStrings.splitBlockLinesNum);
+
+		MapContext<INKEY, INVALUE, OUTKEY, OUTVALUE> mapContext = new MapContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
+				MyConfiguration.getInstance(), getTaskID(), input, output);
+
+		Mapper<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context mapperContext = new WrappedMapper<INKEY, INVALUE, OUTKEY, OUTVALUE>()
+				.getMapContext(mapContext);
+
+		input.initialize();
+		mapper.run(mapperContext);
+		statusUpdate();
+		input.close();
+		output.close();
+	}
+
+	private void statusUpdate() {
+
 	}
 }

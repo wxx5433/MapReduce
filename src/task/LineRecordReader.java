@@ -21,8 +21,9 @@ public class LineRecordReader extends RecordReader<Long, String> {
 	}
 
 	@Override
-	public void initialize(FileSplit split, String host) throws FileNotFoundException {
-		String path = split.getPath(host);
+	public void initialize(FileSplit split, String host)
+			throws FileNotFoundException {
+		String path = split.getPath(split.getOneDataNode().getIp());
 		// fileName here is the split fileName, not the original fileName
 		String fileName = split.getFileName() + "_" + split.getBlockIndex();
 		FileReader fr = null;
