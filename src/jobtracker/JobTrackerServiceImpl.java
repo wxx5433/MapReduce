@@ -1,16 +1,7 @@
 package jobtracker;
 
-import java.util.Map;
-import java.util.Queue;
-
-import job.Job;
 import job.JobID;
-import job.JobInProgress;
 import job.JobStatus;
-import nameNode.NameNodeService;
-import node.NodeID;
-import task.MapTask;
-import task.ReduceTask;
 
 public class JobTrackerServiceImpl implements JobTrackerService {
 
