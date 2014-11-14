@@ -1,22 +1,27 @@
 package job;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import configuration.ConfigurationStrings;
 import configuration.MyConfiguration;
 
-
 public class JobConf {
-	
+
 	private String jobName;
 
 	private int reduceNum;
 
 	private String inputPath;
 	private String outputPath;
-	
-	private Class inputFormat;
-	private Class outputFormat;
-	
-	private Class mapperClass;
-	private Class reducerClass;
+
+	private String inputFormat;
+	private String outputFormat;
+
+	private String mapperClass;
+	private String reducerClass;
+
+	private static final Map<String, String> classMap = new HashMap<String, String>();
 
 	public JobConf(MyConfiguration conf) {
 		// TODO Auto-generated constructor stub
@@ -25,7 +30,7 @@ public class JobConf {
 	public void setJobName(String name) {
 		this.jobName = name;
 	}
-	
+
 	public String getJobName() {
 		return jobName;
 	}
@@ -54,53 +59,59 @@ public class JobConf {
 		this.outputPath = outputPath;
 	}
 
-	public Class getInputFormat() {
-		return inputFormat;
+	public String getInputFormat() {
+		return get(ConfigurationStrings.INPUTFORMAT_CLASS);
 	}
 
-	public void setInputFormat(Class inputFormat) {
-		this.inputFormat = inputFormat;
+	public void setInputFormat(Class<?> theClass) {
+		setClass(ConfigurationStrings.INPUTFORMAT_CLASS, theClass);
 	}
 
-	public Class getOutputFormat() {
-		return outputFormat;
+	public String getOutputFormat() {
+		return get(ConfigurationStrings.OUTPUTFORMAT_CLASS);
 	}
 
-	public void setOutputFormat(Class outputFormat) {
-		this.outputFormat = outputFormat;
+	public void setOutputFormat(Class<?> theClass) {
+		setClass(ConfigurationStrings.OUTPUTFORMAT_CLASS, theClass);
 	}
 
 	public void setNumReduceTasks(int tasks) {
-		// TODO Auto-generated method stub
-
+		reduceNum = tasks;
 	}
 
 	public int getNumReduceTasks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return reduceNum;
 	}
 
-	public boolean getUseNewMapper() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	public void setMapperClass(String name, Class<?> theClass) {
-
+	public void setMapperClass(Class<?> theClass) {
+		setClass(ConfigurationStrings.MAPPER_CLASS, theClass);
 	}
 
 	public void setReducerClass(String name, Class<?> theClass) {
-
+		setClass(ConfigurationStrings.REDUCER_CLASS, theClass);
 	}
 
 	public String getMapperClass(String name) {
-		return null;
-
+		return get(ConfigurationStrings.MAPPER_CLASS);
 	}
 
 	public String getReducerClass(String name) {
-		return null;
+		return get(ConfigurationStrings.REDUCER_CLASS);
+	}
+
+	public void setClass(String name, Class<?> theClass) {
+		set(name, theClass.getName());
+	}
+
+	private void set(String name, String className) {
+		classMap.put(name, className);
+	}
+
+	private String get(String name) {
+		if (classMap.get(name) != null) {
+			return classMap.get(name);
+		} else
+			return null;
 	}
 
 }
