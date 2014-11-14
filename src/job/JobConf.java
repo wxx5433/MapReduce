@@ -12,8 +12,8 @@ public class JobConf {
 	private String inputPath;
 	private String outputPath;
 	
-	private String inputFormat;
-	private String outputFormat;
+	private Class inputFormat;
+	private Class outputFormat;
 	
 	private Class mapperClass;
 	private Class reducerClass;
@@ -52,6 +52,22 @@ public class JobConf {
 
 	public void setOutputPath(String outputPath) {
 		this.outputPath = outputPath;
+	}
+
+	public Class getInputFormat() {
+		return inputFormat;
+	}
+
+	public void setInputFormat(Class inputFormat) {
+		this.inputFormat = inputFormat;
+	}
+
+	public Class getOutputFormat() {
+		return outputFormat;
+	}
+
+	public void setOutputFormat(Class outputFormat) {
+		this.outputFormat = outputFormat;
 	}
 
 	public void setNumReduceTasks(int tasks) {
