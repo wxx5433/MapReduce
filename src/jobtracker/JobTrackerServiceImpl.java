@@ -1,5 +1,6 @@
 package jobtracker;
 
+import job.JobConf;
 import job.JobID;
 import job.JobStatus;
 
@@ -15,7 +16,7 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	 * Return JobStatus information to JobClient to get job status information
 	 */
 	@Override
-	public JobStatus submitJob() {
+	public JobStatus submitJob(JobConf jobConf) {
 		// TODO Auto-generated method stub
 		return null;
 	}

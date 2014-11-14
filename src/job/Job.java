@@ -102,7 +102,7 @@ public class Job {
 		// Connect to the JobTracker and submit the job
 		connect();
 		info = jobClient.submitJobInternal(jobConf);
-		setJobID(info.getID());
+		setJobID(info.getJobID());
 		state = JobState.RUNNING;
 	}
 

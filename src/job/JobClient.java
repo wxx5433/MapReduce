@@ -15,13 +15,21 @@ public class JobClient implements MyTool {
 	
 	private JobTrackerService jobTrackerService;
 	private NameNodeService nameNodeService;
+	private JobID jobID;
+	private JobConf conf;
 
 	public JobClient() {
-
+		JobTrackerService jobTrackerService = getJobTrackerService();
+		// get jobID from jobTracer
+		jobID = jobTrackerService.getJobID();
+		// get NameNodeService
+		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		this.nameNodeService = Service.getNameNodeService(nameNodeID);
 	}
 
 	public JobClient(JobConf configuration) {
-		// TODO Auto-generated constructor stub
+		this();
+		this.conf = configuration;
 	}
 
 	public static RunningJob runJob(JobConf job) {
@@ -31,16 +39,7 @@ public class JobClient implements MyTool {
 	}
 
 	public RunningJob submitJobInternal(JobConf jobConf) {
-		JobTrackerService jobTrackerService = getJobTrackerService();
-		// get jobID from jobTracer
-		JobID jobID = jobTrackerService.getJobID();
-		
-		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
-		NameNodeService nameNodeService = Service.getNameNodeService(nameNodeID);
-		jobConf.
-		
-
-		return ;
+		jobTrackerService.submitJob(jobConf);
 	}
 
 	private JobTrackerService getJobTrackerService() {
