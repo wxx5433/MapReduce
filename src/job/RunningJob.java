@@ -1,11 +1,14 @@
 package job;
 
 import java.io.IOException;
+import java.util.Map;
 
+import node.NodeID;
+import task.MapTask;
 import task.TaskAttemptID;
 
 public class RunningJob implements RunningJobInterface {
-
+	
 	@Override
 	public JobID getID() {
 		// TODO Auto-generated method stub

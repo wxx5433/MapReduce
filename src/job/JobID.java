@@ -10,7 +10,6 @@ public class JobID implements Serializable {
 	private static final long serialVersionUID = -4745005882476415746L;
 	protected static final String JOB = "job";
 	protected static final char SEPARATOR = '_';
-	private final String jtIdentifier;
 	protected int id;
 
 	protected static final NumberFormat idFormat = NumberFormat.getInstance();
@@ -27,18 +26,12 @@ public class JobID implements Serializable {
 	 * @param id
 	 *            job number
 	 */
-	public JobID(String jtIdentifier, int id) {
-		this.jtIdentifier = jtIdentifier;
+	public JobID(int id) {
 		this.id = id;
 	}
 
 	public JobID() {
-		jtIdentifier = "";
 		id = 0;
-	}
-
-	public String getJtIdentifier() {
-		return jtIdentifier.toString();
 	}
 
 	@Override
@@ -47,23 +40,15 @@ public class JobID implements Serializable {
 			return false;
 
 		JobID that = (JobID) o;
-		return this.jtIdentifier.equals(that.jtIdentifier)
-				&& this.id == that.id;
+		return this.id == that.id;
 	}
 
 	/** Compare JobIds by first jtIdentifiers, then by job numbers */
-	public int compareTo(JobID o) {
-		JobID that = (JobID) o;
-		int jtComp = this.jtIdentifier.compareTo(that.jtIdentifier);
-		if (jtComp == 0) {
-			return this.id - that.id;
-		} else
-			return jtComp;
+	public int compareTo(JobID that) {
+		return this.id - that.id;
 	}
 
 	public StringBuilder appendTo(StringBuilder builder) {
-		builder.append(SEPARATOR);
-		builder.append(jtIdentifier);
 		builder.append(SEPARATOR);
 		builder.append(idFormat.format(id));
 		return builder;
@@ -71,7 +56,7 @@ public class JobID implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return jtIdentifier.hashCode() + id;
+		return Integer.toString(id).hashCode();
 	}
 
 	@Override
