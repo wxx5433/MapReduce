@@ -6,6 +6,7 @@ import java.util.Queue;
 import job.Job;
 import job.JobID;
 import job.JobInProgress;
+import job.JobStatus;
 import nameNode.NameNodeService;
 import node.NodeID;
 import task.MapTask;
@@ -19,10 +20,13 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 		return null;
 	}
 
+	/**
+	 * Return JobStatus information to JobClient to get job status information
+	 */
 	@Override
-	public void submitJobToJobTracker() {
+	public JobStatus submitJob() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

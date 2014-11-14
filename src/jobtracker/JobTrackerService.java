@@ -3,11 +3,12 @@ package jobtracker;
 import java.rmi.Remote;
 
 import job.JobID;
+import job.JobStatus;
 
 public interface JobTrackerService extends Remote {
 	public JobID getJobID();
 	
-	public void submitJobToJobTracker();
+	public JobStatus submitJob();
 	
 	public boolean finishMapTasks();
 	
