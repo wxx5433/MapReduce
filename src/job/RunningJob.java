@@ -1,16 +1,14 @@
 package job;
 
 import java.io.IOException;
+import java.util.Map;
 
+import node.NodeID;
+import task.MapTask;
 import task.TaskAttemptID;
 
 public class RunningJob implements RunningJobInterface {
-
-	@Override
-	public JobID getID() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public String getJobID() {
@@ -31,12 +29,6 @@ public class RunningJob implements RunningJobInterface {
 	}
 
 	@Override
-	public String getTrackingURL() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public float mapProgress() throws IOException {
 		// TODO Auto-generated method stub
 		return 0;
@@ -44,12 +36,6 @@ public class RunningJob implements RunningJobInterface {
 
 	@Override
 	public float reduceProgress() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float cleanupProgress() throws IOException {
 		// TODO Auto-generated method stub
 		return 0;
 	}

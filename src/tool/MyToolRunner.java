@@ -13,4 +13,8 @@ public class MyToolRunner {
 		tool.setConf(conf);
 		return tool.run(args);
 	}
+	
+	public static int run(MyTool tool, String[] args) throws Exception {
+		return run(tool.getConf(), tool, args);
+	}
 }

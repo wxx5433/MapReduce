@@ -36,16 +36,10 @@ import task.TaskAttemptID;
  */
 public interface RunningJobInterface {
   /**
-   * Get the job identifier.
+   * Get the job ID
    * 
-   * @return the job identifier.
+   * @return the job ID
    */
-  public JobID getID();
-  
-  /** @deprecated This method is deprecated and will be removed. Applications should 
-   * rather use {@link #getID()}.
-   */
-  @Deprecated
   public String getJobID();
   
   /**
@@ -61,13 +55,6 @@ public interface RunningJobInterface {
    * @return the path of the submitted job configuration.
    */
   public String getJobFile();
-
-  /**
-   * Get the URL where some job progress information will be displayed.
-   * 
-   * @return the URL where some job progress information will be displayed.
-   */
-  public String getTrackingURL();
 
   /**
    * Get the <i>progress</i> of the job's map-tasks, as a float between 0.0 
@@ -86,15 +73,6 @@ public interface RunningJobInterface {
    * @throws IOException
    */
   public float reduceProgress() throws IOException;
-
-  /**
-   * Get the <i>progress</i> of the job's cleanup-tasks, as a float between 0.0 
-   * and 1.0.  When all cleanup tasks have completed, the function returns 1.0.
-   * 
-   * @return the progress of the job's cleanup-tasks.
-   * @throws IOException
-   */
-  public float cleanupProgress() throws IOException;
 
   /**
    * Get the <i>progress</i> of the job's setup-tasks, as a float between 0.0 

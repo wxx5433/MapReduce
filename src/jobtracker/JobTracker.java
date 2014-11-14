@@ -1,19 +1,52 @@
 package jobtracker;
 
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class JobTracker extends UnicastRemoteObject implements
-		JobSubmissionInterface {
+import configuration.Configuration;
+import dfs.Service;
+import nameNode.NameNodeService;
+import node.NodeID;
+import task.MapTask;
+import task.ReduceTask;
+import job.Job;
+import job.JobInProgress;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1872391379768700832L;
 
-	protected JobTracker() throws RemoteException {
-		super();
-		// TODO Auto-generated constructor stub
+public class JobTracker {
+
+	private int jobIDCounter;
+	// job queues to run
+	private Queue<Job> jobs;
+	// The job chosen to run
+	private JobInProgress jobInProgress;
+	// where each map task is allocated to 
+	private Map<MapTask, NodeID> mapTasks;
+	private Map<ReduceTask, NodeID> reduceTasks;
+	
+	// file system service to get input splits
+	private NameNodeService nameNodeService;
+
+	public JobTracker() {
+		jobs = new PriorityQueue<Job>();
+		jobInProgress = null;
+		mapTasks = new ConcurrentHashMap<MapTask, NodeID>();
+		reduceTasks = new ConcurrentHashMap<ReduceTask, NodeID>();
+		initialize();
+	}
+	
+	private void initialize() {
+		try {
+			Configuration.setup();
+		} catch (Exception e) {
+			System.out.println("Load configuration failed in JobTracker");
+			e.printStackTrace();
+		}
+		// get nameNodeService
+		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		nameNodeService = Service.getNameNodeService(nameNodeID);
 	}
 
 }
