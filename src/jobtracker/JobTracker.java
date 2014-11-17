@@ -19,6 +19,7 @@ import node.NodeID;
 import task.MapTask;
 import task.ReduceTask;
 import task.Task;
+import tasktracker.TaskTracker;
 import job.Job;
 import job.JobID;
 import job.JobInProgress;
@@ -54,6 +55,8 @@ public class JobTracker {
 	// jobTracker Service
 	private JobTrackerService jobTrackerService;
 	
+	private Map<TaskTracker, Long> taskTrackersHealth;
+	
 	// task priority queue. job FIFO, map priority > reduce priority
 	TaskPriorityQueue taskPriorityQueue;
 	private final int taskPriorityQueueInitCapacity = 20;
@@ -69,6 +72,7 @@ public class JobTracker {
 		finishedReduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
 		failedMapTasks = new ConcurrentHashMap<JobID, List<MapTask>>();
 		failedReduceTasks = new ConcurrentHashMap<JobID, List<ReduceTask>>();
+		taskTrackersHealth = new ConcurrentHashMap<TaskTracker, Long>();
 		jobIDCounter = 0;
 		taskIDCounter = 0;
 		taskPriorityQueue = new TaskPriorityQueue(taskPriorityQueueInitCapacity);
