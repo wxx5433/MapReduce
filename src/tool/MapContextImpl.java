@@ -2,21 +2,23 @@ package tool;
 
 import java.io.IOException;
 
-import configuration.MyConfiguration;
 import task.RecordReader;
 import task.RecordWriter;
 import task.TaskAttemptID;
+import configuration.MyConfiguration;
+import fileSplit.MapInputSplit;
 
 public class MapContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 		MapContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
-	private RecordReader reader;
-	private MyInputSplit split;
-	private RecordWriter writer;
+	private RecordReader<KEYIN, VALUEIN> reader;
+	private MapInputSplit split;
+	private RecordWriter<KEYOUT, VALUEOUT> writer;
 	private MyConfiguration conf;
 
 	public MapContextImpl(MyConfiguration conf, TaskAttemptID taskid,
-			RecordReader reader, RecordWriter writer, MyInputSplit split) {
+			RecordReader<KEYIN, VALUEIN> reader,
+			RecordWriter<KEYOUT, VALUEOUT> writer, MapInputSplit split) {
 		this.reader = reader;
 		this.split = split;
 		this.writer = writer;
@@ -29,17 +31,17 @@ public class MapContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 	}
 
 	@Override
-	public String getCurrentKey() throws IOException, InterruptedException {
+	public KEYIN getCurrentKey() throws IOException, InterruptedException {
 		return reader.getCurrentKey();
 	}
 
 	@Override
-	public String getCurrentValue() throws IOException, InterruptedException {
+	public VALUEIN getCurrentValue() throws IOException, InterruptedException {
 		return reader.getCurrentValue();
 	}
 
 	@Override
-	public void write(String key, String value) throws IOException,
+	public void write(KEYOUT key, VALUEOUT value) throws IOException,
 			InterruptedException {
 		writer.write(key, value);
 	}

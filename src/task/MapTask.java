@@ -1,38 +1,38 @@
 package task;
 
+import inputformat.InputFormat;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import job.Job;
 import job.JobConf;
-import node.NodeID;
+import partitioner.Partitioner;
+import task.MapOutputCollector.CollectorContext;
 import tool.MapContext;
 import tool.MapContextImpl;
 import tool.Mapper;
 import tool.WrappedMapper;
-import configuration.ConfigurationStrings;
 import configuration.MyConfiguration;
+import fileSplit.MapInputSplit;
 
 public class MapTask implements Task {
-	private String inputFilePath;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1690738592028057018L;
+	private MapInputSplit mapInputSplit;
 	private String outputFilePath;
-	private Job job;
+	private JobConf jobConf;
 	private TaskAttemptID taskAttemptID;
-	private NodeID nodeID;
 
 	public MapTask() {
 	}
 
-	public MapTask(String inputFilePath, String outputFilePath, Job job,
-			TaskAttemptID taskAttemptID) {
-		this.inputFilePath = inputFilePath;
-		this.outputFilePath = outputFilePath;
-		this.job = job;
+	public MapTask(MapInputSplit mapInputSplit, String inputFilePath,
+			String outputFilePath, JobConf jobConf, TaskAttemptID taskAttemptID) {
+		this.mapInputSplit = mapInputSplit;
+		this.jobConf = jobConf;
 		this.taskAttemptID = taskAttemptID;
-	}
-
-	public MapTask setInputFile(String inputFilePath) {
-		this.inputFilePath = inputFilePath;
-		return this;
 	}
 
 	public MapTask setOutputFile(String outputFilePath) {
@@ -40,8 +40,8 @@ public class MapTask implements Task {
 		return this;
 	}
 
-	public MapTask setJob(Job job) {
-		this.job = job;
+	public MapTask setJobConf(JobConf jobConf) {
+		this.jobConf = jobConf;
 		return this;
 	}
 
@@ -50,30 +50,17 @@ public class MapTask implements Task {
 		return this;
 	}
 
-	public String getInputFile() {
-		return inputFilePath;
-	}
-
 	public String getOutputFile() {
 		return outputFilePath;
 	}
 
 	@Override
-	public Job getJob() {
-		return job;
+	public JobConf getJobConf() {
+		return jobConf;
 	}
 
 	public TaskAttemptID getTaskID() {
 		return taskAttemptID;
-	}
-
-	public NodeID getNodeID() {
-		return nodeID;
-	}
-
-	public MapTask setNodeID(NodeID nodeID) {
-		this.nodeID = nodeID;
-		return this;
 	}
 
 	@Override
@@ -89,27 +76,25 @@ public class MapTask implements Task {
 			InstantiationException, IllegalAccessException {
 
 		// make a mapper
-		Class<?> mapperClass = Class.forName(jobConf
-				.getMapperClass(ConfigurationStrings.MAPPER_CLASS));
-
+		Class<?> mapperClass = Class.forName(jobConf.getMapperClass());
 		Mapper mapper = (Mapper) mapperClass.newInstance();
-		// rebuild the input split
-		
-		InputFormat inputFormat = Class.forName(jobConf.get)
-		
-		RecordReader input = new RecordReader(this.inputFilePath,
-				ConfigurationStrings.splitBlockLinesNum);
 
-		RecordWriter output = new RecordWriter(this.outputFilePath,
-				ConfigurationStrings.splitBlockLinesNum);
+		// rebuild the input format
+		Class<?> inputFormatClass = Class.forName(jobConf.getInputFormat());
+		InputFormat inputFormat = (InputFormat) inputFormatClass.newInstance();
+
+		RecordReader input = inputFormat
+				.getRecordReader(mapInputSplit, jobConf);
+
+		RecordWriter output = new NewOutputCollector(this, jobConf);
 
 		MapContext<INKEY, INVALUE, OUTKEY, OUTVALUE> mapContext = new MapContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
-				MyConfiguration.getInstance(), getTaskID(), input, output);
+				MyConfiguration.getInstance(), getTaskID(), input, output,
+				mapInputSplit);
 
 		Mapper<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context mapperContext = new WrappedMapper<INKEY, INVALUE, OUTKEY, OUTVALUE>()
 				.getMapContext(mapContext);
 
-		input.initialize();
 		mapper.run(mapperContext);
 		statusUpdate();
 		input.close();
@@ -118,5 +103,67 @@ public class MapTask implements Task {
 
 	private void statusUpdate() {
 
+	}
+
+	@Override
+	public Task setInputFile(String fileName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getInputFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private class NewOutputCollector<K, V> extends RecordWriter<K, V> {
+		private MapOutputCollector<K, V> collector;
+		private Partitioner<K, V> partitioner;
+		private int partitions;
+		private MapTask mapTask;
+
+		@SuppressWarnings("unchecked")
+		public NewOutputCollector(MapTask maptask, JobConf jobConf)
+				throws IOException, ClassNotFoundException,
+				InstantiationException, IllegalAccessException {
+			this.mapTask = maptask;
+			collector = createCollector(mapTask, jobConf);
+			partitions = jobConf.getNumReduceTasks();
+			if (partitions > 0) {
+				Class<?> partitionerClass = Class.forName(jobConf
+						.getPartitionerClass());
+				partitioner = (Partitioner<K, V>) partitionerClass
+						.newInstance();
+			} else {
+				partitioner = new Partitioner<K, V>() {
+					@Override
+					public int getPartition(K key, V value, int numPartitions) {
+						return -1;
+					}
+				};
+			}
+		}
+
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		private MapOutputCollector<K, V> createCollector(MapTask mapTask,
+				JobConf jobConf) throws FileNotFoundException {
+			MapOutputCollectorImpl collector = new MapOutputCollectorImpl();
+			CollectorContext collectorContext = new CollectorContext(mapTask,
+					jobConf);
+			collector.init(collectorContext);
+			return collector;
+		}
+
+		@Override
+		public void write(K key, V value) throws IOException {
+			collector.collect(key, value,
+					partitioner.getPartition(key, value, partitions));
+		}
+
+		@Override
+		public void close() throws IOException {
+			collector.close();
+		}
 	}
 }

@@ -33,20 +33,20 @@ public class WrappedMapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
 		}
 
 		@Override
-		public String getCurrentKey() throws IOException, InterruptedException {
+		public KEYIN getCurrentKey() throws IOException, InterruptedException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public String getCurrentValue() throws IOException,
+		public VALUEIN getCurrentValue() throws IOException,
 				InterruptedException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public void write(String key, String value) throws IOException,
+		public void write(KEYOUT key, VALUEOUT value) throws IOException,
 				InterruptedException {
 			// TODO Auto-generated method stub
 

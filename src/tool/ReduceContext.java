@@ -53,6 +53,6 @@ public interface ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	/**
 	 * Generate an output key/value pair.
 	 */
-	public void write(String key, String value) throws IOException,
+	public void write(KEYOUT key, VALUEOUT value) throws IOException,
 			InterruptedException;
 }

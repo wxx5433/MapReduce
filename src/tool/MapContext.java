@@ -17,7 +17,7 @@ public interface MapContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public String getCurrentKey() throws IOException, InterruptedException;
+	public KEYIN getCurrentKey() throws IOException, InterruptedException;
 
 	/**
 	 * Get the current value.
@@ -26,11 +26,11 @@ public interface MapContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public String getCurrentValue() throws IOException, InterruptedException;
+	public VALUEIN getCurrentValue() throws IOException, InterruptedException;
 
 	/**
 	 * Generate an output key/value pair.
 	 */
-	public void write(String key, String value) throws IOException,
+	public void write(KEYOUT key, VALUEOUT value) throws IOException,
 			InterruptedException;
 }

@@ -1,154 +1,85 @@
 package task;
 
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import job.Job;
 import job.JobConf;
-import jobtracker.JobTracker;
+import outputformat.OutputFormat;
+import tool.ReduceContext;
+import tool.ReduceContextImpl;
+import tool.Reducer;
+import tool.WrappedReducer;
+import configuration.ConfigurationStrings;
+import configuration.MyConfiguration;
 
 public class ReduceTask implements Task {
-	private ArrayList<String> inputFiles;
-	private String outputFileName;
-	private Job job;
-	private int taskID;
-	private String phase;
-	private int reducerID;
+	private ArrayList<MapOutput> inputData;
+	private JobConf jobConf;
+	private TaskAttemptID taskAttemptID;
+	private String outputPath;
 
 	public ReduceTask() {
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void run(JobConf job, final TaskUmbilicalProtocol umbilical)
-			throws IOException, InterruptedException, ClassNotFoundException {
-
-		initialize(job, getJobID(), reporter, useNewApi);
-
-		sslShuffle = job.getBoolean(JobTracker.SHUFFLE_SSL_ENABLED_KEY,
-				JobTracker.SHUFFLE_SSL_ENABLED_DEFAULT);
-		if (sslShuffle && sslFactory == null) {
-			sslFactory = new SSLFactory(SSLFactory.Mode.CLIENT, job);
-			try {
-				sslFactory.init();
-			} catch (Exception ex) {
-				sslFactory.destroy();
-				throw new RuntimeException(ex);
-			}
-		}
-
-		// Initialize the codec
-		codec = initCodec();
-
-		boolean isLocal = "local"
-				.equals(job.get("mapred.job.tracker", "local"));
-		if (!isLocal) {
-			ShuffleConsumerPlugin.Context context = new ShuffleConsumerPlugin.Context(
-					umbilical, job, reporter, this);
-			shuffleConsumerPlugin = ReflectionUtils.newInstance(job.getClass(
-					JobContext.SHUFFLE_CONSUMER_PLUGIN_ATTR,
-					ReduceCopier.class, ShuffleConsumerPlugin.class), job);
-			LOG.info("Using ShuffleConsumerPlugin: "
-					+ shuffleConsumerPlugin.getClass().getName());
-			shuffleConsumerPlugin.init(context);
-			if (!shuffleConsumerPlugin.fetchOutputs()) {
-				if (shuffleConsumerPlugin.getMergeThrowable() instanceof FSError) {
-					throw (FSError) shuffleConsumerPlugin.getMergeThrowable();
-				}
-				throw new IOException("Task: " + getTaskID()
-						+ " - The shuffle consumer failed",
-						shuffleConsumerPlugin.getMergeThrowable());
-			}
-		}
-		copyPhase.complete(); // copy is already complete
-		setPhase(TaskStatus.Phase.SORT);
-		statusUpdate(umbilical);
-
-		final FileSystem rfs = FileSystem.getLocal(job).getRaw();
-		RawKeyValueIterator rIter = isLocal ? Merger.merge(job, rfs, job
-				.getMapOutputKeyClass(), job.getMapOutputValueClass(), codec,
-				getMapFiles(rfs, true), !conf.getKeepFailedTaskFiles(), job
-						.getInt("io.sort.factor", 100), new Path(getTaskID()
-						.toString()), job.getOutputKeyComparator(), reporter,
-				spilledRecordsCounter, null) : shuffleConsumerPlugin
-				.createKVIterator();
-
-		// free up the data structures
-		mapOutputFilesOnDisk.clear();
-
-		sortPhase.complete(); // sort is complete
-		setPhase(TaskStatus.Phase.REDUCE);
-		statusUpdate(umbilical);
-		Class keyClass = job.getMapOutputKeyClass();
-		Class valueClass = job.getMapOutputValueClass();
-		RawComparator comparator = job.getOutputValueGroupingComparator();
-
-		if (useNewApi) {
-			runNewReducer(job, umbilical, reporter, rIter, comparator,
-					keyClass, valueClass);
-		} else {
-			runOldReducer(job, umbilical, reporter, rIter, comparator,
-					keyClass, valueClass);
-		}
-		if (shuffleConsumerPlugin != null) {
-			shuffleConsumerPlugin.close();
-		}
-		done(umbilical, reporter);
-
-		if (sslFactory != null) {
-			sslFactory.destroy();
-		}
+	private String generatePath() {
+		return ConfigurationStrings.REDUCE_INPUT_PATH + getTaskID().toString();
 	}
 
-	@SuppressWarnings("unchecked")
-	private <INKEY, INVALUE, OUTKEY, OUTVALUE> void runNewReducer(JobConf job,
-			final TaskUmbilicalProtocol umbilical, final TaskReporter reporter,
-			RawKeyValueIterator rIter, RawComparator<INKEY> comparator,
-			Class<INKEY> keyClass, Class<INVALUE> valueClass)
-			throws IOException, InterruptedException, ClassNotFoundException {
-		// wrap value iterator to report progress.
-		final RawKeyValueIterator rawIter = rIter;
-		rIter = new RawKeyValueIterator() {
-			public void close() throws IOException {
-				rawIter.close();
-			}
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void run(JobConf jobConf) throws IOException, InterruptedException,
+			ClassNotFoundException, InstantiationException,
+			IllegalAccessException {
+		ReduceCopier reduceCopier = new ReduceCopier(inputData, generatePath());
+		if (!reduceCopier.fetchOutputs()) {
+			throw new RuntimeException("fetch map output files error!");
+		}
 
-			public DataInputBuffer getKey() throws IOException {
-				return rawIter.getKey();
-			}
+		if (!reduceCopier.shuffle()) {
+			throw new RuntimeException("shuffle error!");
+		}
 
-			public Progress getProgress() {
-				return rawIter.getProgress();
-			}
+		Class<?> keyClass = Class.forName(jobConf.getMapOutputKeyClass());
+		Class<?> valueClass = Class.forName(jobConf.getMapOutputValueClass());
+		runNewReducer(jobConf, keyClass, valueClass,
+				reduceCopier.intermediatePath);
+	}
 
-			public DataInputBuffer getValue() throws IOException {
-				return rawIter.getValue();
-			}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private <INKEY, INVALUE, OUTKEY, OUTVALUE> void runNewReducer(
+			JobConf jobConf, Class<INKEY> keyClass, Class<INVALUE> valueClass,
+			String intermediateOutput) throws IOException,
+			InterruptedException, ClassNotFoundException,
+			InstantiationException, IllegalAccessException {
 
-			public boolean next() throws IOException {
-				boolean ret = rawIter.next();
-				reducePhase.set(rawIter.getProgress().get());
-				reporter.progress();
-				return ret;
-			}
-		};
-		// make a task context so we can get the classes
-		org.apache.hadoop.mapreduce.TaskAttemptContext taskContext = new org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl(
-				job, getTaskID(), reporter);
 		// make a reducer
-		org.apache.hadoop.mapreduce.Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE> reducer = (org.apache.hadoop.mapreduce.Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>) ReflectionUtils
-				.newInstance(taskContext.getReducerClass(), job);
-		org.apache.hadoop.mapreduce.RecordWriter<OUTKEY, OUTVALUE> output = (org.apache.hadoop.mapreduce.RecordWriter<OUTKEY, OUTVALUE>) outputFormat
-				.getRecordWriter(taskContext);
-		org.apache.hadoop.mapreduce.RecordWriter<OUTKEY, OUTVALUE> trackedRW = new NewTrackingRecordWriter<OUTKEY, OUTVALUE>(
-				output, reduceOutputCounter);
-		job.setBoolean("mapred.skip.on", isSkipping());
-		org.apache.hadoop.mapreduce.Reducer.Context reducerContext = createReduceContext(
-				reducer, job, getTaskID(), rIter, reduceInputKeyCounter,
-				reduceInputValueCounter, trackedRW, committer, reporter,
-				comparator, keyClass, valueClass);
-		reducer.run(reducerContext);
-		output.close(reducerContext);
+		Class<?> reduceClass = Class.forName(jobConf.getReducerClass());
+		Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE> reducer = (Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>) reduceClass
+				.newInstance();
+		// make the output
+		Class<?> outputFormatClass = Class.forName(jobConf.getOutputFormat());
+		OutputFormat outputFormat = (OutputFormat) outputFormatClass
+				.newInstance();
+		RecordWriter<OUTKEY, OUTVALUE> output = outputFormat
+				.getRecordWriter(getDataOutputStream());
+		// make the input
+		ReduceRecordReader<INKEY, INVALUE> input = new ReduceRecordReader();
+		input.initialize(intermediateOutput);
+		ReduceContext<INKEY, INVALUE, OUTKEY, OUTVALUE> reduceContext = new ReduceContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
+				MyConfiguration.getInstance(), getTaskID(), input, output);
+
+		Reducer<String, String, OUTKEY, OUTVALUE>.Context reducerContext = new WrappedReducer<String, String, OUTKEY, OUTVALUE>()
+				.getReducerContext((ReduceContext<String, String, OUTKEY, OUTVALUE>) reduceContext);
+		reducer.run((Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context) reducerContext);
+		output.close();
+	}
+
+	private DataOutputStream getDataOutputStream() throws FileNotFoundException {
+		return new DataOutputStream(new FileOutputStream(generatePath()));
 	}
 
 	public Task setInputFile(String fileName) {
@@ -163,12 +94,6 @@ public class ReduceTask implements Task {
 	}
 
 	@Override
-	public Task setJob(Job job) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Task setTaskID(TaskAttemptID id) {
 		// TODO Auto-generated method stub
 		return null;
@@ -177,7 +102,7 @@ public class ReduceTask implements Task {
 	@Override
 	public String getOutputFile() {
 		// TODO Auto-generated method stub
-		return null;
+		return jobConf.getOutputPath() + this.taskAttemptID.toString();
 	}
 
 	@Override
@@ -187,9 +112,8 @@ public class ReduceTask implements Task {
 	}
 
 	@Override
-	public Job getJob() {
-		// TODO Auto-generated method stub
-		return null;
+	public JobConf getJobConf() {
+		return jobConf;
 	}
 
 	@Override
@@ -199,8 +123,55 @@ public class ReduceTask implements Task {
 	}
 
 	@Override
-	public void run(job.JobConf job) {
+	public Task setJobConf(JobConf jobConf) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static class ReduceCopier<K, V> implements ShuffleConsumerPlugin {
+
+		private ArrayList<MapOutput> inputData;
+		private String intermediatePath;
+		private HashMap<String, ValueData> shuffleData = new HashMap<String, ValueData>();
+
+		public ReduceCopier(ArrayList<MapOutput> inputData,
+				String intermediateOutput) {
+			this.inputData = inputData;
+			this.intermediatePath = intermediateOutput;
+		}
+
+		@Override
+		public boolean fetchOutputs() throws IOException {
+
+			return false;
+		}
+
+		@Override
+		public void close() {
+
+		}
+
+		@Override
+		public boolean shuffle() {
+
+			return false;
+		}
+
+		public class ValueData {
+			ArrayList<String> valueData = new ArrayList<String>();
+
+			public void add(String value) {
+				valueData.add(value);
+			}
+
+			public ArrayList<String> getValueData() {
+				return valueData;
+			}
+
+			public void setValueData(ArrayList<String> valueData) {
+				this.valueData = valueData;
+			}
+		}
 
 	}
 }

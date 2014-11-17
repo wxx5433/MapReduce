@@ -3,11 +3,11 @@ package task;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import fileSplit.FileSplit;
+import fileSplit.MapInputSplit;
 
 public abstract class RecordReader<KEYIN, VALUEIN> {
 
-	public abstract void initialize(FileSplit split, String host)
+	public abstract void initialize(MapInputSplit split, String host)
 			throws FileNotFoundException;
 
 	public abstract boolean nextKeyValue() throws IOException;

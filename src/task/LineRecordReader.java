@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import fileSplit.FileSplit;
+import fileSplit.MapInputSplit;
 
 public class LineRecordReader extends RecordReader<Long, String> {
 
@@ -21,9 +21,9 @@ public class LineRecordReader extends RecordReader<Long, String> {
 	}
 
 	@Override
-	public void initialize(FileSplit split, String host)
+	public void initialize(MapInputSplit split, String host)
 			throws FileNotFoundException {
-		String path = split.getPath(split.getOneDataNode().getIp());
+		String path = split.getPath();
 		// fileName here is the split fileName, not the original fileName
 		String fileName = split.getFileName() + "_" + split.getBlockIndex();
 		FileReader fr = null;

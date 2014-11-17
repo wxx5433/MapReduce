@@ -1,39 +1,34 @@
 package tool;
 
 import java.io.IOException;
-import java.util.List;
 
-import configuration.MyConfiguration;
-import task.RecordReader;
 import task.RecordWriter;
+import task.ReduceRecordReader;
 import task.TaskAttemptID;
+import configuration.MyConfiguration;
+import fileSplit.MapInputSplit;
 
 public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 		ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
-	private RecordReader reader;
-	private List<MyInputSplit> splitList;
-	private RecordWriter writer;
+	private RecordWriter<KEYOUT, VALUEOUT> writer;
 	private MyConfiguration conf;
+	private ReduceRecordReader<KEYIN, VALUEIN> reader;
 
 	public ReduceContextImpl(MyConfiguration conf, TaskAttemptID taskid,
-			RecordReader reader, RecordWriter writer,
-			List<MyInputSplit> splitList) {
+			ReduceRecordReader<KEYIN, VALUEIN> reader,
+			RecordWriter<KEYOUT, VALUEOUT> writer) {
 		this.reader = reader;
-		this.splitList = splitList;
 		this.writer = writer;
 		this.conf = conf;
 	}
 
-	@Override
-	public boolean nextKey() throws IOException, InterruptedException {
-		return reader.nextKey();
-	}
-
-	@Override
-	public Iterable<String> getValues() throws IOException,
-			InterruptedException {
-		return reader.getValues();
+	public ReduceContextImpl(MyConfiguration conf, TaskAttemptID taskid,
+			ReduceRecordReader<KEYIN, VALUEIN> reader,
+			RecordWriter<KEYOUT, VALUEOUT> writer, MapInputSplit split) {
+		this.reader = reader;
+		this.writer = writer;
+		this.conf = conf;
 	}
 
 	@Override
@@ -48,11 +43,22 @@ public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 
 	@Override
 	public String getCurrentValue() throws IOException, InterruptedException {
-		return reader.getCurrentKey();
+		return reader.getCurrentValue();
 	}
 
 	@Override
-	public void write(String key, String value) throws IOException,
+	public boolean nextKey() throws IOException, InterruptedException {
+		return false;
+	}
+
+	@Override
+	public Iterable<String> getValues() throws IOException,
+			InterruptedException {
+		return reader.getCurrentValues();
+	}
+
+	@Override
+	public void write(KEYOUT key, VALUEOUT value) throws IOException,
 			InterruptedException {
 		writer.write(key, value);
 	}

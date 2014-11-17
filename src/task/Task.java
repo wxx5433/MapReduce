@@ -3,7 +3,6 @@ package task;
 import java.io.IOException;
 import java.io.Serializable;
 
-import job.Job;
 import job.JobConf;
 
 public interface Task extends Serializable {
@@ -12,9 +11,9 @@ public interface Task extends Serializable {
 
 	public Task setOutputFile(String fileName);
 
-	public Task setJob(Job job);
+	public Task setJobConf(JobConf jobConf);
 
-	public Job getJob();
+	public JobConf getJobConf();
 
 	public Task setTaskID(TaskAttemptID id);
 

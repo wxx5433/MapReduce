@@ -12,18 +12,19 @@ public class WrappedReducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
 	 *            <code>ReduceContext</code> to be wrapped
 	 * @return a wrapped <code>Reducer.Context</code> for custom implementations
 	 */
-	public Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT>.Context getReducerContext(
-			ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> reduceContext) {
-		return new Context(reduceContext);
+	public Reducer<String, String, KEYOUT, VALUEOUT>.Context getReducerContext(
+			ReduceContext<String, String, KEYOUT, VALUEOUT> reduceContext) {
+		return (Reducer<String, String, KEYOUT, VALUEOUT>.Context) new Context(
+				reduceContext);
 	}
 
 	public class Context extends
-			Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT>.Context {
+			Reducer<String, String, KEYOUT, VALUEOUT>.Context {
 
-		protected ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> reduceContext;
+		protected ReduceContext<String, String, KEYOUT, VALUEOUT> reduceContext;
 
 		public Context(
-				ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> reduceContext) {
+				ReduceContext<String, String, KEYOUT, VALUEOUT> reduceContext) {
 			this.reduceContext = reduceContext;
 		}
 
@@ -60,7 +61,7 @@ public class WrappedReducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
 		}
 
 		@Override
-		public void write(String key, String value) throws IOException,
+		public void write(KEYOUT key, VALUEOUT value) throws IOException,
 				InterruptedException {
 			// TODO Auto-generated method stub
 

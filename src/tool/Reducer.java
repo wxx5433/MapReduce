@@ -9,7 +9,7 @@ public class Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	 * implementations.
 	 */
 	public abstract class Context implements
-			ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
+			ReduceContext<String, String, KEYOUT, VALUEOUT> {
 	}
 
 	/**
@@ -21,7 +21,7 @@ public class Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	protected void reduce(String key, Iterable<String> values, Context context)
 			throws IOException, InterruptedException {
 		for (String value : values) {
-			context.write(key, value);
+			context.write((KEYOUT) key, (VALUEOUT) value);
 		}
 	}
 

@@ -16,9 +16,9 @@ public class Mapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	 * should override this, but the default is the identity function.
 	 */
 	@SuppressWarnings("unchecked")
-	protected void map(String key, String value, Context context)
+	protected void map(KEYIN key, VALUEIN value, Context context)
 			throws IOException, InterruptedException {
-		context.write(key, value);
+		context.write((KEYOUT) key, (VALUEOUT) value);
 	}
 
 	/**
