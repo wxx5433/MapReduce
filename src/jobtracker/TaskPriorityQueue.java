@@ -22,8 +22,8 @@ public class TaskPriorityQueue extends PriorityQueue<Task> {
 	private class TaskComparator implements Comparator<Task> {
 		@Override
 		public int compare(Task o1, Task o2) {
-			JobID jobID1 = o1.getJob().getJobID();
-			JobID jobID2 = o2.getJob().getJobID();
+			JobID jobID1 = o1.getJobID();
+			JobID jobID2 = o2.getJobID();
 			int jobIDCompare = jobID1.compareTo(jobID2);
 			if (jobIDCompare == 0) {   // same job, map tasks first
 				boolean o1Map = o1 instanceof MapTask;
