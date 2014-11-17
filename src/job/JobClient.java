@@ -40,6 +40,17 @@ public class JobClient {
 	public RunningJob submitJobInternal(JobConf jobConf) {
 		// get jobID from jobTracer
 		jobID = jobTrackerService.getJobID();
+		if (jobID == null) {
+			System.out.println("Launch job failed: cannot get new jobID");
+			return null;
+		}
+		
+		CheckMessage checkMessage = checkJobConf(jobConf);
+		if (!checkMessage.isValid()) {
+			System.out.println("Invalid job configuration:" + checkMessage.getMessage());
+			return null;
+		}
+		
 		// submit the job to jobTracker and get back jobStatus
 		JobStatus jobStatus = jobTrackerService.submitJob(jobID, jobConf);
 		RunningJob info = new RunningJob(jobStatus);
@@ -56,6 +67,56 @@ public class JobClient {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private CheckMessage checkJobConf(JobConf jobConf) {
+		if (jobConf.getInputPath() == null) {
+			return new CheckMessage(false, "No input path");
+		}
+		
+		if (!nameNodeService.containsFile(jobConf.getInputPath())) {
+			return new CheckMessage(false, "Input files do not exist in DFS");
+		}
+		
+		if (jobConf.getOutputPath() == null) {
+			return new CheckMessage(false, "No output path");
+		}
+		
+		// input format
+		
+		// output format
+		
+		return new CheckMessage(true);
+	}
+	
+	private class CheckMessage {
+		private boolean valid;
+		private String message;
+		
+		public CheckMessage(boolean valid) {
+			setValid(valid);
+		}
+		
+		public CheckMessage(boolean valid, String message) {
+			this(valid);
+			setMessage(message);
+		}
+
+		public boolean isValid() {
+			return valid;
+		}
+
+		public void setValid(boolean valid) {
+			this.valid = valid;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
+		}
 	}
 	
 }

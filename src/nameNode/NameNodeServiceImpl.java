@@ -125,4 +125,9 @@ public class NameNodeServiceImpl implements NameNodeService {
 		}
 		return copy;
 	}
+
+	@Override
+	public synchronized boolean containsFile(String path) {
+		return nameSpace.containsKey(path);
+	}
 }
