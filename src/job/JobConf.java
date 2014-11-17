@@ -87,7 +87,7 @@ public class JobConf {
 		setClass(ConfigurationStrings.MAPPER_CLASS, theClass);
 	}
 
-	public void setReducerClass(String name, Class<?> theClass) {
+	public void setReducerClass(Class<?> theClass) {
 		setClass(ConfigurationStrings.REDUCER_CLASS, theClass);
 	}
 

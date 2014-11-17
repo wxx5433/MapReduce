@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import job.JobConf;
+import job.JobID;
 import partitioner.Partitioner;
 import task.MapOutputCollector.CollectorContext;
 import tool.MapContext;
@@ -165,5 +166,11 @@ public class MapTask implements Task {
 		public void close() throws IOException {
 			collector.close();
 		}
+	}
+
+	@Override
+	public JobID getJobID() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

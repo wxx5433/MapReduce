@@ -2,15 +2,9 @@ package job;
 
 import java.io.IOException;
 
-import configuration.ConfigurationStrings;
-import configuration.MyConfiguration;
-import job.JobClient;
-import job.JobConf;
-import job.JobID;
-import job.JobStatus;
-import job.RunningJob;
 import tool.Mapper;
 import tool.Reducer;
+import configuration.MyConfiguration;
 
 public class Job {
 
@@ -33,8 +27,9 @@ public class Job {
 	public static Job getInstance(MyConfiguration conf) throws IOException {
 		return new Job(conf);
 	}
-	
-	public static Job getInstance(MyConfiguration conf, String jobName) throws IOException {
+
+	public static Job getInstance(MyConfiguration conf, String jobName)
+			throws IOException {
 		Job result = getInstance(conf);
 		result.setJobName(jobName);
 		return result;
@@ -64,12 +59,12 @@ public class Job {
 
 	public void setMapperClass(Class<? extends Mapper> cls)
 			throws IllegalStateException {
-		jobConf.setMapperClass(ConfigurationStrings.MAPPER_CLASS, cls);
+		jobConf.setMapperClass(cls);
 	}
 
 	public void setReducerClass(Class<? extends Reducer> cls)
 			throws IllegalStateException {
-		jobConf.setReducerClass(ConfigurationStrings.REDUCER_CLASS, cls);
+		jobConf.setReducerClass(cls);
 	}
 
 	public void setJobName(String name) throws IllegalStateException {

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import job.JobConf;
+import job.JobID;
 import outputformat.OutputFormat;
 import tool.ReduceContext;
 import tool.ReduceContextImpl;
@@ -162,6 +163,7 @@ public class ReduceTask implements Task {
 
 			public void add(String value) {
 				valueData.add(value);
+
 			}
 
 			public ArrayList<String> getValueData() {
@@ -173,5 +175,11 @@ public class ReduceTask implements Task {
 			}
 		}
 
+	}
+
+	@Override
+	public JobID getJobID() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

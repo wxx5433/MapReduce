@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import job.JobConf;
+import job.JobID;
 
 public interface Task extends Serializable {
 
@@ -12,6 +13,8 @@ public interface Task extends Serializable {
 	public Task setOutputFile(String fileName);
 
 	public Task setJobConf(JobConf jobConf);
+
+	public JobID getJobID();
 
 	public JobConf getJobConf();
 
