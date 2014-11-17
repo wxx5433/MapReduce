@@ -58,4 +58,34 @@ public class JobClient {
 		return null;
 	}
 	
+	private class CheckMessage {
+		private boolean valid;
+		private String message;
+		
+		public CheckMessage(boolean valid) {
+			setValid(valid);
+		}
+		
+		public CheckMessage(boolean valid, String message) {
+			this(valid);
+			setMessage(message);
+		}
+
+		public boolean isValid() {
+			return valid;
+		}
+
+		public void setValid(boolean valid) {
+			this.valid = valid;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
+		}
+	}
+	
 }
