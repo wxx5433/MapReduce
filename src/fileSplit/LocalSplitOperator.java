@@ -12,17 +12,18 @@ import configuration.Configuration;
 public class LocalSplitOperator {
 
 	/**
-	 * This method will be invoked on the DataNode to write a block 
-	 * to its local disk.
+	 * This method will be invoked on the DataNode to write a block to its local
+	 * disk.
 	 */
-	public void writeSplit(String filePath, List<String> contents) throws Exception {
+	public void writeSplit(String filePath, List<String> contents)
+			throws Exception {
 		if (contents.size() > Configuration.splitSize) {
 			throw new Exception("Write too many lines to a block!");
 		}
 		FileWriter fw = new FileWriter(filePath);
 		BufferedWriter bw = new BufferedWriter(fw);
 		System.out.println(filePath);
-		for (String line: contents) {
+		for (String line : contents) {
 			System.out.println(line);
 			bw.write(line + "\n");
 		}
@@ -33,8 +34,8 @@ public class LocalSplitOperator {
 	}
 
 	/**
-	 * This method will be invoked by a dataNode to read a block from its 
-	 * local disk. 
+	 * This method will be invoked by a dataNode to read a block from its local
+	 * disk.
 	 */
 	public List<String> readSplit(String filePath) throws Exception {
 		FileReader fr = new FileReader(filePath);

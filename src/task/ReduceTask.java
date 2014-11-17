@@ -143,7 +143,9 @@ public class ReduceTask implements Task {
 
 		@Override
 		public boolean fetchOutputs() throws IOException {
+			for (MapOutput input : inputData) {
 
+			}
 			return false;
 		}
 
