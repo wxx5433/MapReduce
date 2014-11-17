@@ -12,7 +12,7 @@ public class RunningJob implements RunningJobInterface {
 	private JobID jobID;
 	
 	public RunningJob(JobStatus jobStatus) {
-		
+		this.jobID = jobStatus.getJobID();
 	}
 	
 

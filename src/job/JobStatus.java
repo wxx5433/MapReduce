@@ -2,7 +2,7 @@ package job;
 
 public class JobStatus {
 
-	private int jobID;
+	private JobID jobID;
 	private float mapProgress;
 	private float reduceProgress;
 
@@ -27,11 +27,11 @@ public class JobStatus {
 		}
 	}
 
-	public int getJobID() {
+	public JobID getJobID() {
 		return jobID;
 	}
 
-	public void setJobID(int jobID) {
+	public void setJobID(JobID jobID) {
 		this.jobID = jobID;
 	}
 
