@@ -2,13 +2,14 @@ package jobtracker;
 
 import java.rmi.Remote;
 
+import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
 import job.JobStatus;
 
 public interface JobTrackerService extends Remote {
 	
-	public void registerTaskTracker();
+	public void registerTaskTracker(TaskTracker taskTracker);
 	
 	public JobID getJobID();
 	

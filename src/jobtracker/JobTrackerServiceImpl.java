@@ -2,6 +2,7 @@ package jobtracker;
 
 import java.util.Queue;
 
+import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
 import job.JobStatus;
@@ -54,8 +55,8 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	}
 
 	@Override
-	public void registerTaskTracker() {
-		
+	public void registerTaskTracker(TaskTracker taskTracker) {
+		jobTracker.addTaskTracker(taskTracker);
 	}
 
 }
