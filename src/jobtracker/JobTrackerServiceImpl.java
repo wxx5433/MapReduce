@@ -17,8 +17,7 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 
 	@Override
 	public JobID getJobID() {
-		// TODO Auto-generated method stub
-		return null;
+		return new JobID(jobTracker.getNewJobID());
 	}
 
 	/**
