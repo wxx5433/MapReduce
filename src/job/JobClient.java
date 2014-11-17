@@ -19,9 +19,8 @@ public class JobClient implements MyTool {
 	private JobConf conf;
 
 	public JobClient() {
-		JobTrackerService jobTrackerService = getJobTrackerService();
-		// get jobID from jobTracer
-		jobID = jobTrackerService.getJobID();
+		// get JobTrackerService
+		jobTrackerService = getJobTrackerService();
 		// get NameNodeService
 		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
 		this.nameNodeService = Service.getNameNodeService(nameNodeID);
@@ -32,14 +31,19 @@ public class JobClient implements MyTool {
 		this.conf = configuration;
 	}
 
-	public static RunningJob runJob(JobConf job) {
-		JobClient jc = new JobClient(job);
-		RunningJob rj = jc.submitJobInternal(job);
-		return rj;
-	}
+//	public static RunningJob runJob(JobConf job) {
+//		JobClient jc = new JobClient(job);
+//		RunningJob rj = jc.submitJobInternal(job);
+//		return rj;
+//	}
 
 	public RunningJob submitJobInternal(JobConf jobConf) {
-		jobTrackerService.submitJob(jobConf);
+		// get jobID from jobTracer
+		jobID = jobTrackerService.getJobID();
+		// submit the job to jobTracker and get back jobStatus
+		JobStatus jobStatus = jobTrackerService.submitJob(jobID, jobConf);
+		RunningJob info = new RunningJob(jobStatus);
+		return info;
 	}
 
 	private JobTrackerService getJobTrackerService() {
@@ -55,15 +59,13 @@ public class JobClient implements MyTool {
 	}
 	
 	@Override
-	public void setConf(MyConfiguration conf) {
-		// TODO Auto-generated method stub
-
+	public void setConf(JobConf conf) {
+		this.conf = conf;
 	}
 
 	@Override
-	public MyConfiguration getConf() {
-		// TODO Auto-generated method stub
-		return null;
+	public JobConf getConf() {
+		return this.conf;
 	}
 
 	@Override

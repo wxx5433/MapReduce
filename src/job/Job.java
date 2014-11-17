@@ -27,26 +27,31 @@ public class Job {
 	private JobID jobID;
 
 	public static Job getInstance() throws IOException {
-		// create with a null Cluster
 		return getInstance(new MyConfiguration());
 	}
 
 	public static Job getInstance(MyConfiguration conf) throws IOException {
-		// create with a null Cluster
-		JobConf jobConf = new JobConf(conf);
-		return new Job(jobConf);
+		return new Job(conf);
+	}
+	
+	public static Job getInstance(MyConfiguration conf, String jobName) throws IOException {
+		Job result = getInstance(conf);
+		result.setJobName(jobName);
+		return result;
 	}
 
 	public Job() throws IOException {
 		this(new MyConfiguration());
 	}
 
-	public Job(JobConf jobConf) {
-		// TODO Auto-generated constructor stub
+	public Job(MyConfiguration conf) {
+		// new jobConf, pass configuration to jobConf
+		jobConf = new JobConf(conf);
 	}
 
-	public Job(MyConfiguration myConfiguration) {
-		// TODO Auto-generated constructor stub
+	public Job(MyConfiguration conf, String jobName) {
+		this(conf);
+		setJobName(jobName);
 	}
 
 	JobClient getJobClient() {
@@ -108,6 +113,10 @@ public class Job {
 
 	private void setJobID(JobID id) {
 		this.jobID = id;
+	}
+
+	public JobID getJobID() {
+		return jobID;
 	}
 
 	/**

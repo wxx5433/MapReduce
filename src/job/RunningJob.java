@@ -9,11 +9,16 @@ import task.TaskAttemptID;
 
 public class RunningJob implements RunningJobInterface {
 	
+	private JobID jobID;
+	
+	public RunningJob(JobStatus jobStatus) {
+		
+	}
+	
 
 	@Override
-	public String getJobID() {
-		// TODO Auto-generated method stub
-		return null;
+	public JobID getJobID() {
+		return this.jobID;
 	}
 
 	@Override

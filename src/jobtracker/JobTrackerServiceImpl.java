@@ -1,10 +1,19 @@
 package jobtracker;
 
+import java.util.Queue;
+
 import job.JobConf;
 import job.JobID;
 import job.JobStatus;
 
 public class JobTrackerServiceImpl implements JobTrackerService {
+	
+	private JobTracker jobTracker;
+	
+	public JobTrackerServiceImpl(JobTracker jobTracker) {
+		super();
+		this.jobTracker = jobTracker;
+	}
 
 	@Override
 	public JobID getJobID() {
@@ -16,15 +25,15 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	 * Return JobStatus information to JobClient to get job status information
 	 */
 	@Override
-	public JobStatus submitJob(JobConf jobConf) {
-		// TODO Auto-generated method stub
+	public JobStatus submitJob(JobID jobID, JobConf jobConf) {
+//		jobConf.se
 		return null;
 	}
 
 	@Override
-	public boolean finishMapTasks() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean finishMapTasks(JobID jobID) {
+		return jobTracker.getFinishedMapTasksNum(jobID) 
+					== jobTracker.getMapTasksNum(jobID);
 	}
 
 	@Override
@@ -34,15 +43,20 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	}
 
 	@Override
-	public double getMapTasksProgress() {
-		// TODO Auto-generated method stub
-		return 0;
+	public float getMapTasksProgress(JobID jobID) {
+		return (float)jobTracker.getFinishedMapTasksNum(jobID) /
+					(float)jobTracker.getMapTasksNum(jobID);
 	}
 
 	@Override
-	public double getReduceTasksProgress() {
-		// TODO Auto-generated method stub
-		return 0;
+	public float getReduceTasksProgress(JobID jobID) {
+		return (float)jobTracker.getFinishedReduceTasksNum(jobID) /
+					(float)jobTracker.getReduceTasksNum(jobID);
+	}
+
+	@Override
+	public void registerTaskTracker() {
+		
 	}
 
 }

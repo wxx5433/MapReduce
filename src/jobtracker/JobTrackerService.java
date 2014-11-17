@@ -7,15 +7,19 @@ import job.JobID;
 import job.JobStatus;
 
 public interface JobTrackerService extends Remote {
+	
+	public void registerTaskTracker();
+	
 	public JobID getJobID();
 	
-	public JobStatus submitJob(JobConf jobConf);
+	public JobStatus submitJob(JobID jobID, JobConf jobConf);
 	
-	public boolean finishMapTasks();
+	public boolean finishMapTasks(JobID jobID);
 	
 	public HeartBeatResponse updateTaskTrackerStatus();
 	
-	public double getMapTasksProgress();
+	public float getMapTasksProgress(JobID jobID);
 	
-	public double getReduceTasksProgress();
+	public float getReduceTasksProgress(JobID jobID);
+	
 }

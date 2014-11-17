@@ -40,7 +40,7 @@ public interface RunningJobInterface {
    * 
    * @return the job ID
    */
-  public String getJobID();
+  public JobID getJobID();
   
   /**
    * Get the name of the job.
