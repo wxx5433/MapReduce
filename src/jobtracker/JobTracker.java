@@ -55,7 +55,7 @@ public class JobTracker {
 	// jobTracker Service
 	private JobTrackerService jobTrackerService;
 	
-	private Map<TaskTracker, Long> taskTrackersHealth;
+	private Map<TaskTracker, Long> taskTrackers;
 	
 	// task priority queue. job FIFO, map priority > reduce priority
 	TaskPriorityQueue taskPriorityQueue;
@@ -72,7 +72,7 @@ public class JobTracker {
 		finishedReduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
 		failedMapTasks = new ConcurrentHashMap<JobID, List<MapTask>>();
 		failedReduceTasks = new ConcurrentHashMap<JobID, List<ReduceTask>>();
-		taskTrackersHealth = new ConcurrentHashMap<TaskTracker, Long>();
+		taskTrackers = new ConcurrentHashMap<TaskTracker, Long>();
 		jobIDCounter = 0;
 		taskIDCounter = 0;
 		taskPriorityQueue = new TaskPriorityQueue(taskPriorityQueueInitCapacity);
@@ -169,4 +169,9 @@ public class JobTracker {
 	public Iterable<ReduceTask> getFailedReduceTasks(JobID jobID) {
 		return new ArrayList<ReduceTask>(failedReduceTasks.get(jobID));
 	}
+	
+	public void addTaskTracker(TaskTracker taskTracker) {
+		taskTrackers.put(taskTracker, System.currentTimeMillis());
+	}
+	
 }
