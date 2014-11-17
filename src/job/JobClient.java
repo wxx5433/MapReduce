@@ -40,6 +40,17 @@ public class JobClient {
 	public RunningJob submitJobInternal(JobConf jobConf) {
 		// get jobID from jobTracer
 		jobID = jobTrackerService.getJobID();
+		if (jobID == null) {
+			System.out.println("Launch job failed: cannot get new jobID");
+			return null;
+		}
+		
+		CheckMessage checkMessage = checkJobConf(jobConf);
+		if (!checkMessage.isValid()) {
+			System.out.println("Invalid job configuration:" + checkMessage.getMessage());
+			return null;
+		}
+		
 		// submit the job to jobTracker and get back jobStatus
 		JobStatus jobStatus = jobTrackerService.submitJob(jobID, jobConf);
 		RunningJob info = new RunningJob(jobStatus);
