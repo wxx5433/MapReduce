@@ -58,6 +58,26 @@ public class JobClient {
 		return null;
 	}
 	
+	private CheckMessage checkJobConf(JobConf jobConf) {
+		if (jobConf.getInputPath() == null) {
+			return new CheckMessage(false, "No input path");
+		}
+		
+		if (!nameNodeService.containsFile(jobConf.getInputPath())) {
+			return new CheckMessage(false, "Input files do not exist in DFS");
+		}
+		
+		if (jobConf.getOutputPath() == null) {
+			return new CheckMessage(false, "No output path");
+		}
+		
+		// input format
+		
+		// output format
+		
+		return new CheckMessage(true);
+	}
+	
 	private class CheckMessage {
 		private boolean valid;
 		private String message;
