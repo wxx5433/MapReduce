@@ -11,7 +11,7 @@ import configuration.MyConfiguration;
 import dfs.Service;
 import tool.MyTool;
 
-public class JobClient implements MyTool {
+public class JobClient {
 	
 	private JobTrackerService jobTrackerService;
 	private NameNodeService nameNodeService;
@@ -58,20 +58,4 @@ public class JobClient implements MyTool {
 		return null;
 	}
 	
-	@Override
-	public void setConf(JobConf conf) {
-		this.conf = conf;
-	}
-
-	@Override
-	public JobConf getConf() {
-		return this.conf;
-	}
-
-	@Override
-	public int run(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }
