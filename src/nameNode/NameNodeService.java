@@ -18,6 +18,8 @@ public interface NameNodeService extends Remote {
 		
 	public Iterable<FileSplit> getDataNodesToDownload(String fileName) throws RemoteException;
 	
-	public boolean containsFile(String path);
+	public boolean containsFile(String path) throws RemoteException;
+	
+	public FileSplit[] getAllSplits(String path) throws RemoteException;
 	
 }

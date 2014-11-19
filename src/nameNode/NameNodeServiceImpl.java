@@ -130,4 +130,23 @@ public class NameNodeServiceImpl implements NameNodeService {
 	public synchronized boolean containsFile(String path) {
 		return nameSpace.containsKey(path);
 	}
+
+	/**
+	 * Get all splits of a certain file.
+	 * This function is called when JobTracker try to initialize tasks
+	 */
+	@Override
+	public FileSplit[] getAllSplits(String path) throws RemoteException {
+		// invalid input path
+		if (!nameSpace.containsKey(path)) {
+			return null;
+		}
+		Map<Integer, FileSplit> splitsMap = nameSpace.get(path);
+		FileSplit[] splits = new FileSplit[splitsMap.size()];
+		int index = 0;
+		for (Map.Entry<Integer, FileSplit> entry: splitsMap.entrySet()) {
+			splits[index++] = entry.getValue();
+		}
+		return splits;
+	}
 }
