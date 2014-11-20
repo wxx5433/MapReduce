@@ -4,23 +4,23 @@ import job.JobID;
 
 public class TaskAttemptID {
 
-	private int taskNum;
+	private int taskId;
 	private int attemptID;
 	private JobID jobID;
 	private boolean mapper;
 
 	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptID) {
 		this.jobID = jobID;
-		this.taskNum = mapTaskNum;
+		this.taskId = mapTaskNum;
 		this.attemptID = attemptID;
 	}
 
-	public int getTaskNum() {
-		return taskNum;
+	public int getTaskID() {
+		return taskId;
 	}
 
-	public void setTaskNum(int taskNum) {
-		this.taskNum = taskNum;
+	public void setTaskID(int taskNum) {
+		this.taskId = taskNum;
 	}
 
 	public int getAttemptID() {
@@ -41,10 +41,10 @@ public class TaskAttemptID {
 
 	public String toString() {
 		if (mapper)
-			return jobID.toString() + "_" + "maptask_" + taskNum + "attempt_"
+			return jobID.toString() + "_" + "maptask_" + taskId + "attempt_"
 					+ attemptID;
 		else
-			return jobID.toString() + "_" + "reducetask_" + taskNum
+			return jobID.toString() + "_" + "reducetask_" + taskId
 					+ "attempt_" + attemptID;
 	}
 
