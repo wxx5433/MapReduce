@@ -178,7 +178,7 @@ public class JobInProgress {
 	 */
 	// TODO Auto-generated method stub
 	// need more arguments here!!!
-	private synchronized int getNewMapTask(final TaskTracker tt) {
+	public synchronized int getNewMapTask(final TaskTracker tt) {
 		if (numMapTasks == 0) {
 			System.out.println("No Map to schedule for " + jobId);
 			return -1;
@@ -213,7 +213,7 @@ public class JobInProgress {
 	 * @param tips
 	 * @return
 	 */
-	private synchronized TaskInProgress findTaskFromList (
+	public synchronized TaskInProgress findTaskFromList (
 			Collection<TaskInProgress> tips) {
 		Iterator<TaskInProgress> iter = tips.iterator();
 		if (iter.hasNext()) {
@@ -226,7 +226,7 @@ public class JobInProgress {
 	 * get a new Reduce task
 	 * @return
 	 */
-	public synchronized int getNewReduce(TaskTracker tt) {
+	public synchronized int getNewReduceTask(TaskTracker tt) {
 		if (numReduceTasks == 0) {
 			System.out.println("No Map to schedule for " + jobId);
 			return -1;
@@ -244,7 +244,7 @@ public class JobInProgress {
 		// then schedule non-running map tasks
 		// TODO Auto-generated method stub
 		// currently we do not consider locality
-		NodeID taskTrackerNodeId = tt.getNodeId();
+//		NodeID taskTrackerNodeId = tt.getNodeId();
 		tip = findTaskFromList(nonRunningReduces);
 		if (tip != null) {
 			scheduleReduce(tip);
@@ -255,6 +255,14 @@ public class JobInProgress {
 		return -1;
 	}
 
+	public TaskInProgress getMapTask(int taskId) {
+		return maps[taskId];
+	}
+	
+	public TaskInProgress getReduceTask(int taskId) {
+		return reduces[taskId];
+	}
+	
 	/**
 	 * add a tip to a taskTracker
 	 */

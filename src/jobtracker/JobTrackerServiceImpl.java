@@ -2,6 +2,7 @@ package jobtracker;
 
 import java.util.Queue;
 
+import task.TaskInProgress;
 import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
@@ -26,8 +27,6 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	 */
 	@Override
 	public JobStatus submitJob(JobID jobID, JobConf jobConf) {
-//		jobConf.se
-		return null;
 	}
 
 	@Override
@@ -57,6 +56,18 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public void registerTaskTracker(TaskTracker taskTracker) {
 		jobTracker.addTaskTracker(taskTracker);
+	}
+
+	@Override
+	public TaskInProgress getNewMapTask(TaskTracker tt) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TaskInProgress getNewReduceTask(TaskTracker tt) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

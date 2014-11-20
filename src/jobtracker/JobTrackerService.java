@@ -2,6 +2,7 @@ package jobtracker;
 
 import java.rmi.Remote;
 
+import task.TaskInProgress;
 import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
@@ -23,4 +24,7 @@ public interface JobTrackerService extends Remote {
 	
 	public float getReduceTasksProgress(JobID jobID);
 	
+	public TaskInProgress getNewMapTask(TaskTracker tt);
+	
+	public TaskInProgress getNewReduceTask(TaskTracker tt);
 }

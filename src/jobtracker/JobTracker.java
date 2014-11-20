@@ -19,6 +19,7 @@ import node.NodeID;
 import task.MapTask;
 import task.ReduceTask;
 import task.Task;
+import task.TaskInProgress;
 import tasktracker.TaskTracker;
 import job.Job;
 import job.JobID;
@@ -44,6 +45,10 @@ public class JobTracker {
 //	// failed tasks
 //	private Map<JobID, List<MapTask>> failedMapTasks;
 //	private Map<JobID, List<ReduceTask>> failedReduceTasks;
+	
+	// job queue
+	private Queue<JobInProgress> jobQueue;
+	private Queue<JobInProgress> completeJobQueue;
 
 	// file system service to get input splits
 	private NameNodeService nameNodeService;
@@ -69,6 +74,8 @@ public class JobTracker {
 		taskTrackers = new ConcurrentHashMap<TaskTracker, Long>();
 		jobIDCounter = 0;
 		taskIDCounter = 0;
+		jobQueue = new ConcurrentLinkedQueue<JobInProgress>();
+		completeJobQueue = new ConcurrentLinkedQueue<JobInProgress>();
 //		taskPriorityQueue = new TaskPriorityQueue(taskPriorityQueueInitCapacity);
 		initialize();
 	}
@@ -106,6 +113,48 @@ public class JobTracker {
 		}
 	}
 	
+	public void addTaskTracker(TaskTracker taskTracker) {
+		taskTrackers.put(taskTracker, System.currentTimeMillis());
+	}
+	
+	/**
+	 * Remove it if have not received heart beat for a long time
+	 * @param taskTracker
+	 */
+	public void removeTaskTracker(TaskTracker taskTracker) {
+		
+	}
+	
+	/**
+	 * schedule a map task to taskTracker
+	 */
+	// can only change to one call to JobInProgress
+	public TaskInProgress getNewMapTask(TaskTracker tt) {
+		// allocate next job's map tasks until 
+		// there is no map task in the current job
+		for (JobInProgress jip: jobQueue) {
+			int taskId = jip.getNewMapTask(tt);
+			if (taskId != -1) {
+				return jip.getMapTask(taskId);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * schedule a reduce task to taskTracker
+	 * @return
+	 */
+	public TaskInProgress getNewReduceTask(TaskTracker tt) {
+		for (JobInProgress jip: jobQueue) {
+			int taskId = jip.getNewReduceTask(tt);
+			if (taskId != -1) {
+				return jip.getReduceTask(taskId);
+			}
+		}
+		return null;
+	}
+	
 	public synchronized Task nextJobTask() {
 		return taskPriorityQueue.poll();
 	}
@@ -116,6 +165,11 @@ public class JobTracker {
 
 	public synchronized int getNewTaskID() {
 		return ++taskIDCounter;
+	}
+	
+	// move job into compelete queue
+	public void jobComplete() {
+		
 	}
 	
 //	public int getFinishedMapTasksNum(JobID jobID) {
@@ -172,21 +226,6 @@ public class JobTracker {
 //		return new ArrayList<ReduceTask>(failedReduceTasks.get(jobID));
 //	}
 	
-	public void addTaskTracker(TaskTracker taskTracker) {
-		taskTrackers.put(taskTracker, System.currentTimeMillis());
-	}
-	
-	/**
-	 * Remove it if have not received heart beat for a long time
-	 * @param taskTracker
-	 */
-	public void removeTaskTracker(TaskTracker taskTracker) {
-		
-	}
-	
-	/**
-	 * schedule a task to taskTracker
-	 */
 	
 	
 }
