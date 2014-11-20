@@ -35,14 +35,6 @@ public class JobConf {
 		return jobName;
 	}
 
-	public int getReduceNum() {
-		return reduceNum;
-	}
-
-	public void setReduceNum(int reduceNum) {
-		this.reduceNum = reduceNum;
-	}
-
 	public String getInputPath() {
 		return inputPath;
 	}
