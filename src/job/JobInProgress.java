@@ -4,6 +4,8 @@ import configuration.Configuration;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import nameNode.NameNodeService;
 import node.Node;
 import node.NodeID;
 import task.TaskInProgress;
+import tasktracker.TaskTracker;
 
 public class JobInProgress {
 	/**
@@ -57,7 +60,7 @@ public class JobInProgress {
 	//	Map<Node, List<TaskInProgress>> nonRunningMapCache;
 
 	// Map of NetworkTopology Node to set of running TIPs
-	Map<Node, Set<TaskInProgress>> runningMapCache;
+	Map<NodeID, Set<TaskInProgress>> runningMapCache;
 
 	// A set of non-local running maps
 	Set<TaskInProgress> nonRunningMaps;
@@ -67,6 +70,9 @@ public class JobInProgress {
 
 	// A list of non-running reduce TIPs
 	Set<TaskInProgress> nonRunningReduces;
+	
+	// All failed reduce tasks
+	Set<TaskInProgress> failedReduces;
 
 	// A set of running reduce TIPs
 	Set<TaskInProgress> runningReduces;
@@ -155,7 +161,7 @@ public class JobInProgress {
 			// reduces[i] = new TaskInProgress(jobId, jobFile, numMapTasks, i,
 			// jobtracker, conf, this, numSlotsPerReduce);
 			// TODO Auto-generated method stub
-			// need to pass in arguments here!!!!!!!!
+			// need to pass in arguments here!!!!!!!! (e.g. i)
 			reduces[i] = new TaskInProgress();
 			nonRunningReduces.add(reduces[i]);
 		}
@@ -168,46 +174,136 @@ public class JobInProgress {
 
 	/**
 	 * get a new Map task
+	 * @return the index in tasks , -1 for no task
 	 */
-	public TaskInProgress getNewMap() {
-
+	// TODO Auto-generated method stub
+	// need more arguments here!!!
+	private synchronized int getNewMapTask(final TaskTracker tt) {
+		if (numMapTasks == 0) {
+			System.out.println("No Map to schedule for " + jobId);
+			return -1;
+		}
+		TaskInProgress tip = null;
+		// first schedule a fail map
+		tip = findTaskFromList(failedMaps);
+		if (tip != null) {
+			scheduleMap(tt.getNodeId(), tip);
+			System.out.println("Choosing a failed map task ");
+			// remove the map task from failedMaps
+			failedMaps.remove(tip);
+			return tip.getTIPId();
+		}
+		
+		// then schedule non-running map tasks
+		// TODO Auto-generated method stub
+		// currently we do not consider locality
+		NodeID taskTrackerNodeId = tt.getNodeId();
+		tip = findTaskFromList(nonRunningMaps);
+		if (tip != null) {
+			scheduleMap(tt.getNodeId(), tip);
+			System.out.println("Choosing a nonrunning map task");
+			nonRunningMaps.remove(tip);
+			return tip.getTIPId();
+		}
+		return -1;
+	}
+	
+	/**
+	 * return a task from the list
+	 * @param tips
+	 * @return
+	 */
+	private synchronized TaskInProgress findTaskFromList (
+			Collection<TaskInProgress> tips) {
+		Iterator<TaskInProgress> iter = tips.iterator();
+		if (iter.hasNext()) {
+			return iter.next();
+		}
+		return null;
 	}
 
 	/**
 	 * get a new Reduce task
 	 * @return
 	 */
-	public TaskInProgress getNewReduce() {
-
+	public synchronized int getNewReduce(TaskTracker tt) {
+		if (numReduceTasks == 0) {
+			System.out.println("No Map to schedule for " + jobId);
+			return -1;
+		}
+		TaskInProgress tip = null;
+		// first schedule a fail reduce
+		tip = findTaskFromList(failedReduces);
+		if (tip != null) {
+			scheduleReduce(tip);
+			System.out.println("Choosing a failed reduce task ");
+			failedReduces.remove(tip);
+			return tip.getTIPId();
+		}
+		
+		// then schedule non-running map tasks
+		// TODO Auto-generated method stub
+		// currently we do not consider locality
+		NodeID taskTrackerNodeId = tt.getNodeId();
+		tip = findTaskFromList(nonRunningReduces);
+		if (tip != null) {
+			scheduleReduce(tip);
+			System.out.println("Choosing a nonrunning reduce task");
+			nonRunningReduces.remove(tip);
+			return tip.getTIPId();
+		}
+		return -1;
 	}
 
 	/**
-	 * Schedule a map task
+	 * add a tip to a taskTracker
 	 */
-	public void scheduleMap() {
-
+	public synchronized void scheduleMap(NodeID taskTrackerNodeId, TaskInProgress tip) {
+		List<String> splitLocations = tip.getSplitLocations();
+		// There may be some problems, if the task is a previously failed one
+		// we add them back to nonRunningMaps
+		if (splitLocations == null || splitLocations.size() == 0) {
+			// add back to nonRunning map
+			nonRunningMaps.add(tip);
+			return;
+		}
+		
+		Set<TaskInProgress> tasks = null;
+		if (!runningMapCache.containsKey(taskTrackerNodeId)) {
+			tasks = new LinkedHashSet<TaskInProgress>();
+		} else {
+			tasks = runningMapCache.get(taskTrackerNodeId);
+		}
+		tasks.add(tip);
+		runningMapCache.put(taskTrackerNodeId, tasks);
 	}
 
 	/**
 	 * Schedule a reduce tasks
 	 */
-	public void scheduleReduce() {
-
+	public void scheduleReduce(TaskInProgress tip) {
+		runningReduces.add(tip);
 	}
 
 	/**
-	 * add to fail Map map
+	 * remove from running set and add to fail set
 	 * @param mapTask
 	 */
-	public synchronized void failMap(TaskInProgress mapTask) {
-
+	public synchronized void failMap(TaskTracker tt, TaskInProgress tip) {
+		NodeID taskTrackerNodeID = tt.getNodeId();
+		if (runningMapCache.containsKey(taskTrackerNodeID)) {
+			runningMapCache.get(taskTrackerNodeID).remove(tip);
+		}
+		failedMaps.add(tip);
 	}
 
 	/**
-	 * add to fail Reduce map
+	 * remove from running set and add to fail set
 	 */
-	public synchronized void failReduce() {
-
+	public synchronized void failReduce(TaskTracker tt, TaskInProgress tip) {
+		NodeID taskTrackerNodeID = tt.getNodeId();
+		runningReduces.remove(tip);
+		failedReduces.add(tip);
 	}
 
 	public void setJobCompelete() {
