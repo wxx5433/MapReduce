@@ -30,24 +30,20 @@ public class JobTracker {
 	private int jobIDCounter;
 	private int taskIDCounter;
 	
-	// job queues to run
-	private Queue<Job> jobs;
-	// The job chosen to run
-	private Queue<JobInProgress> jobInProgress;
-	// where each map task is allocated to 
-	private Map<MapTask, NodeID> mapTasks;
-	private Map<ReduceTask, NodeID> reduceTasks;
-	
-	private Map<JobID, Integer> mapTasksNum;
-	private Map<JobID, Integer> reduceTasksNum;
+//	// where each map task is allocated to 
+//	private Map<MapTask, NodeID> mapTasks;
+//	private Map<ReduceTask, NodeID> reduceTasks;
+//	
+//	private Map<JobID, Integer> mapTasksNum;
+//	private Map<JobID, Integer> reduceTasksNum;
 
-	// finish tasks
-	private Map<JobID, Integer> finishedMapTasksNum;
-	private Map<JobID, Integer> finishedReduceTasksNum;
-	
-	// failed tasks
-	private Map<JobID, List<MapTask>> failedMapTasks;
-	private Map<JobID, List<ReduceTask>> failedReduceTasks;
+//	// finish tasks
+//	private Map<JobID, Integer> finishedMapTasksNum;
+//	private Map<JobID, Integer> finishedReduceTasksNum;
+//	
+//	// failed tasks
+//	private Map<JobID, List<MapTask>> failedMapTasks;
+//	private Map<JobID, List<ReduceTask>> failedReduceTasks;
 
 	// file system service to get input splits
 	private NameNodeService nameNodeService;
@@ -62,20 +58,18 @@ public class JobTracker {
 	private final int taskPriorityQueueInitCapacity = 20;
 
 	public JobTracker() {
-		jobs = new PriorityQueue<Job>();
-		jobInProgress = new ConcurrentLinkedQueue<JobInProgress>();
-		mapTasksNum = new ConcurrentHashMap<JobID, Integer>();
-		reduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
-		mapTasks = new ConcurrentHashMap<MapTask, NodeID>();
-		reduceTasks = new ConcurrentHashMap<ReduceTask, NodeID>();
-		finishedMapTasksNum = new ConcurrentHashMap<JobID, Integer>();
-		finishedReduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
-		failedMapTasks = new ConcurrentHashMap<JobID, List<MapTask>>();
-		failedReduceTasks = new ConcurrentHashMap<JobID, List<ReduceTask>>();
+//		mapTasksNum = new ConcurrentHashMap<JobID, Integer>();
+//		reduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
+//		mapTasks = new ConcurrentHashMap<MapTask, NodeID>();
+//		reduceTasks = new ConcurrentHashMap<ReduceTask, NodeID>();
+//		finishedMapTasksNum = new ConcurrentHashMap<JobID, Integer>();
+//		finishedReduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
+//		failedMapTasks = new ConcurrentHashMap<JobID, List<MapTask>>();
+//		failedReduceTasks = new ConcurrentHashMap<JobID, List<ReduceTask>>();
 		taskTrackers = new ConcurrentHashMap<TaskTracker, Long>();
 		jobIDCounter = 0;
 		taskIDCounter = 0;
-		taskPriorityQueue = new TaskPriorityQueue(taskPriorityQueueInitCapacity);
+//		taskPriorityQueue = new TaskPriorityQueue(taskPriorityQueueInitCapacity);
 		initialize();
 	}
 
@@ -91,14 +85,14 @@ public class JobTracker {
 		nameNodeService = Service.getNameNodeService(masterNodeID);
 
 		// launch jobTracker service
-		launchJobTrackerService(masterNodeID);
+		offerService(masterNodeID);
 	}
 
 	/**
 	 * launch JobTrackerService
 	 * @param masterNodeID
 	 */
-	private void launchJobTrackerService(NodeID masterNodeID) {
+	private void offerService(NodeID masterNodeID) {
 		jobTrackerService = new JobTrackerServiceImpl(this);
 		String name = "rmi://" + masterNodeID.toString() + "/JobTrackerService";
 		NameNodeService stub;
@@ -124,54 +118,75 @@ public class JobTracker {
 		return ++taskIDCounter;
 	}
 	
-	public int getFinishedMapTasksNum(JobID jobID) {
-		return finishedMapTasksNum.get(jobID);
-	}
-	
-	public int getFinishedReduceTasksNum(JobID jobID) {
-		return finishedReduceTasksNum.get(jobID);
-	}
-	
-	public int getMapTasksNum(JobID jobID) {
-		return mapTasksNum.get(jobID);
-	}
-	
-	public int getReduceTasksNum(JobID jobID) {
-		return reduceTasksNum.get(jobID);
-	}
-	
-	public synchronized void addFailedMapTask(JobID jobID, MapTask mapTask) {
-		List<MapTask> mapTasks = null;
-		if (!failedMapTasks.containsKey(jobID)) {
-			mapTasks = new ArrayList<MapTask>();
-		} else {
-			failedMapTasks.get(jobID);
-		}
-		mapTasks.add(mapTask);
-		failedMapTasks.put(jobID, mapTasks);
-	}
-	
-	public synchronized void addFailedReduceTask(JobID jobID, ReduceTask reduceTask) {
-		List<ReduceTask> reduceTasks = null;
-		if (!failedReduceTasks.containsKey(jobID)) {
-			reduceTasks = new ArrayList<ReduceTask>();
-		} else {
-			failedMapTasks.get(jobID);
-		}
-		reduceTasks.add(reduceTask);
-		failedReduceTasks.put(jobID, reduceTasks);
-	}
-
-	public Iterable<MapTask> getFailedMapTasks(JobID jobID) {
-		return new ArrayList<MapTask>(failedMapTasks.get(jobID));
-	}
-
-	public Iterable<ReduceTask> getFailedReduceTasks(JobID jobID) {
-		return new ArrayList<ReduceTask>(failedReduceTasks.get(jobID));
-	}
+//	public int getFinishedMapTasksNum(JobID jobID) {
+//		return finishedMapTasksNum.get(jobID);
+//	}
+//	
+//	public int getFinishedReduceTasksNum(JobID jobID) {
+//		return finishedReduceTasksNum.get(jobID);
+//	}
+//	
+//	public int getMapTasksNum(JobID jobID) {
+//		return mapTasksNum.get(jobID);
+//	}
+//	
+//	public void setMapTaskNum(JobID jobID, int mapNum) {
+//		mapTasksNum.put(jobID, mapNum);
+//	}
+//	
+//	public int getReduceTasksNum(JobID jobID) {
+//		return reduceTasksNum.get(jobID);
+//	}
+//	
+//	public void setReduceTaskNum(JobID jobID, int reduceNum) {
+//		reduceTasksNum.put(jobID, reduceNum);
+//	}
+//	
+//	public synchronized void addFailedMapTask(JobID jobID, MapTask mapTask) {
+//		List<MapTask> mapTasks = null;
+//		if (!failedMapTasks.containsKey(jobID)) {
+//			mapTasks = new ArrayList<MapTask>();
+//		} else {
+//			failedMapTasks.get(jobID);
+//		}
+//		mapTasks.add(mapTask);
+//		failedMapTasks.put(jobID, mapTasks);
+//	}
+//	
+//	public synchronized void addFailedReduceTask(JobID jobID, ReduceTask reduceTask) {
+//		List<ReduceTask> reduceTasks = null;
+//		if (!failedReduceTasks.containsKey(jobID)) {
+//			reduceTasks = new ArrayList<ReduceTask>();
+//		} else {
+//			failedMapTasks.get(jobID);
+//		}
+//		reduceTasks.add(reduceTask);
+//		failedReduceTasks.put(jobID, reduceTasks);
+//	}
+//
+//	public Iterable<MapTask> getFailedMapTasks(JobID jobID) {
+//		return new ArrayList<MapTask>(failedMapTasks.get(jobID));
+//	}
+//
+//	public Iterable<ReduceTask> getFailedReduceTasks(JobID jobID) {
+//		return new ArrayList<ReduceTask>(failedReduceTasks.get(jobID));
+//	}
 	
 	public void addTaskTracker(TaskTracker taskTracker) {
 		taskTrackers.put(taskTracker, System.currentTimeMillis());
 	}
+	
+	/**
+	 * Remove it if have not received heart beat for a long time
+	 * @param taskTracker
+	 */
+	public void removeTaskTracker(TaskTracker taskTracker) {
+		
+	}
+	
+	/**
+	 * schedule a task to taskTracker
+	 */
+	
 	
 }
