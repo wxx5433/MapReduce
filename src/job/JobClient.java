@@ -1,5 +1,6 @@
 package job;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -74,8 +75,13 @@ public class JobClient {
 			return new CheckMessage(false, "No input path");
 		}
 		
-		if (!nameNodeService.containsFile(jobConf.getInputPath())) {
-			return new CheckMessage(false, "Input files do not exist in DFS");
+		try {
+			if (!nameNodeService.containsFile(jobConf.getInputPath())) {
+				return new CheckMessage(false, "Input files do not exist in DFS");
+			}
+		} catch (RemoteException e) {
+			System.out.println("Failt to contact nameNode service when checking input path");
+			e.printStackTrace();
 		}
 		
 		if (jobConf.getOutputPath() == null) {
