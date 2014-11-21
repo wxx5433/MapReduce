@@ -106,6 +106,7 @@ public class TaskTracker implements TaskTrackerInterface {
 				ArrayList<ReduceTask> newReducers = heatBeatResponse
 						.getNewReducers();
 				for (ReduceTask reduceTask : newReducers) {
+					reduceTask.setLocalPath(this.nodeId.getLocalPath());
 					addNewReduceTask(reduceTask);
 				}
 			}
