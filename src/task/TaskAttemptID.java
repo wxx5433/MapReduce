@@ -1,20 +1,24 @@
 package task;
 
+import java.io.Serializable;
+
 import node.NodeID;
 import job.JobID;
 
-public class TaskAttemptID {
+public class TaskAttemptID implements Serializable {
+
+	private static final long serialVersionUID = -7756057483718734372L;
 
 	private int taskId;
-	private int attemptID;
+	private int attemptNum;
 	private JobID jobID;
 	private boolean mapper;
 	private NodeID nodeID;
 
-	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptID) {
+	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptNum) {
 		this.jobID = jobID;
 		this.taskId = mapTaskNum;
-		this.attemptID = attemptID;
+		this.attemptNum = attemptNum;
 	}
 
 	public int getTaskID() {
@@ -26,11 +30,11 @@ public class TaskAttemptID {
 	}
 
 	public int getAttemptID() {
-		return attemptID;
+		return attemptNum;
 	}
 
 	public void setAttemptID(int attemptID) {
-		this.attemptID = attemptID;
+		this.attemptNum = attemptID;
 	}
 
 	public NodeID getNodeID() {
@@ -52,10 +56,10 @@ public class TaskAttemptID {
 	public String toString() {
 		if (mapper)
 			return jobID.toString() + "_" + "maptask_" + taskId + "attempt_"
-					+ attemptID;
+					+ attemptNum;
 		else
 			return jobID.toString() + "_" + "reducetask_" + taskId
-					+ "attempt_" + attemptID;
+					+ "attempt_" + attemptNum;
 	}
 
 }
