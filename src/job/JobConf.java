@@ -20,10 +20,14 @@ public class JobConf implements Serializable {
 
 	private static final Map<String, String> classMap = new HashMap<String, String>();
 
-	public void setJobId (JobID jobId) {
+	public void setJobId(JobID jobId) {
 		this.jobId = jobId;
 	}
-	
+
+	public JobID getJobID() {
+		return this.jobId;
+	}
+
 	public void setJobName(String name) {
 		this.jobName = name;
 	}

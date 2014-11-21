@@ -188,7 +188,7 @@ public class MapTask implements Task {
 
 	@Override
 	public JobID getJobID() {
-		return null;
+		return jobConf.getJobID();
 	}
 
 }

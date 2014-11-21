@@ -43,9 +43,9 @@ public class Configuration {
 			String key = keyValue[0].trim();
 			String value = keyValue[1].trim();
 
-			if (key.equals("taskTrackerIP")) {
+			if (key.equals("jobTrackerIP")) {
 				jobTrackerIP = value;
-			} else if (key.equals("taskTrackerPort")) {
+			} else if (key.equals("jobTrackerPort")) {
 				jobTrackerPort = Integer.parseInt(value);
 			} else if (key.equals("nameNodeIP")) {
 				nameNodeIP = value;

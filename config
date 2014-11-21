@@ -1,7 +1,7 @@
-nameNodeIP=127.0.0.1
-nameNodePort=5433
 jobTrackerIP=127.0.0.1
 jobTrackerPort=5434
+nameNodeIP=127.0.0.1
+nameNodePort=5433
 dataNodePort=5435
 mapSlots=4
 reduceSlots=2
