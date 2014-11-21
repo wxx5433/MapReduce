@@ -1,5 +1,6 @@
 package task;
 
+import node.NodeID;
 import job.JobID;
 
 public class TaskAttemptID {
@@ -8,6 +9,7 @@ public class TaskAttemptID {
 	private int attemptID;
 	private JobID jobID;
 	private boolean mapper;
+	private NodeID nodeID;
 
 	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptID) {
 		this.jobID = jobID;
@@ -29,6 +31,14 @@ public class TaskAttemptID {
 
 	public void setAttemptID(int attemptID) {
 		this.attemptID = attemptID;
+	}
+
+	public NodeID getNodeID() {
+		return nodeID;
+	}
+
+	public void setNodeID(NodeID nodeID) {
+		this.nodeID = nodeID;
 	}
 
 	public JobID getJobID() {

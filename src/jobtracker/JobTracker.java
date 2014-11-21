@@ -1,5 +1,6 @@
 package jobtracker;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,6 +23,7 @@ import task.Task;
 import task.TaskInProgress;
 import tasktracker.TaskTracker;
 import job.Job;
+import job.JobConf;
 import job.JobID;
 import job.JobInProgress;
 
@@ -45,6 +47,8 @@ public class JobTracker {
 //	// failed tasks
 //	private Map<JobID, List<MapTask>> failedMapTasks;
 //	private Map<JobID, List<ReduceTask>> failedReduceTasks;
+	
+	private Map<JobID, JobInProgress> jobMap;
 	
 	// job queue
 	private Queue<JobInProgress> jobQueue;
@@ -76,6 +80,7 @@ public class JobTracker {
 		taskIDCounter = 0;
 		jobQueue = new ConcurrentLinkedQueue<JobInProgress>();
 		completeJobQueue = new ConcurrentLinkedQueue<JobInProgress>();
+		jobMap = new ConcurrentHashMap<JobID, JobInProgress>();
 //		taskPriorityQueue = new TaskPriorityQueue(taskPriorityQueueInitCapacity);
 		initialize();
 	}
@@ -168,33 +173,44 @@ public class JobTracker {
 	}
 	
 	// move job into compelete queue
-	public void jobComplete() {
-		
+	public synchronized void jobComplete(JobInProgress jip) {
+		jobQueue.remove(jip);
+		completeJobQueue.add(jip);
 	}
 	
-//	public int getFinishedMapTasksNum(JobID jobID) {
-//		return finishedMapTasksNum.get(jobID);
-//	}
-//	
-//	public int getFinishedReduceTasksNum(JobID jobID) {
-//		return finishedReduceTasksNum.get(jobID);
-//	}
-//	
-//	public int getMapTasksNum(JobID jobID) {
-//		return mapTasksNum.get(jobID);
-//	}
-//	
-//	public void setMapTaskNum(JobID jobID, int mapNum) {
-//		mapTasksNum.put(jobID, mapNum);
-//	}
-//	
-//	public int getReduceTasksNum(JobID jobID) {
-//		return reduceTasksNum.get(jobID);
-//	}
-//	
-//	public void setReduceTaskNum(JobID jobID, int reduceNum) {
-//		reduceTasksNum.put(jobID, reduceNum);
-//	}
+	public synchronized boolean addJob(JobID jobID, JobConf conf) {
+		JobInProgress jip = null;
+		try {
+			jip = new JobInProgress(jobID, conf, this);
+		} catch (IOException e) {
+			return false;
+		}
+		// add to job queue
+		jobQueue.add(jip);
+		jobMap.put(jobID, jip);
+		return true;
+	}
+	
+	public int getFinishedMapTasksNum(JobID jobID) {
+		JobInProgress jip = jobMap.get(jobID);
+		return jip.getNumFinishedMapTasks();
+	}
+	
+	public int getFinishedReduceTasksNum(JobID jobID) {
+		JobInProgress jip = jobMap.get(jobID);
+		return jip.getNumReduceTasks();
+	}
+	
+	public int getMapTasksNum(JobID jobID) {
+		JobInProgress jip = jobMap.get(jobID);
+		return jip.getNumMapTasks();
+	}
+	
+	public int getReduceTasksNum(JobID jobID) {
+		JobInProgress jip = jobMap.get(jobID);
+		return jip.getNumReduceTasks();
+	}
+	
 //	
 //	public synchronized void addFailedMapTask(JobID jobID, MapTask mapTask) {
 //		List<MapTask> mapTasks = null;

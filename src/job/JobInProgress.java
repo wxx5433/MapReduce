@@ -19,6 +19,7 @@ import jobtracker.JobTracker;
 import nameNode.NameNodeService;
 import node.Node;
 import node.NodeID;
+import task.TaskAttemptID;
 import task.TaskInProgress;
 import tasktracker.TaskTracker;
 
@@ -94,7 +95,7 @@ public class JobInProgress {
 	/**
 	 * Create an almost empty JobInProgress, which can be used only for tests
 	 */
-	protected JobInProgress(JobID jobid, JobConf conf,
+	public JobInProgress(JobID jobid, JobConf conf,
 			JobTracker tracker) throws IOException {
 		this.tasksInit= false;
 		this.jobComplete = false;
@@ -133,7 +134,7 @@ public class JobInProgress {
 		for (int i = 0; i < numMapTasks; ++i) {
 			// TODO Auto-generated method stub
 			// need to pass arguments here!!!!!!!!!!!!!!
-			maps[i] = new TaskInProgress();
+			maps[i] = new TaskInProgress(this.jobId, i, splits[i], true);
 			nonRunningMaps.add(maps[i]);
 		}
 		System.out.println("Successfully initialized all map tasks for job: " + jobId);
@@ -162,7 +163,7 @@ public class JobInProgress {
 			// jobtracker, conf, this, numSlotsPerReduce);
 			// TODO Auto-generated method stub
 			// need to pass in arguments here!!!!!!!! (e.g. i)
-			reduces[i] = new TaskInProgress();
+			reduces[i] = new TaskInProgress(this.jobId, this.numMapTasks + i, false);
 			nonRunningReduces.add(reduces[i]);
 		}
 		System.out.println("Successfully initialized all reduce tasks for job: " + jobId);
@@ -284,13 +285,15 @@ public class JobInProgress {
 		}
 		tasks.add(tip);
 		runningMapCache.put(taskTrackerNodeId, tasks);
+		++runningMapTasks;
 	}
 
 	/**
 	 * Schedule a reduce tasks
 	 */
-	public void scheduleReduce(TaskInProgress tip) {
+	public synchronized void scheduleReduce(TaskInProgress tip) {
 		runningReduces.add(tip);
+		++runningReduceTasks;
 	}
 
 	/**
@@ -303,6 +306,7 @@ public class JobInProgress {
 			runningMapCache.get(taskTrackerNodeID).remove(tip);
 		}
 		failedMaps.add(tip);
+		++this.failedMapTasks;
 	}
 
 	/**
@@ -312,6 +316,7 @@ public class JobInProgress {
 		NodeID taskTrackerNodeID = tt.getNodeId();
 		runningReduces.remove(tip);
 		failedReduces.add(tip);
+		++this.failedReduceTasks;
 	}
 
 	public void setJobCompelete() {
@@ -340,6 +345,54 @@ public class JobInProgress {
 	private NameNodeService getNameNodeService() {
 		NodeID nameNodeId = new NodeID(Configuration.masterIP, Configuration.masterPort);
 		return Service.getNameNodeService(nameNodeId);
+	}
+	
+	public synchronized void finishMapTask(TaskAttemptID id) {
+		++this.finishedMapTasks;
+		// get all the tasks on the node where the finish map task is running on
+		Set<TaskInProgress> tasks = runningMapCache.get(id.getNodeID());
+		// remove it
+		tasks.remove(maps[id.getTaskID()]);
+	}
+	
+	public synchronized void finishReduceTask(TaskAttemptID id) {
+		++this.finishedReduceTasks;
+		runningReduces.remove(reduces[id.getTaskID() - this.numMapTasks]);
+	}
+	
+	public int getNumMapTasks() {
+		return this.numMapTasks;
+	}
+	
+	public int getNumReduceTasks() {
+		return this.numReduceTasks;
+	}
+	
+	public int getNumFinishedMapTasks() {
+		return this.finishedMapTasks;
+	}
+	
+	public int getNumFinishedReduceTasks() {
+		return this.finishedReduceTasks;
+	}
+	
+	@Override
+	public int hashCode() {
+		return jobId.toString().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj instanceof JobInProgress) {
+			JobInProgress that = (JobInProgress)obj;
+			if (this.jobId == that.jobId) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

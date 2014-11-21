@@ -27,6 +27,9 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	 */
 	@Override
 	public JobStatus submitJob(JobID jobID, JobConf jobConf) {
+		JobStatus jobStatus = new JobStatus(jobID, jobConf);
+		jobTracker.addJob(jobID, jobConf);
+		return jobStatus;
 	}
 
 	@Override

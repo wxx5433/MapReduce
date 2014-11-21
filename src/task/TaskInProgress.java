@@ -2,18 +2,26 @@ package task;
 
 import java.util.List;
 
+import job.JobID;
 import fileSplit.FileSplit;
 
 public class TaskInProgress {
-	private int jobId;
+	private JobID jobId;
 	private int taskId;
 	private FileSplit fileSplit;
+	private boolean isMapper;
 	
-	public TaskInProgress(int jobId, int taskId, FileSplit split) {
+	public TaskInProgress(JobID jobId, int taskId, boolean isMapper) {
 		this.jobId = jobId;
 		this.taskId = taskId;
+		this.isMapper = isMapper;
+	}
+	
+	public TaskInProgress(JobID jobId, int taskId, FileSplit split, boolean isMapper) {
+		this(jobId, taskId, isMapper);
 		this.fileSplit = split;
 	}
+	
 	
 	/**
 	 * Id within the job. 
@@ -25,7 +33,7 @@ public class TaskInProgress {
 		return this.taskId;
 	}
 	
-	public int getJobId() {
+	public JobID getJobId() {
 		return this.jobId;
 	}
 	
@@ -35,6 +43,10 @@ public class TaskInProgress {
 	 */
 	public List<String> getSplitLocations() {
 		return fileSplit.getHosts();
+	}
+	
+	public boolean isMapper() {
+		return this.isMapper;
 	}
 	
 	@Override

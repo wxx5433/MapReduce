@@ -3,8 +3,14 @@ package job;
 public class JobStatus {
 
 	private JobID jobID;
+	private JobConf conf;
 	private float mapProgress;
 	private float reduceProgress;
+	
+	public JobStatus(JobID jobID, JobConf conf) {
+		this.jobID = jobID;
+		this.conf = conf;
+	}
 
 	/**
 	 * Current state of the job 
