@@ -33,10 +33,11 @@ public class ReduceTask implements Task {
 	private TaskAttemptID taskAttemptID;
 	private String outputPath;
 	private Configuration conf;
+	private String localPath;
 
-	public ReduceTask(ArrayList<MapOutput> inputData, JobConf jobConf,
+	public ReduceTask(ArrayList<MapOutput> list, JobConf jobConf,
 			TaskAttemptID taskAttemptID) {
-		this.inputData = inputData;
+		this.inputData = list;
 		this.taskAttemptID = taskAttemptID;
 		this.jobConf = jobConf;
 		this.conf = new Configuration();
@@ -64,6 +65,10 @@ public class ReduceTask implements Task {
 			}
 		}
 		return outputPath;
+	}
+
+	public void setLocalPath(String localPath) {
+		this.localPath = localPath;
 	}
 
 	@Override
@@ -241,7 +246,7 @@ public class ReduceTask implements Task {
 
 	@Override
 	public JobID getJobID() {
-		return null;
+		return jobConf.getJobID();
 	}
 
 	@Override

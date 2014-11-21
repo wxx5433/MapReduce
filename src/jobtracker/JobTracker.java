@@ -181,6 +181,7 @@ public class JobTracker {
 				//
 				ReduceTask reduceTask = new ReduceTask(tip.getMapOutputList(), 
 						jip.getJobConf(), tip.getTaskAttemptID());
+				return reduceTask;
 			}
 		}
 		return null;
