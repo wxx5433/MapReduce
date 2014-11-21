@@ -14,7 +14,8 @@ public class NameNode {
 	private NameNodeService nameNodeService; 
 	private Configuration configuration;
 	
-	public NameNode(Configuration configuration) {
+	public NameNode() {
+		configuration = new Configuration();
 		nameNodeID = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
 	}
 	
@@ -45,8 +46,7 @@ public class NameNode {
 	}
 	
 	public static void main(String[] args) {
-		Configuration configuration = new Configuration();
-		NameNode nameNode = new NameNode(configuration);
+		NameNode nameNode = new NameNode();
 		nameNode.bindService();
 	}
 }
