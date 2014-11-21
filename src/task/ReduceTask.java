@@ -241,7 +241,7 @@ public class ReduceTask implements Task {
 
 	@Override
 	public JobID getJobID() {
-		return null;
+		return jobConf.getJobID();
 	}
 
 	@Override

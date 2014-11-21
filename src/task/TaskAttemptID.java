@@ -2,8 +2,8 @@ package task;
 
 import java.io.Serializable;
 
-import node.NodeID;
 import job.JobID;
+import node.NodeID;
 
 public class TaskAttemptID implements Serializable {
 
@@ -58,8 +58,19 @@ public class TaskAttemptID implements Serializable {
 			return jobID.toString() + "_" + "maptask_" + taskId + "attempt_"
 					+ attemptNum;
 		else
-			return jobID.toString() + "_" + "reducetask_" + taskId
-					+ "attempt_" + attemptNum;
+			return jobID.toString() + "_" + "reducetask_" + taskId + "attempt_"
+					+ attemptNum;
 	}
 
+	public boolean compareTo(TaskAttemptID compare) {
+		if ((this.jobID.hashCode() == compare.jobID.hashCode())
+				&& this.taskId == compare.taskId
+				&& this.attemptNum == compare.attemptNum
+				&& this.nodeID.equals(compare.nodeID)) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
 }
