@@ -63,8 +63,8 @@ public class JobTracker {
 	private Map<TaskTracker, Long> taskTrackers;
 	
 	// task priority queue. job FIFO, map priority > reduce priority
-	TaskPriorityQueue taskPriorityQueue;
-	private final int taskPriorityQueueInitCapacity = 20;
+//	TaskPriorityQueue taskPriorityQueue;
+//	private final int taskPriorityQueueInitCapacity = 20;
 
 	public JobTracker() {
 //		mapTasksNum = new ConcurrentHashMap<JobID, Integer>();
@@ -160,9 +160,9 @@ public class JobTracker {
 		return null;
 	}
 	
-	public synchronized Task nextJobTask() {
-		return taskPriorityQueue.poll();
-	}
+//	public synchronized Task nextJobTask() {
+//		return taskPriorityQueue.poll();
+//	}
 	
 	public synchronized int getNewJobID() {
 		return ++jobIDCounter;
@@ -176,6 +176,11 @@ public class JobTracker {
 	public synchronized void jobComplete(JobInProgress jip) {
 		jobQueue.remove(jip);
 		completeJobQueue.add(jip);
+	}
+	
+	public boolean isJobComplete(JobID jobId) {
+		JobInProgress jip = jobMap.get(jobId);
+		return jip.isComplete();
 	}
 	
 	public synchronized boolean addJob(JobID jobID, JobConf conf) {

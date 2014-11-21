@@ -40,7 +40,13 @@ public class JobClient {
 
 	public RunningJob submitJobInternal(JobConf jobConf) {
 		// get jobID from jobTracer
-		jobID = jobTrackerService.getJobID();
+		try {
+			jobID = jobTrackerService.getJobID();
+		} catch (RemoteException e1) {
+			System.out.println("Fail to get job id from job tracker");
+			e1.printStackTrace();
+			return null;
+		}
 		if (jobID == null) {
 			System.out.println("Launch job failed: cannot get new jobID");
 			return null;
@@ -53,7 +59,14 @@ public class JobClient {
 		}
 		
 		// submit the job to jobTracker and get back jobStatus
-		JobStatus jobStatus = jobTrackerService.submitJob(jobID, jobConf);
+		JobStatus jobStatus = null;
+		try {
+			jobStatus = jobTrackerService.submitJob(jobID, jobConf);
+		} catch (RemoteException e) {
+			System.out.println("Fail to submit job to jobTracker");
+			e.printStackTrace();
+			return null;
+		}
 		RunningJob info = new RunningJob(jobStatus);
 		return info;
 	}

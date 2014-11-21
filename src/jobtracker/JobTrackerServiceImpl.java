@@ -1,5 +1,6 @@
 package jobtracker;
 
+import java.rmi.RemoteException;
 import java.util.Queue;
 
 import task.TaskInProgress;
@@ -18,7 +19,7 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	}
 
 	@Override
-	public JobID getJobID() {
+	public JobID getJobID() throws RemoteException {
 		return new JobID(jobTracker.getNewJobID());
 	}
 
@@ -26,51 +27,56 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	 * Return JobStatus information to JobClient to get job status information
 	 */
 	@Override
-	public JobStatus submitJob(JobID jobID, JobConf jobConf) {
+	public JobStatus submitJob(JobID jobID, JobConf jobConf) throws RemoteException {
 		JobStatus jobStatus = new JobStatus(jobID, jobConf);
 		jobTracker.addJob(jobID, jobConf);
 		return jobStatus;
 	}
 
 	@Override
-	public boolean finishMapTasks(JobID jobID) {
+	public boolean finishMapTasks(JobID jobID) throws RemoteException {
 		return jobTracker.getFinishedMapTasksNum(jobID) 
 					== jobTracker.getMapTasksNum(jobID);
 	}
 
 	@Override
-	public HeartBeatResponse updateTaskTrackerStatus() {
+	public HeartBeatResponse updateTaskTrackerStatus() throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public float getMapTasksProgress(JobID jobID) {
+	public float getMapTasksProgress(JobID jobID) throws RemoteException {
 		return (float)jobTracker.getFinishedMapTasksNum(jobID) /
 					(float)jobTracker.getMapTasksNum(jobID);
 	}
 
 	@Override
-	public float getReduceTasksProgress(JobID jobID) {
+	public float getReduceTasksProgress(JobID jobID) throws RemoteException {
 		return (float)jobTracker.getFinishedReduceTasksNum(jobID) /
 					(float)jobTracker.getReduceTasksNum(jobID);
 	}
 
 	@Override
-	public void registerTaskTracker(TaskTracker taskTracker) {
+	public void registerTaskTracker(TaskTracker taskTracker) throws RemoteException {
 		jobTracker.addTaskTracker(taskTracker);
 	}
 
 	@Override
-	public TaskInProgress getNewMapTask(TaskTracker tt) {
+	public TaskInProgress getNewMapTask(TaskTracker tt) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TaskInProgress getNewReduceTask(TaskTracker tt) {
+	public TaskInProgress getNewReduceTask(TaskTracker tt) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isJobCompelete(JobID jobID) throws RemoteException {
+		return jobTracker.isJobComplete(jobID);
 	}
 
 }
