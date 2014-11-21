@@ -43,7 +43,7 @@ public class DataNode {
 			System.out.println("Fail to get data node's ip address");
 			e.printStackTrace();
 		}
-		this.dataNodeID = new NodeID(localPath, dfsPath, ip,
+		this.dataNodeID = new NodeID(dfsPath, localPath, ip,
 				configuration.dataNodePort);
 		File localDir = new File(dataNodeID.getLocalPath());
 		localDir.mkdirs();
