@@ -40,8 +40,12 @@ public class TaskInProgress {
 		return this.taskAttemptID.getJobID();
 	}
 	
-	public void setTaskAttemptNum(int num) {
-		taskAttemptID.setAttemptNum(num);
+	public void increaseTaskAttemptNum() {
+		taskAttemptID.setAttemptNum(getTaskAttemptNum() + 1);
+	}
+	
+	public int getTaskAttemptNum() {
+		return taskAttemptID.getAttemptNum();
 	}
 	
 	/**

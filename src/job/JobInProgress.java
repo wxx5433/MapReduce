@@ -188,11 +188,15 @@ public class JobInProgress {
 		// first schedule a fail map
 		tip = findTaskFromList(failedMaps);
 		if (tip != null) {
+			
 			scheduleMap(tt.getNodeId(), tip);
 			System.out.println("Choosing a failed map task ");
 			// remove the map task from failedMaps
 			failedMaps.remove(tip);
-			tip.
+			// update attemp time
+			tip.increaseTaskAttemptNum();
+			// exceed max attempt time, the job fail!!!!!!!!!!!!!!
+			if (tip.getTaskAttemptNum() > )
 			return tip.getTIPId();
 		}
 		
