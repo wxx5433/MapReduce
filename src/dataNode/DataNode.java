@@ -27,6 +27,7 @@ public class DataNode {
 			e.printStackTrace();
 		}
 		this.dataNodeID = new NodeID(ip, configuration.dataNodePort);
+		
 	}
 
 	public void bindService() {

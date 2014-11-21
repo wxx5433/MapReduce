@@ -50,7 +50,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 		}
 		FileSplit fileSplit = new FileSplit(configuration, fileName, blockIndex);
 		int count = 0;
-		while (count < configuration.replicaNum && !nameNode.hasNode()) {
+		while (count < configuration.replicaNum && nameNode.hasNode()) {
 			dataNodeIDs.add(nameNode.getNode());
 			++count;
 		}
