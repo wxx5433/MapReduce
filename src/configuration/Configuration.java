@@ -2,8 +2,10 @@ package configuration;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.Serializable;
 
-public class Configuration {
+public class Configuration implements Serializable {
+	private static final long serialVersionUID = -5714792536319410674L;
 	public String jobTrackerIP;
 	public int jobTrackerPort;
 	public String nameNodeIP;
