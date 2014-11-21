@@ -43,6 +43,7 @@ public class JobClient {
 		// get jobID from jobTracer
 		try {
 			jobID = jobTrackerService.getJobID();
+			jobConf.setJobId(jobID);
 		} catch (RemoteException e1) {
 			System.out.println("Fail to get job id from job tracker");
 			e1.printStackTrace();

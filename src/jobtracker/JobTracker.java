@@ -228,6 +228,13 @@ public class JobTracker {
 		return jip.getNumReduceTasks();
 	}
 	
+	public JobInProgress getJobInProgress(JobID jobID) {
+		if (!jobMap.containsKey(jobID)) {
+			return null;
+		}
+		return jobMap.get(jobID);
+	}
+	
 //	
 //	public synchronized void addFailedMapTask(JobID jobID, MapTask mapTask) {
 //		List<MapTask> mapTasks = null;

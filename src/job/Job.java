@@ -21,31 +21,22 @@ public class Job {
 	private JobID jobID;
 
 	public static Job getInstance() throws IOException {
-		return getInstance(new Configuration());
+		return getInstance();
 	}
 
-	public static Job getInstance(Configuration conf) throws IOException {
-		return new Job(conf);
-	}
-
-	public static Job getInstance(Configuration conf, String jobName)
+	public static Job getInstance(String jobName)
 			throws IOException {
-		Job result = getInstance(conf);
+		Job result = getInstance();
 		result.setJobName(jobName);
 		return result;
 	}
 
-	public Job() throws IOException {
-		this(new Configuration());
-	}
-
-	public Job(Configuration conf) {
+	public Job() {
 		// new jobConf, pass configuration to jobConf
-		jobConf = new JobConf(conf);
+		jobConf = new JobConf();
 	}
 
-	public Job(Configuration conf, String jobName) {
-		this(conf);
+	public Job(String jobName) {
 		setJobName(jobName);
 	}
 

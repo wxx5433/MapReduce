@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import configuration.Configuration;
 import configuration.ConfigurationStrings;
 
 public class JobConf implements Serializable {
@@ -12,6 +11,7 @@ public class JobConf implements Serializable {
 	private static final long serialVersionUID = 8799187146592451090L;
 
 	private String jobName;
+	private JobID jobId;
 
 	private int reduceNum;
 
@@ -20,10 +20,10 @@ public class JobConf implements Serializable {
 
 	private static final Map<String, String> classMap = new HashMap<String, String>();
 
-	public JobConf(Configuration conf) {
-		// TODO Auto-generated constructor stub
+	public void setJobId (JobID jobId) {
+		this.jobId = jobId;
 	}
-
+	
 	public void setJobName(String name) {
 		this.jobName = name;
 	}

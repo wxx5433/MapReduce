@@ -1,5 +1,6 @@
 package task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import job.JobID;
@@ -11,6 +12,7 @@ public class TaskInProgress {
 	private TaskAttemptID taskAttemptID;
 	private FileSplit fileSplit;
 	private boolean isMapper;
+	private List<MapOutput> mapOutputList;
 	
 	public TaskInProgress(JobID jobId, int taskId, boolean isMapper) {
 //		this.jobId = jobId;
@@ -18,6 +20,7 @@ public class TaskInProgress {
 		// initially the taskAttempNum = 1
 		this.taskAttemptID = new TaskAttemptID(jobId, taskId, 1);
 		this.isMapper = isMapper;
+		this.mapOutputList = new ArrayList<MapOutput>();
 	}
 	
 	public TaskInProgress(JobID jobId, int taskId, FileSplit split, boolean isMapper) {
@@ -25,6 +28,9 @@ public class TaskInProgress {
 		this.fileSplit = split;
 	}
 	
+	public void addMapOutput(MapOutput mapOutput) {
+		mapOutputList.add(mapOutput);
+	}
 	
 	/**
 	 * Id within the job. 

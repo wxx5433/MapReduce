@@ -11,6 +11,7 @@ import tasktracker.HeartBeat;
 import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
+import job.JobInProgress;
 import job.JobStatus;
 
 public class JobTrackerServiceImpl implements JobTrackerService {
@@ -47,7 +48,12 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public HeartBeatResponse updateTaskTrackerStatus(HeartBeat heartBeat)
 			throws RemoteException {
-		// TODO Auto-generated method stub
+		NodeID taskTrackerNodeID = heartBeat.getNodeID();
+		// get all finish tasks
+		for (MapTask mapTask: heartBeat.getFinishedMappers()) {
+			JobInProgress jip = jobTracker.getJobInProgress(mapTask.getJobID());
+			
+		}
 		return null;
 	}
 

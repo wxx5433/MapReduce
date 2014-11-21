@@ -17,6 +17,9 @@ import fileSplit.FileSplit;
 import jobtracker.JobTracker;
 import nameNode.NameNodeService;
 import node.NodeID;
+import task.MapOutput;
+import task.MapTask;
+import task.ReduceTask;
 import task.TaskAttemptID;
 import task.TaskInProgress;
 import tasktracker.TaskTracker;
@@ -346,17 +349,25 @@ public class JobInProgress {
 		return Service.getNameNodeService(nameNodeId);
 	}
 	
-	public synchronized void finishMapTask(TaskAttemptID id) {
+	public synchronized void finishMapTask(MapTask mapTask) {
 		++this.finishedMapTasks;
+		TaskAttemptID taskAttemptId = mapTask.getTaskID();
 		// get all the tasks on the node where the finish map task is running on
-		Set<TaskInProgress> tasks = runningMapCache.get(id.getNodeID());
+		Set<TaskInProgress> tasks = runningMapCache.get(taskAttemptId.getNodeID());
 		// remove it
-		tasks.remove(maps[id.getTaskID()]);
+		tasks.remove(maps[taskAttemptId.getTaskID()]);
+		List<String> mapOutputPathLists = mapTask.getOutputPathsForReduce();
+		for (int index = 0; index < mapOutputPathLists.size(); ++index) {
+			MapOutput mapOutput = new MapOutput(taskAttemptId.getNodeID(), 
+					mapOutputPathLists.get(index));
+			reduces[index].addMapOutput(mapOutput);
+		}
 	}
 	
-	public synchronized void finishReduceTask(TaskAttemptID id) {
+	public synchronized void finishReduceTask(ReduceTask reduceTask) {
 		++this.finishedReduceTasks;
-		runningReduces.remove(reduces[id.getTaskID() - this.numMapTasks]);
+		TaskAttemptID tai = reduceTask.getTaskID();
+		runningReduces.remove(reduces[tai.getTaskID() - this.numMapTasks]);
 	}
 	
 	public int getNumMapTasks() {
