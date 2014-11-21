@@ -39,8 +39,12 @@ public class DataNode {
 					+ "/DataNodeService";
 			DataNodeService stub = 
 					(DataNodeService) UnicastRemoteObject.exportObject(dataNodeService, 0);
-			Registry registry = LocateRegistry.getRegistry();
-			//			Registry registry = LocateRegistry.createRegistry(1099);
+			Registry registry = null;
+			try {
+				registry = LocateRegistry.getRegistry();
+			} catch (Exception e) {
+				registry = LocateRegistry.createRegistry(1099);
+			}
 			registry.rebind(name, stub);
 			System.out.println("DataNodeService start!!");
 		} catch (RemoteException e) {
