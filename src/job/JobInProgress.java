@@ -22,7 +22,6 @@ import task.MapTask;
 import task.ReduceTask;
 import task.TaskAttemptID;
 import task.TaskInProgress;
-import tasktracker.TaskTracker;
 
 public class JobInProgress {
 	/**
