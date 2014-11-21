@@ -29,6 +29,7 @@ class MapperExecutionExecutor implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.println("Mapper execution starts!");
 		while (!isStop) {
 			try {
 				MapTask mapTask = taskTracker.mapTaskQueue.take();

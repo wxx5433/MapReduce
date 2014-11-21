@@ -84,9 +84,12 @@ public class TaskTracker implements TaskTrackerInterface {
 	}
 
 	public void sendHeartbeat() {
+		System.out.println("send hearbeat with left slot num--"
+				+ getLeftMapperSlotNum() + "--| left reduce slot num--"
+				+ getLeftReducerSlotNum());
 		HeartBeat heartBeat = new HeartBeat(this.nodeId)
 				.setLeftMapperSlot(getLeftMapperSlotNum())
-				.setLeftReducerSlot(getLeftMapperSlotNum())
+				.setLeftReducerSlot(getLeftReducerSlotNum())
 				.setFinishedMappers(getCompletedMapTask())
 				.setFinishedReducers(getCompletedReduceTask())
 				.setFailedMappers(getFailedMapTask())
@@ -99,6 +102,8 @@ public class TaskTracker implements TaskTrackerInterface {
 				ArrayList<MapTask> newMappers = heatBeatResponse
 						.getNewMappers();
 				for (MapTask mapTask : newMappers) {
+					System.out.println("recieve new maptasks!----"
+							+ mapTask.getTaskID().toString());
 					addNewMapTask(mapTask);
 				}
 			}
@@ -106,6 +111,8 @@ public class TaskTracker implements TaskTrackerInterface {
 				ArrayList<ReduceTask> newReducers = heatBeatResponse
 						.getNewReducers();
 				for (ReduceTask reduceTask : newReducers) {
+					System.out.println("recieve new maptasks!----"
+							+ reduceTask.getTaskID().toString());
 					reduceTask.setLocalPath(this.nodeId.getLocalPath());
 					addNewReduceTask(reduceTask);
 				}

@@ -29,6 +29,7 @@ class ReducerExecutionExecutor implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.println("Reducer execution starts!");
 		while (!isStop) {
 			try {
 				ReduceTask reduceTask = taskTracker.reduceTaskQueue.take();
