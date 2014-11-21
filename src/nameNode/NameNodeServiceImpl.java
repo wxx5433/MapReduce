@@ -20,56 +20,52 @@ import fileSplit.FileSplit;
 
 public class NameNodeServiceImpl implements NameNodeService {
 
-	private Queue<NodeID> nodes;
-	//	private Map<String, Set<FileSplit>> files;
-	// String: fileName, Integer: blockIndex.
-	private Map<String, Map<Integer, FileSplit>> nameSpace;
 	private Configuration configuration;
+	private NameNode nameNode;
 
-	public NameNodeServiceImpl(Configuration configuration) throws RemoteException {
+	public NameNodeServiceImpl(Configuration configuration, NameNode nameNode) 
+			throws RemoteException {
 		super();
 		this.configuration = configuration;
-		this.nodes = new PriorityBlockingQueue<NodeID>();
-		//		this.files = new ConcurrentHashMap<String, Set<FileSplit>>();
-		this.nameSpace = new ConcurrentHashMap<String, Map<Integer, FileSplit>>();
+		this.nameNode = nameNode;
 	}
 
 	/**
 	 * add a dataNode to management
 	 */
 	@Override
-	public void registerDataNode(String ip, int port, String rootPath) {
-		nodes.offer(new NodeID(ip, port, rootPath));
-		System.out.println("New dataNode registered!!:" + ip + port);
+	public void registerDataNode(NodeID dataNodeID) throws RemoteException {
+		nameNode.registerDataNode(dataNodeID);
+		System.out.println("New dataNode registered!!:" + dataNodeID.toString());
 	}
 
 	@Override
-	public Iterable<NodeID> getDataNodesToUpload(String fileName, int blockIndex) {
+	public synchronized Iterable<NodeID> getDataNodesToUpload(String fileName, int blockIndex) {
 		List<NodeID> dataNodeIDs = new ArrayList<NodeID>();
 		// in case of uploading the same file split
 		synchronized (this) {
-			if (nameSpace.containsKey(fileName) && nameSpace.get(fileName).containsKey(blockIndex)) {
+			if (nameNode.containsSplit(fileName, blockIndex)) { 
 				return dataNodeIDs;
 			}
 		}
 		FileSplit fileSplit = new FileSplit(configuration, fileName, blockIndex);
 		int count = 0;
-		while (count < configuration.replicaNum && !nodes.isEmpty()) {
-			dataNodeIDs.add(nodes.poll());
+		while (count < configuration.replicaNum && !nameNode.hasNode()) {
+			dataNodeIDs.add(nameNode.getNode());
 			++count;
 		}
 		for (NodeID nodeID: dataNodeIDs) {
 			try {
-				fileSplit.addHost(nodeID.toString(), nodeID.getRootPath() 
+				fileSplit.addHost(nodeID.toString(), nodeID.getDFSPath() 
 						+ File.separator + fileName + "_" + blockIndex);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			nodeID.incrementBlockCount();
-			nodes.offer(nodeID);
+			nameNode.addNode(nodeID);
 		}
 		// Actually, we need to get response from dataNodes to update
-		updateNameSpace(fileName, blockIndex, fileSplit);
+		nameNode.updateNameSpace(fileName, blockIndex, fileSplit);
 		System.out.println("Succesfully get dataNode info from NameNode!");
 		return dataNodeIDs;
 	}
@@ -82,32 +78,14 @@ public class NameNodeServiceImpl implements NameNodeService {
 	public Iterable<FileSplit> getDataNodesToDownload(String fileName) {
 		Queue<FileSplit> result = new PriorityQueue<FileSplit>();
 		// cannot find the file
-		if (!nameSpace.containsKey(fileName)) {
+		if (!nameNode.containsFile(fileName)) {
 			return result;
 		}
-		Map<Integer, FileSplit> splits = nameSpace.get(fileName);
-		for (Map.Entry<Integer, FileSplit> split: splits.entrySet()) {
-			result.add(split.getValue());   // add FileSplit
+		FileSplit[] splits = nameNode.getAllSplits(fileName);
+		for (FileSplit split: splits) {
+			result.add(split);   // add FileSplit
 		}
 		return result;
-	}
-
-	/**
-	 * Add a file split to namespace
-	 * @param fileName the filename which the file split belong to
-	 * @param blockIndex block id for the file split
-	 * @param fileSplit The file split object to store
-	 */
-	private synchronized void updateNameSpace(String fileName, int blockIndex, 
-						FileSplit fileSplit) {
-		Map<Integer, FileSplit> splits = null;
-		if (nameSpace.containsKey(fileName)) {
-			splits = nameSpace.get(fileName);
-		} else {
-			splits = new ConcurrentHashMap<Integer, FileSplit>();
-		}
-		splits.put(blockIndex, fileSplit);
-		nameSpace.put(fileName, splits);
 	}
 
 	/**
@@ -116,7 +94,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 	@Override
 	public Map<String, Set<FileSplit>> listAllFiles() {
 		Map<String, Set<FileSplit>> copy = new ConcurrentHashMap<String, Set<FileSplit>>();
-		for (Entry<String, Map<Integer, FileSplit>> file: nameSpace.entrySet()) {
+		for (Entry<String, Map<Integer, FileSplit>> file: nameNode.getAllFiles()) {
 			String fileName = file.getKey();
 			Map<Integer, FileSplit> blocks = file.getValue();
 			Set<FileSplit> splits = new HashSet<FileSplit>();
@@ -130,7 +108,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 
 	@Override
 	public synchronized boolean containsFile(String path) {
-		return nameSpace.containsKey(path);
+		return nameNode.containsFile(path);
 	}
 
 	/**
@@ -139,17 +117,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 */
 	@Override
 	public FileSplit[] getAllSplits(String path) throws RemoteException {
-		// invalid input path
-		if (!nameSpace.containsKey(path)) {
-			return null;
-		}
-		Map<Integer, FileSplit> splitsMap = nameSpace.get(path);
-		FileSplit[] splits = new FileSplit[splitsMap.size()];
-		int index = 0;
-		for (Map.Entry<Integer, FileSplit> entry: splitsMap.entrySet()) {
-			splits[index++] = entry.getValue();
-		}
-		return splits;
+		return nameNode.getAllSplits(path);
 	}
 
 	@Override

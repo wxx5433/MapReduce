@@ -9,10 +9,9 @@ import node.NodeID;
 import jobtracker.JobTrackerService;
 import configuration.Configuration;
 import dfs.Service;
-import tool.MyTool;
 
 public class JobClient {
-	
+
 	private JobTrackerService jobTrackerService;
 	private NameNodeService nameNodeService;
 	private JobID jobID;
@@ -24,7 +23,8 @@ public class JobClient {
 		configuration = new Configuration();
 		jobTrackerService = getJobTrackerService();
 		// get NameNodeService
-		NodeID nameNodeID = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
+		NodeID nameNodeID = new NodeID(configuration.nameNodeIP, 
+				configuration.nameNodePort);
 		this.nameNodeService = Service.getNameNodeService(nameNodeID);
 	}
 
@@ -33,11 +33,11 @@ public class JobClient {
 		this.conf = configuration;
 	}
 
-//	public static RunningJob runJob(JobConf job) {
-//		JobClient jc = new JobClient(job);
-//		RunningJob rj = jc.submitJobInternal(job);
-//		return rj;
-//	}
+	//	public static RunningJob runJob(JobConf job) {
+	//		JobClient jc = new JobClient(job);
+	//		RunningJob rj = jc.submitJobInternal(job);
+	//		return rj;
+	//	}
 
 	public RunningJob submitJobInternal(JobConf jobConf) {
 		// get jobID from jobTracer
@@ -52,13 +52,13 @@ public class JobClient {
 			System.out.println("Launch job failed: cannot get new jobID");
 			return null;
 		}
-		
+
 		CheckMessage checkMessage = checkJobConf(jobConf);
 		if (!checkMessage.isValid()) {
 			System.out.println("Invalid job configuration:" + checkMessage.getMessage());
 			return null;
 		}
-		
+
 		// submit the job to jobTracker and get back jobStatus
 		JobStatus jobStatus = null;
 		try {
@@ -73,7 +73,8 @@ public class JobClient {
 	}
 
 	public JobTrackerService getJobTrackerService() {
-		NodeID jobTrackerNodeID = new NodeID(configuration.jobTrackerIP, configuration.jobTrackerPort);
+		NodeID jobTrackerNodeID = new NodeID(configuration.jobTrackerIP,
+				configuration.jobTrackerPort);
 		try {
 			Registry registry = LocateRegistry.getRegistry(jobTrackerNodeID.getIp());
 			String name = "rmi://" + jobTrackerNodeID.toString() + "/JobTrackerService";
@@ -83,12 +84,12 @@ public class JobClient {
 		}
 		return null;
 	}
-	
+
 	private CheckMessage checkJobConf(JobConf jobConf) {
 		if (jobConf.getInputPath() == null) {
 			return new CheckMessage(false, "No input path");
 		}
-		
+
 		try {
 			if (!nameNodeService.containsFile(jobConf.getInputPath())) {
 				return new CheckMessage(false, "Input files do not exist in DFS");
@@ -97,26 +98,26 @@ public class JobClient {
 			System.out.println("Failt to contact nameNode service when checking input path");
 			e.printStackTrace();
 		}
-		
+
 		if (jobConf.getOutputPath() == null) {
 			return new CheckMessage(false, "No output path");
 		}
-		
+
 		// input format
-		
+
 		// output format
-		
+
 		return new CheckMessage(true);
 	}
-	
+
 	private class CheckMessage {
 		private boolean valid;
 		private String message;
-		
+
 		public CheckMessage(boolean valid) {
 			setValid(valid);
 		}
-		
+
 		public CheckMessage(boolean valid, String message) {
 			this(valid);
 			setMessage(message);
@@ -138,5 +139,5 @@ public class JobClient {
 			this.message = message;
 		}
 	}
-	
+
 }

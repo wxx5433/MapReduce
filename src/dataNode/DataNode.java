@@ -58,8 +58,7 @@ public class DataNode {
 			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp());
 			String name = "rmi://" + nameNodeID.toString() + "/NameNodeService";
 			NameNodeService nameNodeService = (NameNodeService) registry.lookup(name);
-			nameNodeService.registerDataNode(this.dataNodeID.getIp(), 
-					this.dataNodeID.getPort(), this.dataNodeID.getRootPath());
+			nameNodeService.registerDataNode(dataNodeID);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (NotBoundException e) {

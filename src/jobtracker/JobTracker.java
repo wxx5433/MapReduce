@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import configuration.Configuration;
 import dfs.Service;
+import fileSplit.MapInputSplit;
 import nameNode.NameNodeService;
 import node.NodeID;
 import task.MapTask;
@@ -32,6 +33,7 @@ public class JobTracker {
 
 	private int jobIDCounter;
 	private int taskIDCounter;
+	private int nodeIDCounter;
 	
 //	// where each map task is allocated to 
 //	private Map<MapTask, NodeID> mapTasks;
@@ -60,9 +62,10 @@ public class JobTracker {
 	// jobTracker Service
 	private JobTrackerService jobTrackerService;
 	
-	private Map<TaskTracker, Long> taskTrackers;
+//	private Map<TaskTracker, Long> taskTrackers;
+	private Map<NodeID, Long> taskTrackers;
 	
-	private Configuration configuraion;
+	private Configuration configuration;
 	
 	// task priority queue. job FIFO, map priority > reduce priority
 //	TaskPriorityQueue taskPriorityQueue;
@@ -77,10 +80,12 @@ public class JobTracker {
 //		finishedReduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
 //		failedMapTasks = new ConcurrentHashMap<JobID, List<MapTask>>();
 //		failedReduceTasks = new ConcurrentHashMap<JobID, List<ReduceTask>>();
-		configuraion = new Configuration();
-		taskTrackers = new ConcurrentHashMap<TaskTracker, Long>();
+		configuration = new Configuration();
+//		taskTrackers = new ConcurrentHashMap<TaskTracker, Long>();
+		taskTrackers = new ConcurrentHashMap<NodeID, Long>();
 		jobIDCounter = 0;
 		taskIDCounter = 0;
+		nodeIDCounter = 0;
 		jobQueue = new ConcurrentLinkedQueue<JobInProgress>();
 		completeJobQueue = new ConcurrentLinkedQueue<JobInProgress>();
 		jobMap = new ConcurrentHashMap<JobID, JobInProgress>();
@@ -90,11 +95,11 @@ public class JobTracker {
 
 	private void initialize() {
 		// get nameNodeService
-		NodeID masterNodeID = new NodeID(configuraion.nameNodeIP, configuraion.nameNodePort);
-		nameNodeService = Service.getNameNodeService(masterNodeID);
+		NodeID jobTrackerNodeID = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
+		nameNodeService = Service.getNameNodeService(jobTrackerNodeID);
 
 		// launch jobTracker service
-		offerService(masterNodeID);
+		offerService(jobTrackerNodeID);
 	}
 
 	/**
@@ -115,29 +120,36 @@ public class JobTracker {
 		}
 	}
 	
-	public void addTaskTracker(TaskTracker taskTracker) {
-		taskTrackers.put(taskTracker, System.currentTimeMillis());
+	public synchronized void addTaskTracker(NodeID taskTrackerNodeID) {
+		taskTrackers.put(taskTrackerNodeID, System.currentTimeMillis());
 	}
 	
 	/**
 	 * Remove it if have not received heart beat for a long time
 	 * @param taskTracker
 	 */
-	public void removeTaskTracker(TaskTracker taskTracker) {
-		
+	public synchronized void removeTaskTracker(NodeID taskTrackerNodeID) {
+		taskTrackers.remove(taskTrackerNodeID);
 	}
 	
 	/**
 	 * schedule a map task to taskTracker
 	 */
 	// can only change to one call to JobInProgress
-	public TaskInProgress getNewMapTask(TaskTracker tt) {
+	public MapTask getNewMapTask(NodeID taskTrackerNodeID) {
 		// allocate next job's map tasks until 
 		// there is no map task in the current job
 		for (JobInProgress jip: jobQueue) {
-			int taskId = jip.getNewMapTask(tt);
+			int taskId = jip.getNewMapTask(taskTrackerNodeID);
 			if (taskId != -1) {
-				return jip.getMapTask(taskId);
+				TaskInProgress tip = jip.getMapTask(taskId);
+				List<String> locations = tip.getSplitLocations();
+				if (locations.size() == 0) {
+					return null;
+				}
+				// randomly choose one location (no locality here)
+				MapInputSplit mis = new MapInputSplit(tip.getFileSplit());
+				MapTask mapTask = new MapTask(mis, );
 			}
 		}
 		return null;
@@ -147,11 +159,12 @@ public class JobTracker {
 	 * schedule a reduce task to taskTracker
 	 * @return
 	 */
-	public TaskInProgress getNewReduceTask(TaskTracker tt) {
+	public ReduceTask getNewReduceTask(NodeID taskTrackerNodeID) {
 		for (JobInProgress jip: jobQueue) {
-			int taskId = jip.getNewReduceTask(tt);
+			int taskId = jip.getNewReduceTask(taskTrackerNodeID);
 			if (taskId != -1) {
-				return jip.getReduceTask(taskId);
+				TaskInProgress tip = jip.getReduceTask(taskId);
+				//
 			}
 		}
 		return null;
@@ -183,7 +196,7 @@ public class JobTracker {
 	public synchronized boolean addJob(JobID jobID, JobConf conf) {
 		JobInProgress jip = null;
 		try {
-			jip = new JobInProgress(configuraion, jobID, conf, this);
+			jip = new JobInProgress(configuration, jobID, conf, this);
 		} catch (IOException e) {
 			return false;
 		}

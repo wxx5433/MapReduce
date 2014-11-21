@@ -56,6 +56,10 @@ public class TaskInProgress {
 		return fileSplit.getHosts();
 	}
 	
+	public FileSplit getFileSplit() {
+		return this.fileSplit;
+	}
+	
 	public boolean isMapper() {
 		return this.isMapper;
 	}

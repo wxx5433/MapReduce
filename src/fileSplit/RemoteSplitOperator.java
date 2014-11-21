@@ -27,7 +27,7 @@ public class RemoteSplitOperator {
 		for (NodeID dataNodeID : dataNodes) {
 			DataNodeService dataNodeService = Service
 					.getDataNodeService(dataNodeID);
-			String dataNodePath = dataNodeID.getRootPath() + File.separator
+			String dataNodePath = dataNodeID.getDFSPath() + File.separator
 					+ fileName + "_" + blockIndex;
 			try {
 				dataNodeService.writeSplit(dataNodePath, contents);

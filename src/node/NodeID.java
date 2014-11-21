@@ -2,31 +2,37 @@ package node;
 
 import java.io.Serializable;
 
+import configuration.Configuration;
+
 public class NodeID implements Comparable<NodeID>, Serializable {
 	private static final long serialVersionUID = -4871124155025672340L;
+	private static final Configuration configuration 
+		= new Configuration();
 	
 	private String ip;
 	private int port;
 	private String host;
 	private int blockCount;
-	private String rootPath;
+	private String dfsPath;
+	private String localPath;
 	
 	public NodeID(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 		this.host = this.toString();
 		this.blockCount = 0;
+		this.dfsPath = configuration.DFSPath + ip + "_" + port;
+		this.localPath = configuration.localPath + ip + "_" + port;
 	}
 	
-	public NodeID(String ip, int port, String rootPath) {
-		this(ip, port);
-		this.rootPath = rootPath;
-	}
-	
-	public String getRootPath() {
-		return rootPath;
+	public String getDFSPath() {
+		return dfsPath;
 	}
 
+	public String getLocalPath() {
+		return localPath;
+	}
+	
 	public synchronized void incrementBlockCount() {
 		this.blockCount++;
 	}

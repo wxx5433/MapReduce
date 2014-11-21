@@ -16,7 +16,6 @@ import dfs.Service;
 import fileSplit.FileSplit;
 import jobtracker.JobTracker;
 import nameNode.NameNodeService;
-import node.Node;
 import node.NodeID;
 import task.TaskAttemptID;
 import task.TaskInProgress;
@@ -180,7 +179,7 @@ public class JobInProgress {
 	 */
 	// TODO Auto-generated method stub
 	// need more arguments here!!!
-	public synchronized int getNewMapTask(final TaskTracker tt) {
+	public synchronized int getNewMapTask(final NodeID taskTrackerNodeID) {
 		if (numMapTasks == 0) {
 			System.out.println("No Map to schedule for " + jobId);
 			return -1;
@@ -190,7 +189,7 @@ public class JobInProgress {
 		tip = findTaskFromList(failedMaps);
 		if (tip != null) {
 			
-			scheduleMap(tt.getNodeId(), tip);
+			scheduleMap(taskTrackerNodeID, tip);
 			System.out.println("Choosing a failed map task ");
 			// remove the map task from failedMaps
 			failedMaps.remove(tip);
@@ -233,7 +232,7 @@ public class JobInProgress {
 	 * get a new Reduce task
 	 * @return
 	 */
-	public synchronized int getNewReduceTask(TaskTracker tt) {
+	public synchronized int getNewReduceTask(NodeID taskTrackerNodeID) {
 		if (numReduceTasks == 0) {
 			System.out.println("No Map to schedule for " + jobId);
 			return -1;
@@ -306,8 +305,7 @@ public class JobInProgress {
 	 * remove from running set and add to fail set
 	 * @param mapTask
 	 */
-	public synchronized void failMap(TaskTracker tt, TaskInProgress tip) {
-		NodeID taskTrackerNodeID = tt.getNodeId();
+	public synchronized void failMap(NodeID taskTrackerNodeID, TaskInProgress tip) {
 		if (runningMapCache.containsKey(taskTrackerNodeID)) {
 			runningMapCache.get(taskTrackerNodeID).remove(tip);
 		}
@@ -318,8 +316,7 @@ public class JobInProgress {
 	/**
 	 * remove from running set and add to fail set
 	 */
-	public synchronized void failReduce(TaskTracker tt, TaskInProgress tip) {
-		NodeID taskTrackerNodeID = tt.getNodeId();
+	public synchronized void failReduce(NodeID taskTrackerNodeID, TaskInProgress tip) {
 		runningReduces.remove(tip);
 		failedReduces.add(tip);
 		++this.failedReduceTasks;

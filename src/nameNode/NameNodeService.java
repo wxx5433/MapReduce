@@ -10,7 +10,7 @@ import fileSplit.FileSplit;
 
 public interface NameNodeService extends Remote {
 
-	public void registerDataNode(String ip, int port, String rootPath) throws RemoteException;
+	public void registerDataNode(NodeID dataNodeID) throws RemoteException;
 	
 	public Iterable<NodeID> getDataNodesToUpload(String fileName, int blockIndex) throws RemoteException;
 	

@@ -3,6 +3,9 @@ package jobtracker;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import node.NodeID;
+import task.MapTask;
+import task.ReduceTask;
 import task.TaskInProgress;
 import tasktracker.HeartBeat;
 import tasktracker.TaskTracker;
@@ -12,7 +15,7 @@ import job.JobStatus;
 
 public interface JobTrackerService extends Remote {
 	
-	public void registerTaskTracker(TaskTracker taskTracker) throws RemoteException;
+	public void registerTaskTracker(NodeID taskTrackerNodeID) throws RemoteException;
 	
 	public JobID getJobID() throws RemoteException;
 	
@@ -28,8 +31,8 @@ public interface JobTrackerService extends Remote {
 	
 	public float getReduceTasksProgress(JobID jobID) throws RemoteException;
 	
-	public TaskInProgress getNewMapTask(TaskTracker tt) throws RemoteException;
+	public MapTask getNewMapTask(NodeID taskTrackerNodeID) throws RemoteException;
 	
-	public TaskInProgress getNewReduceTask(TaskTracker tt) throws RemoteException;
+	public ReduceTask getNewReduceTask(NodeID taskTrackerNodeID) throws RemoteException;
 	
 }
