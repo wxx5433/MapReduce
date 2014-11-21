@@ -27,9 +27,6 @@ public class MapTask implements Task {
 	private TaskAttemptID taskAttemptID;
 	private ArrayList<String> outputPathsForReduce;
 
-	public MapTask() {
-	}
-
 	public MapTask(MapInputSplit mapInputSplit, String outputFilePath,
 			JobConf jobConf, TaskAttemptID taskAttemptID) {
 		this.mapInputSplit = mapInputSplit;
