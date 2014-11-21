@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import job.JobStatus.State;
 import outputformat.OutputFormat;
+import partitioner.Partitioner;
 import tool.Mapper;
 import tool.Reducer;
 
@@ -67,6 +68,18 @@ public class Job {
 	public void setOutputFormatClass(Class<? extends OutputFormat> cls)
 			throws IllegalStateException {
 		jobConf.setOutputFormat(cls);
+	}
+
+	public void setInputPath(String inputPath) {
+		jobConf.setInputPath(inputPath);
+	}
+
+	public void setOutputPath(String outputPath) {
+		jobConf.setOutputPath(outputPath);
+	}
+
+	public void setPartitonerClass(Class<? extends Partitioner> cls) {
+		jobConf.setPartionerClass(cls);
 	}
 
 	public void setJobName(String name) throws IllegalStateException {
