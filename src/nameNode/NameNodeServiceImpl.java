@@ -37,6 +37,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 	public void registerDataNode(NodeID dataNodeID) throws RemoteException {
 		nameNode.registerDataNode(dataNodeID);
 		System.out.println("New dataNode registered!!:" + dataNodeID.toString());
+		System.out.println("Path: " + dataNodeID.getDFSPath());
 	}
 
 	@Override
