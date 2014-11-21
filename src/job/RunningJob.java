@@ -3,6 +3,8 @@ package job;
 import java.io.IOException;
 import java.util.Map;
 
+import job.JobStatus.State;
+import jobtracker.JobTrackerService;
 import node.NodeID;
 import task.MapTask;
 import task.TaskAttemptID;
@@ -10,9 +12,13 @@ import task.TaskAttemptID;
 public class RunningJob implements RunningJobInterface {
 	
 	private JobID jobID;
+	private JobStatus jobStatus;
+	private JobTrackerService jobTrackerService;
 	
 	public RunningJob(JobStatus jobStatus) {
+		this.jobStatus = jobStatus;
 		this.jobID = jobStatus.getJobID();
+		this.jobTrackerService = JobClient.getJobTrackerService();
 	}
 	
 
@@ -34,33 +40,28 @@ public class RunningJob implements RunningJobInterface {
 	}
 
 	@Override
+	public void setMapProgress() throws IOException {
+		jobStatus.setMapProgress(jobTrackerService.getMapTasksProgress(jobID));
+	}
+
+	@Override
+	public void setReduceProgress() throws IOException {
+		jobStatus.setReduceProgress(jobTrackerService.getReduceTasksProgress(jobID));
+	}
+
+	@Override
 	public float mapProgress() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return jobStatus.getMapProgress();
 	}
 
 	@Override
 	public float reduceProgress() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float setupProgress() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return jobStatus.getReduceProgress();
 	}
 
 	@Override
 	public boolean isComplete() throws IOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isSuccessful() throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return jobStatus.isComplete();
 	}
 
 	@Override
@@ -71,14 +72,12 @@ public class RunningJob implements RunningJobInterface {
 
 	@Override
 	public int getJobState() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return jobStatus.getState();
 	}
 
 	@Override
 	public JobStatus getJobStatus() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return jobStatus;
 	}
 
 	@Override
@@ -111,5 +110,6 @@ public class RunningJob implements RunningJobInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

@@ -6,10 +6,12 @@ public class JobStatus {
 	private JobConf conf;
 	private float mapProgress;
 	private float reduceProgress;
+	private State state;
 	
 	public JobStatus(JobID jobID, JobConf conf) {
 		this.jobID = jobID;
 		this.conf = conf;
+		state = State.PREP;
 	}
 
 	/**
@@ -17,7 +19,7 @@ public class JobStatus {
 	 */
 	public static enum State {
 		RUNNING(1),
-		SUCCEEDED(2),
+		COMPLETED(2),
 		FAILED(3),
 		PREP(4),
 		KILLED(5);
@@ -55,5 +57,17 @@ public class JobStatus {
 
 	public void setReduceProgress(float reduceProgress) {
 		this.reduceProgress = reduceProgress;
+	}
+	
+	public void setComplete() {
+		state = State.COMPLETED;
+	}
+	
+	public boolean isComplete() {
+		return state == State.COMPLETED;
+	}
+	
+	public int getState() {
+		return state.value;
 	}
 }

@@ -58,7 +58,7 @@ public class JobClient {
 		return info;
 	}
 
-	private static JobTrackerService getJobTrackerService() {
+	public static JobTrackerService getJobTrackerService() {
 		NodeID masterNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
 		try {
 			Registry registry = LocateRegistry.getRegistry(masterNodeID.getIp());

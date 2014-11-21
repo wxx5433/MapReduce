@@ -17,7 +17,7 @@ public class Job {
 	private JobClient jobClient;
 	private RunningJob info;
 	private JobConf jobConf;
-	private JobStatus jobStatus;
+//	private JobStatus jobStatus;
 	private JobID jobID;
 
 	public static Job getInstance() throws IOException {
@@ -83,10 +83,6 @@ public class Job {
 		return info.isComplete();
 	}
 
-	public boolean isSuccessful() throws IOException {
-		return info.isSuccessful();
-	}
-
 	public void killJob() throws IOException {
 		info.killJob();
 	}
@@ -144,7 +140,7 @@ public class Job {
 			submit();
 		}
 		info.waitForCompletion();
-		return isSuccessful();
+		return isComplete();
 	}
 
 }

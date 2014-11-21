@@ -81,7 +81,9 @@ public interface RunningJobInterface {
    * @return the progress of the job's setup-tasks.
    * @throws IOException
    */
-  public float setupProgress() throws IOException;
+  public void setMapProgress() throws IOException;
+  
+  public void setReduceProgress() throws IOException; 
 
   /**
    * Check if the job is finished or not. 
@@ -91,14 +93,6 @@ public interface RunningJobInterface {
    * @throws IOException
    */
   public boolean isComplete() throws IOException;
-
-  /**
-   * Check if the job completed successfully. 
-   * 
-   * @return <code>true</code> if the job succeeded, else <code>false</code>.
-   * @throws IOException
-   */
-  public boolean isSuccessful() throws IOException;
   
   /**
    * Blocks until the job is complete.
