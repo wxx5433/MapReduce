@@ -15,10 +15,10 @@ public class RunningJob implements RunningJobInterface {
 	private JobStatus jobStatus;
 	private JobTrackerService jobTrackerService;
 	
-	public RunningJob(JobStatus jobStatus) {
+	public RunningJob(JobClient jobClient, JobStatus jobStatus) {
 		this.jobStatus = jobStatus;
 		this.jobID = jobStatus.getJobID();
-		this.jobTrackerService = JobClient.getJobTrackerService();
+		this.jobTrackerService = jobClient.getJobTrackerService();
 	}
 	
 	@Override

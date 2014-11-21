@@ -68,11 +68,11 @@ public class JobClient {
 			e.printStackTrace();
 			return null;
 		}
-		RunningJob info = new RunningJob(jobStatus);
+		RunningJob info = new RunningJob(this, jobStatus);
 		return info;
 	}
 
-	public static JobTrackerService getJobTrackerService() {
+	public JobTrackerService getJobTrackerService() {
 		NodeID jobTrackerNodeID = new NodeID(configuration.jobTrackerIP, configuration.jobTrackerPort);
 		try {
 			Registry registry = LocateRegistry.getRegistry(jobTrackerNodeID.getIp());
