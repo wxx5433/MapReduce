@@ -29,8 +29,8 @@ public class MapTask implements Task {
 	public MapTask() {
 	}
 
-	public MapTask(MapInputSplit mapInputSplit, String inputFilePath,
-			String outputFilePath, JobConf jobConf, TaskAttemptID taskAttemptID) {
+	public MapTask(MapInputSplit mapInputSplit, String outputFilePath,
+			JobConf jobConf, TaskAttemptID taskAttemptID) {
 		this.mapInputSplit = mapInputSplit;
 		this.jobConf = jobConf;
 		this.taskAttemptID = taskAttemptID;
@@ -102,7 +102,6 @@ public class MapTask implements Task {
 	}
 
 	private void statusUpdate() {
-
 	}
 
 	@Override
@@ -169,7 +168,7 @@ public class MapTask implements Task {
 
 	@Override
 	public JobID getJobID() {
-		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

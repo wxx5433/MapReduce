@@ -30,7 +30,11 @@ public class ReduceTask implements Task {
 	private TaskAttemptID taskAttemptID;
 	private String outputPath;
 
-	public ReduceTask() {
+	public ReduceTask(ArrayList<MapOutput> inputData, JobConf jobConf,
+			TaskAttemptID taskAttemptID) {
+		this.inputData = inputData;
+		this.taskAttemptID = taskAttemptID;
+		this.jobConf = jobConf;
 	}
 
 	private String generateInputPath() {
@@ -220,4 +224,5 @@ public class ReduceTask implements Task {
 	public Task setInputFile(String fileName) {
 		return null;
 	}
+
 }
