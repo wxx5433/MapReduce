@@ -15,6 +15,8 @@ public class Configuration {
 	public int replicaNum;
 	public int heartBeatInterval;
 	public int maxAttempsNum;
+	public String localPath;
+	public String DFSPath;
 
 	public Configuration() {
 		try {
@@ -61,6 +63,10 @@ public class Configuration {
 				heartBeatInterval = Integer.parseInt(value);
 			} else if (key.equals("maxAttempsNum")) {
 				maxAttempsNum = Integer.parseInt(value);
+			} else if (key.equals("localPath")) {
+				localPath = value;
+			} else if (key.equals("DFSPath")) {
+				DFSPath = value;
 			} else {
 				br.close();
 				throw new Exception("Undefined key-value in config file");

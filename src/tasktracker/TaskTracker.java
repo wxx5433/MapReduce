@@ -44,7 +44,8 @@ public class TaskTracker implements TaskTrackerInterface {
 	}
 
 	public void start() {
-		jobTrackerService = JobClient.getJobTrackerService();
+		JobClient jobClient = new JobClient();
+		jobTrackerService = jobClient.getJobTrackerService();
 		heartBeat = new HeartBeatThread(this);
 		heartBeatThread = new Thread(heartBeat);
 		mapperExecutionExecutor = new MapperExecutionExecutor(this);
