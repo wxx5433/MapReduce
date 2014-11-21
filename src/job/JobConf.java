@@ -1,12 +1,15 @@
 package job;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import configuration.ConfigurationStrings;
 import configuration.MyConfiguration;
 
-public class JobConf {
+public class JobConf implements Serializable {
+
+	private static final long serialVersionUID = 8799187146592451090L;
 
 	private String jobName;
 

@@ -6,14 +6,17 @@ import job.JobID;
 import fileSplit.FileSplit;
 
 public class TaskInProgress {
-	private JobID jobId;
-	private int taskId;
+//	private JobID jobId;
+//	private int taskId;
+	private TaskAttemptID taskAttemptID;
 	private FileSplit fileSplit;
 	private boolean isMapper;
 	
 	public TaskInProgress(JobID jobId, int taskId, boolean isMapper) {
-		this.jobId = jobId;
-		this.taskId = taskId;
+//		this.jobId = jobId;
+//		this.taskId = taskId;
+		// initially the taskAttempNum = 1
+		this.taskAttemptID = new TaskAttemptID(jobId, taskId, 1);
 		this.isMapper = isMapper;
 	}
 	
@@ -30,11 +33,11 @@ public class TaskInProgress {
 	 * @return
 	 */
 	public int getTIPId() {
-		return this.taskId;
+		return this.taskAttemptID.getTaskID();
 	}
 	
 	public JobID getJobId() {
-		return this.jobId;
+		return this.taskAttemptID.getJobID();
 	}
 	
 	/**
@@ -56,7 +59,7 @@ public class TaskInProgress {
 		}
 		if (obj instanceof TaskInProgress) {
 			TaskInProgress that = (TaskInProgress)obj;
-			if (this.jobId == that.jobId && this.taskId == that.taskId) {
+			if (this.taskAttemptID == that.taskAttemptID) {
 				return true;
 			}
 		}
@@ -65,7 +68,7 @@ public class TaskInProgress {
 
 	@Override
 	public String toString() {
-		return this.jobId + "_" + this.taskId;
+		return this.taskAttemptID.toString();
 	}
 
 	@Override
