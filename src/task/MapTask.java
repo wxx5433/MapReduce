@@ -32,6 +32,7 @@ public class MapTask implements Task {
 		this.mapInputSplit = mapInputSplit;
 		this.jobConf = jobConf;
 		this.taskAttemptID = taskAttemptID;
+		this.outputFilePath = outputFilePath;
 	}
 
 	public MapTask setOutputFile(String outputFilePath) {
@@ -93,7 +94,7 @@ public class MapTask implements Task {
 				.getRecordReader(mapInputSplit, jobConf);
 
 		NewOutputCollector outputCollector = new NewOutputCollector(this,
-				jobConf);
+				jobConf, outputFilePath);
 
 		RecordWriter output = outputCollector;
 
@@ -133,11 +134,12 @@ public class MapTask implements Task {
 		private ArrayList<String> outputPaths;
 
 		@SuppressWarnings("unchecked")
-		public NewOutputCollector(MapTask maptask, JobConf jobConf)
-				throws IOException, ClassNotFoundException,
-				InstantiationException, IllegalAccessException {
+		public NewOutputCollector(MapTask maptask, JobConf jobConf,
+				String outputFilePath) throws IOException,
+				ClassNotFoundException, InstantiationException,
+				IllegalAccessException {
 			this.mapTask = maptask;
-			collector = createCollector(mapTask, jobConf);
+			collector = createCollector(mapTask, jobConf, outputFilePath);
 			partitions = jobConf.getNumReduceTasks();
 			if (partitions > 0) {
 				Class<?> partitionerClass = Class.forName(jobConf
@@ -156,8 +158,10 @@ public class MapTask implements Task {
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		private MapOutputCollector<K, V> createCollector(MapTask mapTask,
-				JobConf jobConf) throws FileNotFoundException {
-			MapOutputCollectorImpl collector = new MapOutputCollectorImpl();
+				JobConf jobConf, String outputFilePath)
+				throws FileNotFoundException {
+			MapOutputCollectorImpl collector = new MapOutputCollectorImpl(
+					outputFilePath);
 			CollectorContext collectorContext = new CollectorContext(mapTask,
 					jobConf);
 			collector.init(collectorContext);

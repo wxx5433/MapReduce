@@ -7,10 +7,6 @@ public class ConfigurationStrings {
 	public static final String OUTPUTFORMAT_CLASS = "job.outputformat";
 	public static final int splitBlockLinesNum = 100;
 	public static final String PARTITIONER_CLASS = "job.partitioner";
-	public static final String MAP_OUTPUT_PATH = "/user/mapper/output/";
-	public static final String REDUCE_INPUT_PATH = "/user/reducer/input/";
 	public static final String MAP_OUTPUT_KEY_CLASS = "mapreduce.mapper.output.key";
 	public static final String MAP_OUTPUT_VALUE_CLASS = "mapreduce.mapper.output.value";
-	public static final String REDUCE_INTER_PATH = "/user/reduce/output";
-
 }

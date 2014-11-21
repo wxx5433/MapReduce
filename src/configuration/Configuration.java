@@ -17,6 +17,8 @@ public class Configuration {
 	public int maxAttempsNum;
 	public String localPath;
 	public String DFSPath;
+	public String reduceShufflePath;
+	public String reduceInterPath;
 
 	public Configuration() {
 		try {
@@ -67,6 +69,10 @@ public class Configuration {
 				localPath = value;
 			} else if (key.equals("DFSPath")) {
 				DFSPath = value;
+			} else if (key.equals("reduceShufflePath")) {
+				reduceShufflePath = value;
+			} else if (key.equals("reduceInterPath")) {
+				reduceInterPath = value;
 			} else {
 				br.close();
 				throw new Exception("Undefined key-value in config file");

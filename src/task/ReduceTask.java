@@ -1,6 +1,7 @@
 package task;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.management.RuntimeErrorException;
+
 import job.JobConf;
 import job.JobID;
 import outputformat.OutputFormat;
@@ -16,7 +19,7 @@ import tool.ReduceContext;
 import tool.ReduceContextImpl;
 import tool.Reducer;
 import tool.WrappedReducer;
-import configuration.ConfigurationStrings;
+import configuration.Configuration;
 import dfs.DFSClient;
 import fileSplit.RemoteSplitOperator;
 
@@ -29,21 +32,37 @@ public class ReduceTask implements Task {
 	private JobConf jobConf;
 	private TaskAttemptID taskAttemptID;
 	private String outputPath;
+	private Configuration conf;
 
 	public ReduceTask(ArrayList<MapOutput> inputData, JobConf jobConf,
 			TaskAttemptID taskAttemptID) {
 		this.inputData = inputData;
 		this.taskAttemptID = taskAttemptID;
 		this.jobConf = jobConf;
+		this.conf = new Configuration();
 	}
 
 	private String generateInputPath() {
-		return ConfigurationStrings.REDUCE_INPUT_PATH + getTaskID().toString();
+		String path = conf.reduceShufflePath + getTaskID().toString();
+		File dir = new File(path);
+		if (!dir.exists()) {
+			if (!dir.mkdir()) {
+				throw new RuntimeErrorException(null,
+						"make reduce shuffle path dir error!");
+			}
+		}
+		return path;
 	}
 
 	private String generateOutputPath() {
-		outputPath = ConfigurationStrings.REDUCE_INTER_PATH
-				+ taskAttemptID.toString();
+		outputPath = conf.reduceInterPath + taskAttemptID.toString();
+		File dir = new File(outputPath);
+		if (!dir.exists()) {
+			if (!dir.mkdir()) {
+				throw new RuntimeErrorException(null,
+						"make reduce local output path dir error!");
+			}
+		}
 		return outputPath;
 	}
 
@@ -228,6 +247,10 @@ public class ReduceTask implements Task {
 	@Override
 	public Task setInputFile(String fileName) {
 		return null;
+	}
+
+	public void addMapOutput(MapOutput mapOutput) {
+		inputData.add(mapOutput);
 	}
 
 }
