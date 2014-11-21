@@ -192,13 +192,14 @@ public class JobInProgress {
 			System.out.println("Choosing a failed map task ");
 			// remove the map task from failedMaps
 			failedMaps.remove(tip);
+			tip.
 			return tip.getTIPId();
 		}
 		
 		// then schedule non-running map tasks
 		// TODO Auto-generated method stub
 		// currently we do not consider locality
-		NodeID taskTrackerNodeId = tt.getNodeId();
+//		NodeID taskTrackerNodeId = tt.getNodeId();
 		tip = findTaskFromList(nonRunningMaps);
 		if (tip != null) {
 			scheduleMap(tt.getNodeId(), tip);

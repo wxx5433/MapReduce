@@ -29,12 +29,12 @@ public class TaskAttemptID implements Serializable {
 		this.taskId = taskNum;
 	}
 
-	public int getAttemptID() {
+	public int getAttemptNum() {
 		return attemptNum;
 	}
 
-	public void setAttemptID(int attemptID) {
-		this.attemptNum = attemptID;
+	public void setAttemptNum(int attemptNum) {
+		this.attemptNum = attemptNum;
 	}
 
 	public NodeID getNodeID() {

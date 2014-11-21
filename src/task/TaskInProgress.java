@@ -40,6 +40,10 @@ public class TaskInProgress {
 		return this.taskAttemptID.getJobID();
 	}
 	
+	public void setTaskAttemptNum(int num) {
+		taskAttemptID.setAttemptNum(num);
+	}
+	
 	/**
 	 * Get where the file splits are
 	 * @return
