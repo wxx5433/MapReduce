@@ -24,9 +24,12 @@ import fileSplit.RemoteSplitOperator;
 public class DFSClient {
 
 	private NameNodeService nameNodeService = null;
+	private Configuration configuration;
+	private NodeID nameNodeID;
 
 	public DFSClient() {
-		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		configuration = new Configuration();
+		nameNodeID = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
 		nameNodeService = Service.getNameNodeService(nameNodeID);
 	}
 
@@ -41,7 +44,7 @@ public class DFSClient {
 	public void uploadFile(String filePath, String fileName) {
 		FileReader fr  = null;
 		BufferedReader br = null;
-		int splitSize = Configuration.splitSize;
+		int splitSize = configuration.splitSize;
 		try {
 			// read the file from client machine
 			fr = new FileReader(filePath + File.separator + fileName);
@@ -90,7 +93,6 @@ public class DFSClient {
 	 * @throws IOException 
 	 */
 	public void getFile(String fileName, String localPath, String targetName) {
-		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
 		NameNodeService nameNodeService = Service.getNameNodeService(nameNodeID);
 		// ask the NameNode where all the chunks of this file are located
 		try {
@@ -143,12 +145,6 @@ public class DFSClient {
 	}
 
 	public static void main(String[] args) {
-		try {
-			Configuration.setup();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		DFSClient client = new DFSClient();
 		client.uploadFile(".", "test");
 		client.listAllFiles();
