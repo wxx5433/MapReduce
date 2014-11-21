@@ -24,9 +24,11 @@ public class NameNodeServiceImpl implements NameNodeService {
 	//	private Map<String, Set<FileSplit>> files;
 	// String: fileName, Integer: blockIndex.
 	private Map<String, Map<Integer, FileSplit>> nameSpace;
+	private Configuration configuration;
 
-	public NameNodeServiceImpl() throws RemoteException {
+	public NameNodeServiceImpl(Configuration configuration) throws RemoteException {
 		super();
+		this.configuration = configuration;
 		this.nodes = new PriorityBlockingQueue<NodeID>();
 		//		this.files = new ConcurrentHashMap<String, Set<FileSplit>>();
 		this.nameSpace = new ConcurrentHashMap<String, Map<Integer, FileSplit>>();
@@ -52,7 +54,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 		}
 		FileSplit fileSplit = new FileSplit(fileName, blockIndex);
 		int count = 0;
-		while (count < Configuration.replicaNum && !nodes.isEmpty()) {
+		while (count < configuration.replicaNum && !nodes.isEmpty()) {
 			dataNodeIDs.add(nodes.poll());
 			++count;
 		}
@@ -148,5 +150,11 @@ public class NameNodeServiceImpl implements NameNodeService {
 			splits[index++] = entry.getValue();
 		}
 		return splits;
+	}
+
+	@Override
+	public void dataNodeOnline() throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 }

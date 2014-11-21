@@ -12,14 +12,15 @@ public class NameNode {
 	
 	private NodeID nameNodeID;
 	private NameNodeService nameNodeService; 
+	private Configuration configuration;
 	
-	public NameNode(String ip, int port) {
-		nameNodeID = new NodeID(ip, port);
+	public NameNode(Configuration configuration) {
+		nameNodeID = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
 	}
 	
 	public void bindService() {
 		try {
-			nameNodeService = new NameNodeServiceImpl();
+			nameNodeService = new NameNodeServiceImpl(configuration);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -44,13 +45,8 @@ public class NameNode {
 	}
 	
 	public static void main(String[] args) {
-		try {
-			Configuration.setup();
-		} catch (Exception e) {
-			System.out.println("MasterNode setup failure");
-			System.exit(-1);
-		}
-		NameNode nameNode = new NameNode(Configuration.masterIP, Configuration.masterPort);
+		Configuration configuration = new Configuration();
+		NameNode nameNode = new NameNode(configuration);
 		nameNode.bindService();
 	}
 }
