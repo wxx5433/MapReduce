@@ -12,7 +12,7 @@ public class TaskInProgress {
 	private TaskAttemptID taskAttemptID;
 	private FileSplit fileSplit;
 	private boolean isMapper;
-	private List<MapOutput> mapOutputList;
+	private ArrayList<MapOutput> mapOutputList;
 	
 	public TaskInProgress(JobID jobId, int taskId, boolean isMapper) {
 //		this.jobId = jobId;
@@ -32,6 +32,9 @@ public class TaskInProgress {
 		mapOutputList.add(mapOutput);
 	}
 	
+	public ArrayList<MapOutput> getMapOutputList() {
+		return this.mapOutputList;
+	}
 	/**
 	 * Id within the job. 
 	 * It is the index of maps array in JobInProgress.
