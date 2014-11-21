@@ -174,6 +174,7 @@ public class JobTracker {
 	 * @return
 	 */
 	public ReduceTask getNewReduceTask(NodeID taskTrackerNodeID) {
+		System.out.println("Task tracker: " + taskTrackerNodeID + " request new reduce task");
 		for (JobInProgress jip: jobQueue) {
 			int taskId = jip.getNewReduceTask(taskTrackerNodeID);
 			if (taskId != -1) {
@@ -181,6 +182,8 @@ public class JobTracker {
 				//
 				ReduceTask reduceTask = new ReduceTask(tip.getMapOutputList(), 
 						jip.getJobConf(), tip.getTaskAttemptID());
+				System.out.println("Task tracker: " + taskTrackerNodeID 
+						+ " successfully get new reduce task");
 				return reduceTask;
 			}
 		}
@@ -220,6 +223,7 @@ public class JobTracker {
 		// add to job queue
 		jobQueue.add(jip);
 		jobMap.put(jobID, jip);
+		System.out.println("New job: " + jip.toString() + " added!!!");
 		return true;
 	}
 

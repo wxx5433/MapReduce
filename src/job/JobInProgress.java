@@ -376,6 +376,7 @@ public class JobInProgress {
 	}
 
 	public synchronized void finishMapTask(MapTask mapTask) {
+		System.out.println("Finish a map task: " + mapTask.toString());
 		++this.finishedMapTasks;
 		TaskAttemptID taskAttemptId = mapTask.getTaskID();
 		// get all the tasks on the node where the finish map task is running on
@@ -392,6 +393,7 @@ public class JobInProgress {
 	}
 
 	public synchronized void finishReduceTask(ReduceTask reduceTask) {
+		System.out.println("Finish a reduce task: " + reduceTask.toString());
 		++this.finishedReduceTasks;
 		TaskAttemptID tai = reduceTask.getTaskID();
 		runningReduces.remove(reduces[tai.getTaskID() - this.numMapTasks]);
