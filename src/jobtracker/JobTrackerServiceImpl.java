@@ -52,9 +52,30 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 		// get all finish tasks
 		for (MapTask mapTask: heartBeat.getFinishedMappers()) {
 			JobInProgress jip = jobTracker.getJobInProgress(mapTask.getJobID());
-			
+			jip.finishMapTask(mapTask);
 		}
-		return null;
+		for (ReduceTask reduceTask: heartBeat.getFinishedReducers()) {
+			JobInProgress jip = jobTracker.getJobInProgress(reduceTask.getJobID());
+			jip.finishReduceTask(reduceTask);
+		}
+		// get all fail tasks
+		for (MapTask mapTask: heartBeat.getFailedMappers()) {
+			JobInProgress jip = jobTracker.getJobInProgress(mapTask.getJobID());
+			jip.failMap(taskTrackerNodeID, mapTask);
+		}
+		for (ReduceTask reduceTask: heartBeat.getFailedReducers()) {
+			JobInProgress jip = jobTracker.getJobInProgress(reduceTask.getJobID());
+			jip.failReduce(taskTrackerNodeID, reduceTask);
+		}
+		
+		HeartBeatResponse heartBeatResponse = new HeartBeatResponse();
+		for (int i = 0; i < heartBeat.getLeftMapperSlot(); ++i) {
+			heartBeatResponse.addNewMapper(jobTracker.getNewMapTask(taskTrackerNodeID));
+		}
+		for (int i = 0; i < heartBeat.getLeftReducerSlot(); ++i) {
+			heartBeatResponse.addNewReducer(jobTracker.getNewReduceTask(taskTrackerNodeID));
+		}
+		return heartBeatResponse;
 	}
 
 	@Override
