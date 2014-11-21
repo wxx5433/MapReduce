@@ -11,7 +11,6 @@ import java.rmi.server.UnicastRemoteObject;
 import nameNode.NameNodeService;
 import node.NodeID;
 import configuration.Configuration;
-import dfs.Service;
 
 public class DataNode {
 
@@ -35,17 +34,17 @@ public class DataNode {
 		DataNodeService dataNodeService = null;
 		try {
 			dataNodeService = new DataNodeServiceImpl();
-			String name = "rmi://" + dataNodeID.toString() 
-					+ "/DataNodeService";
-			DataNodeService stub = 
-					(DataNodeService) UnicastRemoteObject.exportObject(dataNodeService, 0);
+			String name = "rmi://" + dataNodeID.toString() + "/DataNodeService";
+			DataNodeService stub = (DataNodeService) UnicastRemoteObject
+					.exportObject(dataNodeService, 0);
 			Registry registry = null;
 			try {
 				registry = LocateRegistry.getRegistry();
+				registry.rebind(name, stub);
 			} catch (Exception e) {
 				registry = LocateRegistry.createRegistry(1099);
+				registry.rebind(name, stub);
 			}
-			registry.rebind(name, stub);
 			System.out.println("DataNodeService start!!");
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -57,11 +56,13 @@ public class DataNode {
 	 * Register the DataNode to NameNode
 	 */
 	public void registerToNameNode() {
-		NodeID nameNodeID = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
+		NodeID nameNodeID = new NodeID(configuration.nameNodeIP,
+				configuration.nameNodePort);
 		try {
 			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp());
 			String name = "rmi://" + nameNodeID.toString() + "/NameNodeService";
-			NameNodeService nameNodeService = (NameNodeService) registry.lookup(name);
+			NameNodeService nameNodeService = (NameNodeService) registry
+					.lookup(name);
 			nameNodeService.registerDataNode(dataNodeID);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -77,8 +78,10 @@ public class DataNode {
 		System.exit(-1);
 	}
 
-	/* The main function is called when master node login on 
-	 * slave node using ssh, and pass the args to the dataNode. */
+	/*
+	 * The main function is called when master node login on slave node using
+	 * ssh, and pass the args to the dataNode.
+	 */
 	public static void main(String[] args) {
 		DataNode dataNode = new DataNode();
 		// register the dataNode to the NameNode
