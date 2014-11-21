@@ -29,8 +29,8 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 		this.port = port;
 		this.host = this.toString();
 		this.blockCount = 0;
-		this.dfsPath = configuration.DFSPath + ip + "_" + port;
-		this.localPath = configuration.localPath + ip + "_" + port;
+		this.dfsPath = dfsPath + ip + "_" + port;
+		this.localPath = localPath + ip + "_" + port;
 	}
 
 	public String getDFSPath() {

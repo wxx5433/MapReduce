@@ -1,5 +1,6 @@
 package dataNode;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
@@ -27,7 +28,10 @@ public class DataNode {
 			e.printStackTrace();
 		}
 		this.dataNodeID = new NodeID(ip, configuration.dataNodePort);
-		
+		File localDir = new File(dataNodeID.getLocalPath());
+		localDir.mkdirs();
+		File dfsDir = new File(dataNodeID.getDFSPath());
+		dfsDir.mkdirs();
 	}
 
 	public DataNode(String localPath, String dfsPath) {
@@ -41,6 +45,10 @@ public class DataNode {
 		}
 		this.dataNodeID = new NodeID(localPath, dfsPath, ip,
 				configuration.dataNodePort);
+		File localDir = new File(dataNodeID.getLocalPath());
+		localDir.mkdirs();
+		File dfsDir = new File(dataNodeID.getDFSPath());
+		dfsDir.mkdirs();
 	}
 
 	public void bindService() {
