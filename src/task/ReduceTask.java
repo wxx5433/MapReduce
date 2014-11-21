@@ -21,6 +21,10 @@ import configuration.MyConfiguration;
 import fileSplit.RemoteSplitOperator;
 
 public class ReduceTask implements Task {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9078394524555201820L;
 	private ArrayList<MapOutput> inputData;
 	private JobConf jobConf;
 	private TaskAttemptID taskAttemptID;
@@ -29,8 +33,12 @@ public class ReduceTask implements Task {
 	public ReduceTask() {
 	}
 
-	private String generatePath() {
+	private String generateInputPath() {
 		return ConfigurationStrings.REDUCE_INPUT_PATH + getTaskID().toString();
+	}
+
+	private String generateOutputPath() {
+		return ConfigurationStrings.REDUCE_INTER_PATH + taskAttemptID;
 	}
 
 	@Override
@@ -38,8 +46,8 @@ public class ReduceTask implements Task {
 	public void run() throws IOException, InterruptedException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		ReduceCopier reduceCopier = new ReduceCopier(inputData, generatePath(),
-				taskAttemptID);
+		ReduceCopier reduceCopier = new ReduceCopier(inputData,
+				generateInputPath(), taskAttemptID);
 		if (!reduceCopier.fetchOutputs()) {
 			throw new RuntimeException("fetch map output files error!");
 		}
@@ -80,35 +88,27 @@ public class ReduceTask implements Task {
 	}
 
 	private DataOutputStream getDataOutputStream() throws FileNotFoundException {
-		return new DataOutputStream(new FileOutputStream(generatePath()));
-	}
-
-	public Task setInputFile(String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DataOutputStream(new FileOutputStream(generateOutputPath()));
 	}
 
 	@Override
 	public Task setOutputFile(String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
 	public Task setTaskID(TaskAttemptID id) {
-		// TODO Auto-generated method stub
-		return null;
+		this.taskAttemptID = id;
+		return this;
 	}
 
 	@Override
 	public String getOutputFile() {
-		// TODO Auto-generated method stub
 		return jobConf.getOutputPath() + this.taskAttemptID.toString();
 	}
 
 	@Override
 	public String getInputFile() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -119,14 +119,21 @@ public class ReduceTask implements Task {
 
 	@Override
 	public TaskAttemptID getTaskID() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.taskAttemptID;
 	}
 
 	@Override
 	public Task setJobConf(JobConf jobConf) {
-		// TODO Auto-generated method stub
-		return null;
+		this.jobConf = jobConf;
+		return this;
+	}
+
+	public ArrayList<MapOutput> getInputData() {
+		return inputData;
+	}
+
+	public void setInputData(ArrayList<MapOutput> inputData) {
+		this.inputData = inputData;
 	}
 
 	public static class ReduceCopier<K, V> implements ShuffleConsumerPlugin {
@@ -140,9 +147,9 @@ public class ReduceTask implements Task {
 		public ReduceCopier(ArrayList<MapOutput> inputData,
 				String intermediateOutput, TaskAttemptID taskAttemptID) {
 			this.inputData = inputData;
+			this.taskAttemptID = taskAttemptID;
 			this.intermediatePath = this.intermediatePath + "/"
 					+ taskAttemptID.toString();
-			this.taskAttemptID = taskAttemptID;
 		}
 
 		@Override
@@ -206,7 +213,11 @@ public class ReduceTask implements Task {
 
 	@Override
 	public JobID getJobID() {
-		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Task setInputFile(String fileName) {
 		return null;
 	}
 }
