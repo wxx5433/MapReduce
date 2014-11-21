@@ -22,6 +22,4 @@ public interface NameNodeService extends Remote {
 	
 	public FileSplit[] getAllSplits(String path) throws RemoteException;
 	
-	public void dataNodeOnline() throws RemoteException;
-	
 }

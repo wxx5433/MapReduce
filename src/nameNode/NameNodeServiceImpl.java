@@ -119,10 +119,4 @@ public class NameNodeServiceImpl implements NameNodeService {
 	public FileSplit[] getAllSplits(String path) throws RemoteException {
 		return nameNode.getAllSplits(path);
 	}
-
-	@Override
-	public void dataNodeOnline() throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
 }
