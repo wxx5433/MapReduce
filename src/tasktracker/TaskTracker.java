@@ -43,6 +43,14 @@ public class TaskTracker implements TaskTrackerInterface {
 				conf.dataNodePort);
 	}
 
+	public TaskTracker(Configuration conf, String dfsPath, String localPath)
+			throws UnknownHostException {
+		mapperSlotNumber = conf.mapSlots;
+		reducerSlotNumber = conf.reduceSlots;
+		nodeId = new NodeID(dfsPath, localPath, InetAddress.getLocalHost()
+				.getHostAddress(), conf.dataNodePort);
+	}
+
 	public void start() {
 		JobClient jobClient = new JobClient();
 		jobTrackerService = jobClient.getJobTrackerService();
@@ -165,7 +173,11 @@ public class TaskTracker implements TaskTrackerInterface {
 
 	public static void main(String[] args) throws UnknownHostException {
 		Configuration conf = new Configuration();
-		TaskTracker taskTracker = new TaskTracker(conf);
+		TaskTracker taskTracker;
+		if (args.length == 2)
+			taskTracker = new TaskTracker(conf, args[0], args[1]);
+		else
+			taskTracker = new TaskTracker(conf);
 		taskTracker.start();
 	}
 
