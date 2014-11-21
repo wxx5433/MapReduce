@@ -83,7 +83,7 @@ public class NameNode {
 	}
 
 	public synchronized Map<Integer, FileSplit> getSplitsMap(String fileName) {
-		if (containsFile(fileName)) {
+		if (!containsFile(fileName)) {
 			return null;
 		}
 		return nameSpace.get(fileName);
@@ -101,7 +101,7 @@ public class NameNode {
 	 */
 	public synchronized void updateNameSpace(String fileName, int blockIndex, 
 			FileSplit fileSplit) {
-		Map<Integer, FileSplit> splits = getSplitsMap(fileName);
+	Map<Integer, FileSplit> splits = getSplitsMap(fileName);
 		if (splits == null) {
 			splits = new ConcurrentHashMap<Integer, FileSplit>();
 		}

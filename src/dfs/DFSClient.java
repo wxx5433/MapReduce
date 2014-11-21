@@ -71,6 +71,17 @@ public class DFSClient {
 				}
 				// should send response to NameNode here to confirm data transfer success. 
 			}
+			if (lineCount % splitSize != 0) {
+				int blockIndex = lineCount / splitSize;
+				// ask the nameNode where to upload the chunks
+				Iterable<NodeID> dataNodes = nameNodeService.getDataNodesToUpload(fileName, blockIndex);
+				RemoteSplitOperator rso = new RemoteSplitOperator();
+				try {
+					rso.writeSplit(dataNodes, fileName, blockIndex, contents);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
