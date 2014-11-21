@@ -65,9 +65,8 @@ public class MapTask implements Task {
 	}
 
 	@Override
-	public void run(JobConf jobConf) throws ClassNotFoundException,
-			InstantiationException, IOException, InterruptedException,
-			IllegalAccessException {
+	public void run() throws ClassNotFoundException, InstantiationException,
+			IOException, InterruptedException, IllegalAccessException {
 		runMapper(jobConf);
 	}
 

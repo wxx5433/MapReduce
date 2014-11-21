@@ -54,8 +54,8 @@ public class RemoteSplitOperator {
 		return lines;
 	}
 
-	public List<String> readBlock(NodeID dataNodeID, String localPath,
-			String targetName) throws IOException {
+	public List<String> readBlock(NodeID dataNodeID, String localPath)
+			throws IOException {
 		DataNodeService dataNodeService = Service
 				.getDataNodeService(dataNodeID);
 		List<String> lines = null;

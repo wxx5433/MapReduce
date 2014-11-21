@@ -26,8 +26,7 @@ public interface Task extends Serializable {
 
 	public TaskAttemptID getTaskID();
 
-	void run(JobConf job) throws ClassNotFoundException,
-			InstantiationException, IOException, InterruptedException,
-			IllegalAccessException;
+	void run() throws ClassNotFoundException, InstantiationException,
+			IOException, InterruptedException, IllegalAccessException;
 
 }

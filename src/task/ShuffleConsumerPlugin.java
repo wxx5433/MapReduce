@@ -13,13 +13,6 @@ public interface ShuffleConsumerPlugin {
 	 */
 	public boolean fetchOutputs() throws IOException;
 
-	/**
-	 * close and clean any resource associated with this object.
-	 */
-	public void close();
-
-	public boolean shuffle();
-
 	public static class Context {
 		private JobConf jobConf;
 		private ReduceTask reduceTask;

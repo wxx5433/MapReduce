@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import job.JobConf;
 import job.JobID;
@@ -16,6 +18,7 @@ import tool.Reducer;
 import tool.WrappedReducer;
 import configuration.ConfigurationStrings;
 import configuration.MyConfiguration;
+import fileSplit.RemoteSplitOperator;
 
 public class ReduceTask implements Task {
 	private ArrayList<MapOutput> inputData;
@@ -32,16 +35,13 @@ public class ReduceTask implements Task {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void run(JobConf jobConf) throws IOException, InterruptedException,
+	public void run() throws IOException, InterruptedException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		ReduceCopier reduceCopier = new ReduceCopier(inputData, generatePath());
+		ReduceCopier reduceCopier = new ReduceCopier(inputData, generatePath(),
+				taskAttemptID);
 		if (!reduceCopier.fetchOutputs()) {
 			throw new RuntimeException("fetch map output files error!");
-		}
-
-		if (!reduceCopier.shuffle()) {
-			throw new RuntimeException("shuffle error!");
 		}
 
 		Class<?> keyClass = Class.forName(jobConf.getMapOutputKeyClass());
@@ -133,31 +133,48 @@ public class ReduceTask implements Task {
 
 		private ArrayList<MapOutput> inputData;
 		private String intermediatePath;
-		private HashMap<String, ValueData> shuffleData = new HashMap<String, ValueData>();
+		private TreeMap<String, ValueData> shuffleData = new TreeMap<String, ValueData>();
+		private TaskAttemptID taskAttemptID;
+		public static final String separator = "\t";
 
 		public ReduceCopier(ArrayList<MapOutput> inputData,
-				String intermediateOutput) {
+				String intermediateOutput, TaskAttemptID taskAttemptID) {
 			this.inputData = inputData;
-			this.intermediatePath = intermediateOutput;
+			this.intermediatePath = this.intermediatePath + "/"
+					+ taskAttemptID.toString();
+			this.taskAttemptID = taskAttemptID;
 		}
 
 		@Override
 		public boolean fetchOutputs() throws IOException {
 			for (MapOutput input : inputData) {
-
+				RemoteSplitOperator remoteSplitOperator = new RemoteSplitOperator();
+				List<String> data = remoteSplitOperator.readBlock(
+						input.getNodeID(), input.getLocalFilePath());
+				for (String val : data) {
+					String[] keyValuePair = val.split("\t");
+					String key = keyValuePair[0];
+					String value = keyValuePair[1];
+					if (shuffleData.containsKey(key)) {
+						shuffleData.get(key).add(value);
+					} else {
+						ValueData valueData = new ValueData();
+						valueData.add(value);
+						shuffleData.put(key, valueData);
+					}
+				}
 			}
-			return false;
-		}
-
-		@Override
-		public void close() {
-
-		}
-
-		@Override
-		public boolean shuffle() {
-
-			return false;
+			DataOutputStream dataoutputStream = new DataOutputStream(
+					new FileOutputStream(intermediatePath));
+			LineRecordWriter<String, String> lineRecordWriter = new LineRecordWriter<String, String>(
+					dataoutputStream);
+			for (Entry<String, ValueData> line : shuffleData.entrySet()) {
+				String key = line.getKey();
+				String value = line.getValue().toString();
+				lineRecordWriter.write(key, value);
+			}
+			lineRecordWriter.close();
+			return true;
 		}
 
 		public class ValueData {
@@ -174,6 +191,14 @@ public class ReduceTask implements Task {
 
 			public void setValueData(ArrayList<String> valueData) {
 				this.valueData = valueData;
+			}
+
+			public String toString() {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < valueData.size(); i++) {
+					sb.append(valueData.get(i)).append(separator);
+				}
+				return sb.toString().substring(0, sb.toString().length() - 1);
 			}
 		}
 
