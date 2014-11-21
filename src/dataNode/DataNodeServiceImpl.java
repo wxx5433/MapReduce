@@ -8,11 +8,9 @@ import fileSplit.LocalSplitOperator;
 
 public class DataNodeServiceImpl implements DataNodeService {
 
-	private Configuration configuration;
 	
-	protected DataNodeServiceImpl(Configuration configuration) throws RemoteException {
+	protected DataNodeServiceImpl() throws RemoteException {
 		super();
-		this.configuration = configuration;
 	}
 
 	/**
@@ -21,15 +19,13 @@ public class DataNodeServiceImpl implements DataNodeService {
 	 */
 	@Override
 	public void writeSplit(String filePath, List<String> contents) throws Exception {
-		LocalSplitOperator lbo = new LocalSplitOperator(configuration);
-		lbo.writeSplit(filePath, contents);
+		LocalSplitOperator.writeSplit(filePath, contents);
 	}
 
 	@Override
 	public List<String> readSplit(String filePath) throws Exception {
-		LocalSplitOperator lbo = new LocalSplitOperator(configuration);
 		System.out.println("Successfully get data from DataNode!!");
-		return lbo.readSplit(filePath);
+		return LocalSplitOperator.readSplit(filePath);
 	}
 
 }

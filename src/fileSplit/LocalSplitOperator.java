@@ -9,18 +9,15 @@ import java.util.List;
 
 import configuration.Configuration;
 
-public class LocalSplitOperator {
+public abstract class LocalSplitOperator {
 
-	private Configuration configuration;
+	private final static Configuration configuration = new Configuration();
 	
-	public LocalSplitOperator(Configuration configuration) {
-		this.configuration = configuration;
-	}
 	/**
 	 * This method will be invoked on the DataNode to write a block to its local
 	 * disk.
 	 */
-	public void writeSplit(String filePath, List<String> contents)
+	public static void writeSplit(String filePath, List<String> contents)
 			throws Exception {
 		if (contents.size() > configuration.splitSize) {
 			throw new Exception("Write too many lines to a block!");
@@ -42,7 +39,7 @@ public class LocalSplitOperator {
 	 * This method will be invoked by a dataNode to read a block from its local
 	 * disk.
 	 */
-	public List<String> readSplit(String filePath) throws Exception {
+	public static List<String> readSplit(String filePath) throws Exception {
 		FileReader fr = new FileReader(filePath);
 		BufferedReader br = new BufferedReader(fr);
 		String line;

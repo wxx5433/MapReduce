@@ -34,7 +34,7 @@ public class DataNode {
 		/* register dataNode service */
 		DataNodeService dataNodeService = null;
 		try {
-			dataNodeService = new DataNodeServiceImpl(configuration);
+			dataNodeService = new DataNodeServiceImpl();
 			String name = "rmi://" + dataNodeID.toString() 
 					+ "/DataNodeService";
 			DataNodeService stub = 
