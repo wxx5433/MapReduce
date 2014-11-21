@@ -21,6 +21,7 @@ package job;
 
 import java.io.IOException;
 
+import job.JobStatus.State;
 import task.TaskAttemptID;
 
 
@@ -108,6 +109,8 @@ public interface RunningJobInterface {
    */
   public int getJobState() throws IOException;
   
+  public void setJobState(State s) throws IOException;
+  
   /**
    * Returns a snapshot of the current status, {@link JobStatus}, of the Job.
    * Need to call again for latest information.
@@ -152,4 +155,5 @@ public interface RunningJobInterface {
    * @throws IOException
    */
   public String[] getTaskDiagnostics(TaskAttemptID taskid) throws IOException;
+
 }

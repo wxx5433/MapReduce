@@ -21,7 +21,6 @@ public class RunningJob implements RunningJobInterface {
 		this.jobTrackerService = JobClient.getJobTrackerService();
 	}
 	
-
 	@Override
 	public JobID getJobID() {
 		return this.jobID;
@@ -73,6 +72,11 @@ public class RunningJob implements RunningJobInterface {
 	@Override
 	public int getJobState() throws IOException {
 		return jobStatus.getState();
+	}
+	
+	@Override
+	public void setJobState(State s) throws IOException {
+		jobStatus.setState(s);
 	}
 
 	@Override

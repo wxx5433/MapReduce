@@ -70,4 +70,8 @@ public class JobStatus {
 	public int getState() {
 		return state.value;
 	}
+	
+	public void setState(State s) {
+		state = s;
+	}
 }

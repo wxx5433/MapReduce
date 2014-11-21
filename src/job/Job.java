@@ -2,6 +2,7 @@ package job;
 
 import java.io.IOException;
 
+import job.JobStatus.State;
 import tool.Mapper;
 import tool.Reducer;
 import configuration.MyConfiguration;
@@ -98,6 +99,7 @@ public class Job {
 		// Connect to the JobTracker and submit the job
 		connect();
 		info = jobClient.submitJobInternal(jobConf);
+		info.setJobState(State.RUNNING);
 		setJobID(info.getJobID());
 		state = JobState.RUNNING;
 	}
