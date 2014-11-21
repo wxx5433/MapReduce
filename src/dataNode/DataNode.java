@@ -29,6 +29,19 @@ public class DataNode {
 		this.dataNodeID = new NodeID(ip, configuration.dataNodePort);
 	}
 
+	public DataNode(String localPath, String dfsPath) {
+		configuration = new Configuration();
+		String ip = null;
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			System.out.println("Fail to get data node's ip address");
+			e.printStackTrace();
+		}
+		this.dataNodeID = new NodeID(localPath, dfsPath, ip,
+				configuration.dataNodePort);
+	}
+
 	public void bindService() {
 		/* register dataNode service */
 		DataNodeService dataNodeService = null;
@@ -83,7 +96,12 @@ public class DataNode {
 	 * ssh, and pass the args to the dataNode.
 	 */
 	public static void main(String[] args) {
-		DataNode dataNode = new DataNode();
+
+		DataNode dataNode;
+		if (args.length == 2)
+			dataNode = new DataNode(args[0], args[1]);
+		else
+			dataNode = new DataNode();
 		// register the dataNode to the NameNode
 		dataNode.registerToNameNode();
 		dataNode.bindService();

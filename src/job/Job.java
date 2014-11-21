@@ -1,11 +1,13 @@
 package job;
 
+import inputformat.InputFormat;
+
 import java.io.IOException;
 
 import job.JobStatus.State;
+import outputformat.OutputFormat;
 import tool.Mapper;
 import tool.Reducer;
-import configuration.Configuration;
 
 public class Job {
 
@@ -24,8 +26,7 @@ public class Job {
 		return getInstance();
 	}
 
-	public static Job getInstance(String jobName)
-			throws IOException {
+	public static Job getInstance(String jobName) throws IOException {
 		Job result = getInstance();
 		result.setJobName(jobName);
 		return result;
@@ -56,6 +57,16 @@ public class Job {
 	public void setReducerClass(Class<? extends Reducer> cls)
 			throws IllegalStateException {
 		jobConf.setReducerClass(cls);
+	}
+
+	public void setInputFormatClass(Class<? extends InputFormat> cls)
+			throws IllegalStateException {
+		jobConf.setInputFormat(cls);
+	}
+
+	public void setOutputFormatClass(Class<? extends OutputFormat> cls)
+			throws IllegalStateException {
+		jobConf.setOutputFormat(cls);
 	}
 
 	public void setJobName(String name) throws IllegalStateException {

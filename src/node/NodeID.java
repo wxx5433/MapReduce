@@ -6,16 +6,15 @@ import configuration.Configuration;
 
 public class NodeID implements Comparable<NodeID>, Serializable {
 	private static final long serialVersionUID = -4871124155025672340L;
-	private static final Configuration configuration 
-		= new Configuration();
-	
+	private static final Configuration configuration = new Configuration();
+
 	private String ip;
 	private int port;
 	private String host;
 	private int blockCount;
 	private String dfsPath;
 	private String localPath;
-	
+
 	public NodeID(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
@@ -24,7 +23,16 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 		this.dfsPath = configuration.DFSPath + ip + "_" + port;
 		this.localPath = configuration.localPath + ip + "_" + port;
 	}
-	
+
+	public NodeID(String dsfPath, String localPath, String ip, int port) {
+		this.ip = ip;
+		this.port = port;
+		this.host = this.toString();
+		this.blockCount = 0;
+		this.dfsPath = configuration.DFSPath + ip + "_" + port;
+		this.localPath = configuration.localPath + ip + "_" + port;
+	}
+
 	public String getDFSPath() {
 		return dfsPath;
 	}
@@ -32,11 +40,11 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 	public String getLocalPath() {
 		return localPath;
 	}
-	
+
 	public synchronized void incrementBlockCount() {
 		this.blockCount++;
 	}
-	
+
 	public synchronized int getBlockCount() {
 		return blockCount;
 	}
@@ -56,7 +64,7 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	
+
 	public static NodeID constructFromString(String host) {
 		int divideIndex = host.indexOf(":");
 		String ip = host.substring(0, divideIndex);
@@ -75,7 +83,7 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 			return true;
 		}
 		if (obj instanceof NodeID) {
-			NodeID that = (NodeID)obj;
+			NodeID that = (NodeID) obj;
 			if (this.ip.equals(that.ip) && this.port == that.port) {
 				return true;
 			}
@@ -92,7 +100,5 @@ public class NodeID implements Comparable<NodeID>, Serializable {
 	public int compareTo(NodeID o) {
 		return this.blockCount - o.blockCount;
 	}
-	
-	
-	
+
 }
