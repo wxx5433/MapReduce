@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.Queue;
 
 import task.TaskInProgress;
+import tasktracker.HeartBeat;
 import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
@@ -40,7 +41,7 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	}
 
 	@Override
-	public HeartBeatResponse updateTaskTrackerStatus() throws RemoteException {
+	public HeartBeatResponse updateTaskTrackerStatus(HeartBeat heartBeat) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}

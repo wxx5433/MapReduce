@@ -65,8 +65,10 @@ public class RunningJob implements RunningJobInterface {
 
 	@Override
 	public void waitForCompletion() throws IOException {
-		// TODO Auto-generated method stub
-		jobTrackerService.
+		// ask the jobTracker if the job has complete
+		while (!jobTrackerService.isJobCompelete(jobID)) {
+			
+		}
 	}
 
 	@Override
