@@ -5,7 +5,7 @@ import java.io.IOException;
 import job.JobStatus.State;
 import tool.Mapper;
 import tool.Reducer;
-import configuration.MyConfiguration;
+import configuration.Configuration;
 
 public class Job {
 
@@ -18,18 +18,17 @@ public class Job {
 	private JobClient jobClient;
 	private RunningJob info;
 	private JobConf jobConf;
-//	private JobStatus jobStatus;
 	private JobID jobID;
 
 	public static Job getInstance() throws IOException {
-		return getInstance(new MyConfiguration());
+		return getInstance(new Configuration());
 	}
 
-	public static Job getInstance(MyConfiguration conf) throws IOException {
+	public static Job getInstance(Configuration conf) throws IOException {
 		return new Job(conf);
 	}
 
-	public static Job getInstance(MyConfiguration conf, String jobName)
+	public static Job getInstance(Configuration conf, String jobName)
 			throws IOException {
 		Job result = getInstance(conf);
 		result.setJobName(jobName);
@@ -37,15 +36,15 @@ public class Job {
 	}
 
 	public Job() throws IOException {
-		this(new MyConfiguration());
+		this(new Configuration());
 	}
 
-	public Job(MyConfiguration conf) {
+	public Job(Configuration conf) {
 		// new jobConf, pass configuration to jobConf
 		jobConf = new JobConf(conf);
 	}
 
-	public Job(MyConfiguration conf, String jobName) {
+	public Job(Configuration conf, String jobName) {
 		this(conf);
 		setJobName(jobName);
 	}
