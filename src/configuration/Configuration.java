@@ -10,6 +10,7 @@ public class Configuration {
 	public int taskTrackerPort;
 	public String nameNodeIP;
 	public int nameNodePort;
+	public int dataNodePort;
 	public int mapSlots;
 	public int reduceSlots;
 	public int splitSize;
@@ -46,6 +47,8 @@ public class Configuration {
 				nameNodeIP = value;
 			} else if (key.equals("nameNodePort")) {
 				nameNodePort = Integer.parseInt(value);
+			} else if (key.equals("dataNodePort")) {
+				dataNodePort = Integer.parseInt(value);
 			} else if (key.equals("mapSlots")) {
 				mapSlots = Integer.parseInt(value);
 			} else if (key.equals("reduceSlots")) {
