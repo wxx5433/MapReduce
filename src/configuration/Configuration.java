@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Configuration {
-	public String taskTrackerIP;
-	public int taskTrackerPort;
+	public String jobTrackerIP;
+	public int jobTrackerPort;
 	public String nameNodeIP;
 	public int nameNodePort;
 	public int dataNodePort;
@@ -40,9 +40,9 @@ public class Configuration {
 			String value = keyValue[1].trim();
 			
 			if (key.equals("taskTrackerIP")) {
-				taskTrackerIP = value;
+				jobTrackerIP = value;
 			} else if (key.equals("taskTrackerPort")) {
-				taskTrackerPort = Integer.parseInt(value);
+				jobTrackerPort = Integer.parseInt(value);
 			} else if (key.equals("nameNodeIP")) {
 				nameNodeIP = value;
 			} else if (key.equals("nameNodePort")) {
