@@ -52,7 +52,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 				return dataNodeIDs;
 			}
 		}
-		FileSplit fileSplit = new FileSplit(fileName, blockIndex);
+		FileSplit fileSplit = new FileSplit(configuration, fileName, blockIndex);
 		int count = 0;
 		while (count < configuration.replicaNum && !nodes.isEmpty()) {
 			dataNodeIDs.add(nodes.poll());

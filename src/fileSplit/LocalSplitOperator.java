@@ -11,13 +11,18 @@ import configuration.Configuration;
 
 public class LocalSplitOperator {
 
+	private Configuration configuration;
+	
+	public LocalSplitOperator(Configuration configuration) {
+		this.configuration = configuration;
+	}
 	/**
 	 * This method will be invoked on the DataNode to write a block to its local
 	 * disk.
 	 */
 	public void writeSplit(String filePath, List<String> contents)
 			throws Exception {
-		if (contents.size() > Configuration.splitSize) {
+		if (contents.size() > configuration.splitSize) {
 			throw new Exception("Write too many lines to a block!");
 		}
 		FileWriter fw = new FileWriter(filePath);
@@ -47,7 +52,7 @@ public class LocalSplitOperator {
 		}
 		br.close();
 		fr.close();
-		if (result.size() > Configuration.splitSize) {
+		if (result.size() > configuration.splitSize) {
 			throw new Exception("There are too many lines in the block!");
 		}
 		return result;

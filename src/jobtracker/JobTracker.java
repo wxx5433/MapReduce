@@ -62,6 +62,8 @@ public class JobTracker {
 	
 	private Map<TaskTracker, Long> taskTrackers;
 	
+	private Configuration configuraion;
+	
 	// task priority queue. job FIFO, map priority > reduce priority
 //	TaskPriorityQueue taskPriorityQueue;
 //	private final int taskPriorityQueueInitCapacity = 20;
@@ -75,6 +77,7 @@ public class JobTracker {
 //		finishedReduceTasksNum = new ConcurrentHashMap<JobID, Integer>();
 //		failedMapTasks = new ConcurrentHashMap<JobID, List<MapTask>>();
 //		failedReduceTasks = new ConcurrentHashMap<JobID, List<ReduceTask>>();
+		configuraion = new Configuration();
 		taskTrackers = new ConcurrentHashMap<TaskTracker, Long>();
 		jobIDCounter = 0;
 		taskIDCounter = 0;
@@ -86,14 +89,8 @@ public class JobTracker {
 	}
 
 	private void initialize() {
-		try {
-			Configuration.setup();
-		} catch (Exception e) {
-			System.out.println("Load configuration failed in JobTracker");
-			e.printStackTrace();
-		}
 		// get nameNodeService
-		NodeID masterNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		NodeID masterNodeID = new NodeID(configuraion.nameNodeIP, configuraion.nameNodePort);
 		nameNodeService = Service.getNameNodeService(masterNodeID);
 
 		// launch jobTracker service
@@ -186,7 +183,7 @@ public class JobTracker {
 	public synchronized boolean addJob(JobID jobID, JobConf conf) {
 		JobInProgress jip = null;
 		try {
-			jip = new JobInProgress(jobID, conf, this);
+			jip = new JobInProgress(configuraion, jobID, conf, this);
 		} catch (IOException e) {
 			return false;
 		}

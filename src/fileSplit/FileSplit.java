@@ -28,8 +28,10 @@ public class FileSplit extends InputSplit implements Serializable, Comparable<Fi
 	// key: hosts(ip:port), value: localPath
 	private Map<String, String> paths;
 	private int hostsCount;
+	private Configuration configuration;
 
-	public FileSplit(String fileName, int blockIndex) {
+	public FileSplit(Configuration configuration, String fileName, int blockIndex) {
+		this.configuration = configuration;
 		this.fileName = fileName;
 		this.blockIndex = blockIndex;
 		this.paths = new ConcurrentHashMap<String, String>();
@@ -37,7 +39,7 @@ public class FileSplit extends InputSplit implements Serializable, Comparable<Fi
 	}
 	
 	public synchronized void addHost(String host, String path) throws Exception {
-		if (hostsCount >= Configuration.replicaNum) {
+		if (hostsCount >= configuration.replicaNum) {
 			throw new Exception("There are too many replica for the file split!");
 		}
 		paths.put(host, path);

@@ -8,7 +8,6 @@ import nameNode.NameNodeService;
 import node.NodeID;
 import jobtracker.JobTrackerService;
 import configuration.Configuration;
-import configuration.MyConfiguration;
 import dfs.Service;
 import tool.MyTool;
 
@@ -18,12 +17,14 @@ public class JobClient {
 	private NameNodeService nameNodeService;
 	private JobID jobID;
 	private JobConf conf;
+	private Configuration configuration;
 
 	public JobClient() {
 		// get JobTrackerService
+		configuration = new Configuration();
 		jobTrackerService = getJobTrackerService();
 		// get NameNodeService
-		NodeID nameNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		NodeID nameNodeID = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
 		this.nameNodeService = Service.getNameNodeService(nameNodeID);
 	}
 
@@ -72,10 +73,10 @@ public class JobClient {
 	}
 
 	public static JobTrackerService getJobTrackerService() {
-		NodeID masterNodeID = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		NodeID jobTrackerNodeID = new NodeID(configuration.jobTrackerIP, configuration.jobTrackerPort);
 		try {
-			Registry registry = LocateRegistry.getRegistry(masterNodeID.getIp());
-			String name = "rmi://" + masterNodeID.toString() + "/JobTrackerService";
+			Registry registry = LocateRegistry.getRegistry(jobTrackerNodeID.getIp());
+			String name = "rmi://" + jobTrackerNodeID.toString() + "/JobTrackerService";
 			return (JobTrackerService) registry.lookup(name);
 		} catch (Exception e) {
 			e.printStackTrace();

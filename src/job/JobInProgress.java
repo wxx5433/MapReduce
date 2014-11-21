@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import configuration.MyConfiguration;
 import dfs.Service;
 import fileSplit.FileSplit;
 import jobtracker.JobTracker;
@@ -91,11 +90,12 @@ public class JobInProgress {
 	private JobID jobId;
 
 	private NameNodeService nameNodeService;
+	private Configuration configuration;
 
 	/**
 	 * Create an almost empty JobInProgress, which can be used only for tests
 	 */
-	public JobInProgress(JobID jobid, JobConf conf,
+	public JobInProgress(Configuration configuration, JobID jobid, JobConf conf,
 			JobTracker tracker) throws IOException {
 		this.tasksInit= false;
 		this.jobComplete = false;
@@ -109,6 +109,7 @@ public class JobInProgress {
 		this.nonRunningReduces = new TreeSet<TaskInProgress>();//failComparator);
 		this.runningReduces = new LinkedHashSet<TaskInProgress>();
 		this.nameNodeService = getNameNodeService();
+		this.configuration = configuration;
 	}
 
 	/**
@@ -348,7 +349,7 @@ public class JobInProgress {
 	}
 
 	private NameNodeService getNameNodeService() {
-		NodeID nameNodeId = new NodeID(Configuration.masterIP, Configuration.masterPort);
+		NodeID nameNodeId = new NodeID(configuration.nameNodeIP, configuration.nameNodePort);
 		return Service.getNameNodeService(nameNodeId);
 	}
 	
