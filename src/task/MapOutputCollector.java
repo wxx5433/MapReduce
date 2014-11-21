@@ -2,6 +2,7 @@ package task;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import job.JobConf;
 
@@ -9,6 +10,8 @@ public interface MapOutputCollector<K, V> {
 	public void init(CollectorContext context) throws FileNotFoundException;
 
 	public void collect(K key, V value, int partition) throws IOException;
+
+	public ArrayList<String> getOutputPaths();
 
 	public void close() throws IOException;
 

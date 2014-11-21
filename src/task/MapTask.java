@@ -4,6 +4,7 @@ import inputformat.InputFormat;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import job.JobConf;
 import job.JobID;
@@ -13,7 +14,6 @@ import tool.MapContext;
 import tool.MapContextImpl;
 import tool.Mapper;
 import tool.WrappedMapper;
-import configuration.MyConfiguration;
 import fileSplit.MapInputSplit;
 
 public class MapTask implements Task {
@@ -25,6 +25,7 @@ public class MapTask implements Task {
 	private String outputFilePath;
 	private JobConf jobConf;
 	private TaskAttemptID taskAttemptID;
+	private ArrayList<String> outputPathsForReduce;
 
 	public MapTask() {
 	}
@@ -39,6 +40,14 @@ public class MapTask implements Task {
 	public MapTask setOutputFile(String outputFilePath) {
 		this.outputFilePath = outputFilePath;
 		return this;
+	}
+
+	public ArrayList<String> getOutputPathsForReduce() {
+		return outputPathsForReduce;
+	}
+
+	public void setOutputPathsForReduce(ArrayList<String> outputPathsForReduce) {
+		this.outputPathsForReduce = outputPathsForReduce;
 	}
 
 	public MapTask setJobConf(JobConf jobConf) {
@@ -86,11 +95,13 @@ public class MapTask implements Task {
 		RecordReader input = inputFormat
 				.getRecordReader(mapInputSplit, jobConf);
 
-		RecordWriter output = new NewOutputCollector(this, jobConf);
+		NewOutputCollector outputCollector = new NewOutputCollector(this,
+				jobConf);
+
+		RecordWriter output = outputCollector;
 
 		MapContext<INKEY, INVALUE, OUTKEY, OUTVALUE> mapContext = new MapContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
-				MyConfiguration.getInstance(), getTaskID(), input, output,
-				mapInputSplit);
+				getTaskID(), input, output, mapInputSplit);
 
 		Mapper<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context mapperContext = new WrappedMapper<INKEY, INVALUE, OUTKEY, OUTVALUE>()
 				.getMapContext(mapContext);
@@ -99,6 +110,7 @@ public class MapTask implements Task {
 		statusUpdate();
 		input.close();
 		output.close();
+		setOutputPathsForReduce(outputCollector.getOutputPaths());
 	}
 
 	private void statusUpdate() {
@@ -121,6 +133,7 @@ public class MapTask implements Task {
 		private Partitioner<K, V> partitioner;
 		private int partitions;
 		private MapTask mapTask;
+		private ArrayList<String> outputPaths;
 
 		@SuppressWarnings("unchecked")
 		public NewOutputCollector(MapTask maptask, JobConf jobConf)
@@ -151,6 +164,7 @@ public class MapTask implements Task {
 			CollectorContext collectorContext = new CollectorContext(mapTask,
 					jobConf);
 			collector.init(collectorContext);
+			outputPaths = collector.getOutputPaths();
 			return collector;
 		}
 
@@ -164,6 +178,11 @@ public class MapTask implements Task {
 		public void close() throws IOException {
 			collector.close();
 		}
+
+		public ArrayList<String> getOutputPaths() {
+			return outputPaths;
+		}
+
 	}
 
 	@Override

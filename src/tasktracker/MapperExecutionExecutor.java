@@ -17,12 +17,12 @@ import task.TaskThread;
 
 class MapperExecutionExecutor implements Runnable {
 
-	TaskTracker TaskTracker;
+	TaskTracker taskTracker;
 	volatile boolean isStop;
 	private ExecutorService pool;
 
 	public MapperExecutionExecutor(TaskTracker taskTracker) {
-		this.TaskTracker = taskTracker;
+		this.taskTracker = taskTracker;
 		this.isStop = false;
 		pool = Executors.newFixedThreadPool(taskTracker.getMapperSlotNumber());
 	}
@@ -31,8 +31,8 @@ class MapperExecutionExecutor implements Runnable {
 	public void run() {
 		while (!isStop) {
 			try {
-				MapTask mapTask = TaskTracker.mapTaskQueue.take();
-				execute(mapTask);
+				MapTask mapTask = taskTracker.mapTaskQueue.take();
+				execute(mapTask, taskTracker);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -42,10 +42,14 @@ class MapperExecutionExecutor implements Runnable {
 		}
 	}
 
-	public void execute(MapTask mapTask) {
-		TaskThread mapTaskThread = new TaskThread(mapTask);
+	public void execute(MapTask mapTask, TaskTracker taskTracker) {
+		TaskThread mapTaskThread = new TaskThread(mapTask, taskTracker);
 		Thread thread = new Thread(mapTaskThread);
 		pool.execute(thread);
+	}
+
+	public int getRunningThreadNum() {
+		return Thread.currentThread().getThreadGroup().activeCount();
 	}
 
 	public void terminate() {

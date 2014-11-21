@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import configuration.Configuration;
 import configuration.ConfigurationStrings;
-import configuration.MyConfiguration;
 
 public class JobConf implements Serializable {
 
@@ -18,15 +18,9 @@ public class JobConf implements Serializable {
 	private String inputPath;
 	private String outputPath;
 
-	private String inputFormat;
-	private String outputFormat;
-
-	private String mapperClass;
-	private String reducerClass;
-
 	private static final Map<String, String> classMap = new HashMap<String, String>();
 
-	public JobConf(MyConfiguration conf) {
+	public JobConf(Configuration conf) {
 		// TODO Auto-generated constructor stub
 	}
 

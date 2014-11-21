@@ -1,9 +1,6 @@
 package tool;
 
-import configuration.MyConfigurable;
-
-
-public interface MyTool extends MyConfigurable {
+public interface MyTool {
 	/**
 	 * Execute the command with the given arguments.
 	 * 

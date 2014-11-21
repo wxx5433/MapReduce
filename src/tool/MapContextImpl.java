@@ -5,7 +5,6 @@ import java.io.IOException;
 import task.RecordReader;
 import task.RecordWriter;
 import task.TaskAttemptID;
-import configuration.MyConfiguration;
 import fileSplit.MapInputSplit;
 
 public class MapContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
@@ -14,15 +13,13 @@ public class MapContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 	private RecordReader<KEYIN, VALUEIN> reader;
 	private MapInputSplit split;
 	private RecordWriter<KEYOUT, VALUEOUT> writer;
-	private MyConfiguration conf;
 
-	public MapContextImpl(MyConfiguration conf, TaskAttemptID taskid,
+	public MapContextImpl(TaskAttemptID taskid,
 			RecordReader<KEYIN, VALUEIN> reader,
 			RecordWriter<KEYOUT, VALUEOUT> writer, MapInputSplit split) {
 		this.reader = reader;
 		this.split = split;
 		this.writer = writer;
-		this.conf = conf;
 	}
 
 	@Override

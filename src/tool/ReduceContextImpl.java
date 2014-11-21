@@ -5,30 +5,26 @@ import java.io.IOException;
 import task.RecordWriter;
 import task.ReduceRecordReader;
 import task.TaskAttemptID;
-import configuration.MyConfiguration;
 import fileSplit.MapInputSplit;
 
 public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 		ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
 	private RecordWriter<KEYOUT, VALUEOUT> writer;
-	private MyConfiguration conf;
 	private ReduceRecordReader<KEYIN, VALUEIN> reader;
 
-	public ReduceContextImpl(MyConfiguration conf, TaskAttemptID taskid,
+	public ReduceContextImpl(TaskAttemptID taskid,
 			ReduceRecordReader<KEYIN, VALUEIN> reader,
 			RecordWriter<KEYOUT, VALUEOUT> writer) {
 		this.reader = reader;
 		this.writer = writer;
-		this.conf = conf;
 	}
 
-	public ReduceContextImpl(MyConfiguration conf, TaskAttemptID taskid,
+	public ReduceContextImpl(TaskAttemptID taskid,
 			ReduceRecordReader<KEYIN, VALUEIN> reader,
 			RecordWriter<KEYOUT, VALUEOUT> writer, MapInputSplit split) {
 		this.reader = reader;
 		this.writer = writer;
-		this.conf = conf;
 	}
 
 	@Override

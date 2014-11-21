@@ -1,20 +1,18 @@
 package tool;
 
-import configuration.MyConfiguration;
-
+import configuration.Configuration;
 
 public class MyToolRunner {
 
-	public static int run(MyConfiguration conf, MyTool tool, String[] args)
+	public static int run(Configuration conf, MyTool tool, String[] args)
 			throws Exception {
 		if (conf == null) {
-			conf = new MyConfiguration();
+			conf = new Configuration();
 		}
-		tool.setConf(conf);
 		return tool.run(args);
 	}
-	
+
 	public static int run(MyTool tool, String[] args) throws Exception {
-		return run(tool.getConf(), tool, args);
+		return run(tool, args);
 	}
 }

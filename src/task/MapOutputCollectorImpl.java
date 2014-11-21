@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -13,6 +14,7 @@ public class MapOutputCollectorImpl<K, V> implements MapOutputCollector<K, V> {
 
 	@SuppressWarnings("rawtypes")
 	HashMap<Integer, RecordWriter> mapOutputMap = new HashMap<Integer, RecordWriter>();
+	ArrayList<String> outputPaths = new ArrayList<String>();
 
 	public void init(CollectorContext context) throws FileNotFoundException {
 		int reduceNum = context.getJobConf().getNumReduceTasks();
@@ -22,11 +24,13 @@ public class MapOutputCollectorImpl<K, V> implements MapOutputCollector<K, V> {
 		initHashMap(reduceNum, outputFilePath);
 	}
 
-	private void initHashMap(int reduceNum, String outputFilePath)
+	private void initHashMap(int reduceNum, String outputFileDirPath)
 			throws FileNotFoundException {
 		for (int i = 0; i < reduceNum; i++) {
+			String outputPath = outputFileDirPath + "_" + reduceNum;
+			outputPaths.add(outputPath);
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(
-					outputFilePath + "_" + reduceNum));
+					outputPath));
 			@SuppressWarnings("rawtypes")
 			RecordWriter recordWriter = new LineRecordWriter(out);
 			mapOutputMap.put(reduceNum, recordWriter);
@@ -44,5 +48,10 @@ public class MapOutputCollectorImpl<K, V> implements MapOutputCollector<K, V> {
 		for (Entry<Integer, RecordWriter> m : mapOutputMap.entrySet()) {
 			m.getValue().close();
 		}
+	}
+
+	@Override
+	public ArrayList<String> getOutputPaths() {
+		return outputPaths;
 	}
 }

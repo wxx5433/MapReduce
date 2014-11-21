@@ -17,7 +17,7 @@ import tool.ReduceContextImpl;
 import tool.Reducer;
 import tool.WrappedReducer;
 import configuration.ConfigurationStrings;
-import configuration.MyConfiguration;
+import dfs.DFSClient;
 import fileSplit.RemoteSplitOperator;
 
 public class ReduceTask implements Task {
@@ -42,7 +42,9 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateOutputPath() {
-		return ConfigurationStrings.REDUCE_INTER_PATH + taskAttemptID;
+		outputPath = ConfigurationStrings.REDUCE_INTER_PATH
+				+ taskAttemptID.toString();
+		return outputPath;
 	}
 
 	@Override
@@ -83,12 +85,15 @@ public class ReduceTask implements Task {
 		ReduceRecordReader<INKEY, INVALUE> input = new ReduceRecordReader();
 		input.initialize(intermediateOutput);
 		ReduceContext<INKEY, INVALUE, OUTKEY, OUTVALUE> reduceContext = new ReduceContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
-				MyConfiguration.getInstance(), getTaskID(), input, output);
+				getTaskID(), input, output);
 
 		Reducer<String, String, OUTKEY, OUTVALUE>.Context reducerContext = new WrappedReducer<String, String, OUTKEY, OUTVALUE>()
 				.getReducerContext((ReduceContext<String, String, OUTKEY, OUTVALUE>) reduceContext);
 		reducer.run((Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context) reducerContext);
 		output.close();
+		DFSClient dfsClient = new DFSClient();
+		dfsClient.uploadFile(generateOutputPath(), jobConf.getOutputPath()
+				+ taskAttemptID.toString());
 	}
 
 	private DataOutputStream getDataOutputStream() throws FileNotFoundException {

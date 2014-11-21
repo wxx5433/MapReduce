@@ -17,12 +17,12 @@ import task.TaskThread;
 
 class ReducerExecutionExecutor implements Runnable {
 
-	TaskTracker TaskTracker;
+	TaskTracker taskTracker;
 	volatile boolean isStop;
 	private ExecutorService pool;
 
 	public ReducerExecutionExecutor(TaskTracker taskTracker) {
-		this.TaskTracker = taskTracker;
+		this.taskTracker = taskTracker;
 		this.isStop = false;
 		pool = Executors.newFixedThreadPool(taskTracker.getReducerSlotNumber());
 	}
@@ -31,8 +31,8 @@ class ReducerExecutionExecutor implements Runnable {
 	public void run() {
 		while (!isStop) {
 			try {
-				ReduceTask reduceTask = TaskTracker.reduceTaskQueue.take();
-				execute(reduceTask);
+				ReduceTask reduceTask = taskTracker.reduceTaskQueue.take();
+				execute(reduceTask, taskTracker);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -42,10 +42,14 @@ class ReducerExecutionExecutor implements Runnable {
 		}
 	}
 
-	public void execute(ReduceTask reduceTask) {
-		TaskThread reduceTaskThread = new TaskThread(reduceTask);
+	public void execute(ReduceTask reduceTask, TaskTracker taskTracker) {
+		TaskThread reduceTaskThread = new TaskThread(reduceTask, taskTracker);
 		Thread thread = new Thread(reduceTaskThread);
 		pool.execute(thread);
+	}
+
+	public int getRunningThreadNum() {
+		return Thread.currentThread().getThreadGroup().activeCount();
 	}
 
 	public void terminate() {
