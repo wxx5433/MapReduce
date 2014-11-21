@@ -46,6 +46,7 @@ public class NameNode {
 				registry.rebind(name, stub);
 			} catch (Exception e) {
 				Registry registry = LocateRegistry.createRegistry(1099);
+				registry.rebind(name, stub);
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
