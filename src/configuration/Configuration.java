@@ -5,18 +5,26 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Configuration {
-	public static String masterIP;
-	public static int masterPort;
-	public static List<String> slaveIPList = new ArrayList<String>();
-	public static List<Integer> slavePortList = new ArrayList<Integer>();
-	public static List<String> rootDir = new ArrayList<String>();
-	public static int mapSlots;
-	public static int reduceSlots;
-	public static int splitSize;
-	public static int replicaNum;
+public class Configuration {
+	public String taskTrackerIP;
+	public int taskTrackerPort;
+	public String nameNodeIP;
+	public int nameNodePort;
+	public int mapSlots;
+	public int reduceSlots;
+	public int splitSize;
+	public int replicaNum;
 	
-	public static void setup() throws Exception {
+	public Configuration() {
+		try {
+			setup();
+		} catch (Exception e) {
+			System.out.println("invalid configuration file");
+			e.printStackTrace();
+		}
+	}
+	
+	public void setup() throws Exception {
 		FileReader fr = new FileReader("config");
 		BufferedReader br = new BufferedReader(fr);
 		
@@ -30,14 +38,14 @@ public abstract class Configuration {
 			String key = keyValue[0].trim();
 			String value = keyValue[1].trim();
 			
-			if (key.equals("masterIP")) {
-				masterIP = value;
-			} else if (key.equals("masterPort")) {
-				masterPort = Integer.parseInt(value);
-			} else if (key.equals("slaveIP")) {
-				slaveIPList.add(value);
-			} else if (key.equals("slavePort")) {
-				slavePortList.add(Integer.parseInt(value));
+			if (key.equals("taskTrackerIP")) {
+				taskTrackerIP = value;
+			} else if (key.equals("taskTrackerPort")) {
+				taskTrackerPort = Integer.parseInt(value);
+			} else if (key.equals("nameNodeIP")) {
+				nameNodeIP = value;
+			} else if (key.equals("nameNodePort")) {
+				nameNodePort = Integer.parseInt(value);
 			} else if (key.equals("mapSlots")) {
 				mapSlots = Integer.parseInt(value);
 			} else if (key.equals("reduceSlots")) {
@@ -46,24 +54,11 @@ public abstract class Configuration {
 				splitSize = Integer.parseInt(value);
 			} else if (key.equals("replicaNum")) {
 				replicaNum = Integer.parseInt(value);
-			}else if (key.equals("rootDir")) {
-				rootDir.add(value);
 			} else {
 				br.close();
 				throw new Exception("Undefined key-value in config file");
 			}
 		}
 		br.close();
-		if (slavePortList.size() != slaveIPList.size()) {
-			throw new Exception("Number of slaveIP and slavePort does not match!");
-		}
-	}
-	
-	public static void main(String[] args) {
-		try {
-			Configuration.setup();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }
