@@ -32,11 +32,11 @@ public class TaskTracker implements TaskTrackerInterface {
 
 	public int getMapperSlotNumber() {
 		// TODO Auto-generated method stub
-		return 0;
+		return mapperSlotNumber;
 	}
 
 	public int getReducerSlotNumber() {
 		// TODO Auto-generated method stub
-		return 0;
+		return mapperSlotNumber;
 	}
 }
