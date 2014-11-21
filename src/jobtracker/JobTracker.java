@@ -149,7 +149,9 @@ public class JobTracker {
 				}
 				// randomly choose one location (no locality here)
 				MapInputSplit mis = new MapInputSplit(tip.getFileSplit());
-				MapTask mapTask = new MapTask(mis, );
+				MapTask mapTask = new MapTask(mis, taskTrackerNodeID.getLocalPath(),
+						jip.getJobConf(), tip.getTaskAttemptID());
+				return mapTask;
 			}
 		}
 		return null;

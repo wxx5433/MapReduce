@@ -40,6 +40,7 @@ public class JobInProgress {
 	int numReduceTasks = 0;
 	volatile int numSlotsPerMap = 1;
 	volatile int numSlotsPerReduce = 1;
+	
 
 	// Counters to track currently running/finished/failed Map/Reduce
 	// task-attempts
@@ -132,8 +133,6 @@ public class JobInProgress {
 		numMapTasks = splits.length;
 		maps = new TaskInProgress[numMapTasks];
 		for (int i = 0; i < numMapTasks; ++i) {
-			// TODO Auto-generated method stub
-			// need to pass arguments here!!!!!!!!!!!!!!
 			maps[i] = new TaskInProgress(this.jobId, i, splits[i], true);
 			nonRunningMaps.add(maps[i]);
 		}
@@ -161,8 +160,6 @@ public class JobInProgress {
 		for (int i = 0; i < numReduceTasks; i++) {
 			// reduces[i] = new TaskInProgress(jobId, jobFile, numMapTasks, i,
 			// jobtracker, conf, this, numSlotsPerReduce);
-			// TODO Auto-generated method stub
-			// need to pass in arguments here!!!!!!!! (e.g. i)
 			reduces[i] = new TaskInProgress(this.jobId, this.numMapTasks + i, false);
 			nonRunningReduces.add(reduces[i]);
 		}
@@ -177,8 +174,6 @@ public class JobInProgress {
 	 * get a new Map task
 	 * @return the index in tasks , -1 for no task
 	 */
-	// TODO Auto-generated method stub
-	// need more arguments here!!!
 	public synchronized int getNewMapTask(final NodeID taskTrackerNodeID) {
 		if (numMapTasks == 0) {
 			System.out.println("No Map to schedule for " + jobId);
@@ -196,17 +191,18 @@ public class JobInProgress {
 			// update attemp time
 			tip.increaseTaskAttemptNum();
 			// exceed max attempt time, the job fail!!!!!!!!!!!!!!
-			if (tip.getTaskAttemptNum() > )
+			if (tip.getTaskAttemptNum() > configuration.maxAttempsNum) {
+				jobFailed = true;
+			}
 			return tip.getTIPId();
 		}
 		
 		// then schedule non-running map tasks
 		// TODO Auto-generated method stub
 		// currently we do not consider locality
-//		NodeID taskTrackerNodeId = tt.getNodeId();
 		tip = findTaskFromList(nonRunningMaps);
 		if (tip != null) {
-			scheduleMap(tt.getNodeId(), tip);
+			scheduleMap(taskTrackerNodeID, tip);
 			System.out.println("Choosing a nonrunning map task");
 			nonRunningMaps.remove(tip);
 			return tip.getTIPId();
@@ -377,6 +373,10 @@ public class JobInProgress {
 	
 	public int getNumFinishedReduceTasks() {
 		return this.finishedReduceTasks;
+	}
+	
+	public JobConf getJobConf() {
+		return this.conf;
 	}
 	
 	@Override

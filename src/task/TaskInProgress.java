@@ -48,6 +48,10 @@ public class TaskInProgress {
 		return taskAttemptID.getAttemptNum();
 	}
 	
+	public TaskAttemptID getTaskAttemptID() {
+		return taskAttemptID;
+	}
+	
 	/**
 	 * Get where the file splits are
 	 * @return
