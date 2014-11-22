@@ -21,11 +21,11 @@ public class TaskTracker implements TaskTrackerInterface {
 	JobTrackerService jobTrackerService;
 	public BlockingDeque<MapTask> mapTaskQueue = new LinkedBlockingDeque<MapTask>();
 	public BlockingDeque<ReduceTask> reduceTaskQueue = new LinkedBlockingDeque<ReduceTask>();
-	private int mapperSlotNumber = 0;
-	private int reducerSlotNumber = 0;
+	private int mapperSlotNumber;
+	private int reducerSlotNumber;
 
-	private int leftMapperSlot = 4;
-	private int leftReducerSlot = 4;
+	private int leftMapperSlot;
+	private int leftReducerSlot;
 
 	private Thread mapperExecutor = null;
 	private MapperExecutionExecutor mapperExecutionExecutor = null;
@@ -51,6 +51,8 @@ public class TaskTracker implements TaskTrackerInterface {
 			throws UnknownHostException {
 		mapperSlotNumber = conf.mapSlots;
 		reducerSlotNumber = conf.reduceSlots;
+		leftMapperSlot = mapperSlotNumber;
+		leftReducerSlot = reducerSlotNumber;
 		nodeId = new NodeID(dfsPath, localPath, InetAddress.getLocalHost()
 				.getHostAddress(), conf.dataNodePort);
 	}

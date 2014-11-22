@@ -16,11 +16,13 @@ public class HeartBeatResponse implements Serializable {
 	private ArrayList<ReduceTask> newReducers = new ArrayList<ReduceTask>();
 
 	public void addNewMapper(MapTask mapTask) {
-		newMappers.add(mapTask);
+		if (mapTask != null)
+			newMappers.add(mapTask);
 	}
 
 	public void addNewReducer(ReduceTask reduceTask) {
-		newReducers.add(reduceTask);
+		if (reduceTask != null)
+			newReducers.add(reduceTask);
 	}
 
 	public ArrayList<MapTask> getNewMappers() {
