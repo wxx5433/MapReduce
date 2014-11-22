@@ -157,8 +157,8 @@ public class DFSClient {
 
 	public static void main(String[] args) {
 		DFSClient client = new DFSClient();
-		client.uploadFile(".", "test");
+//		client.uploadFile(".", "test");
 		client.listAllFiles();
-		client.getFile("test", ".", "result");
+//		client.getFile("test", ".", "result");
 	}
 }

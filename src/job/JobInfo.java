@@ -7,17 +7,17 @@ public class JobInfo implements Serializable {
 	private static final long serialVersionUID = 799288600636556291L;
 	
 	private String jobName;
-	private int jobId;
+	private JobID jobId;
 	private int numMapTasks;
 	private int numReduceTasks;
 	private float mapProgress;
 	private float reduceProgress;
 	
-	public JobInfo(String jobName, int jobId, 
+	public JobInfo(String jobName, JobID jobID, 
 			int numMapTasks, int numReduceTasks, 
 			float mapProgress, float reduceProgress) {
 		this.jobName = jobName;
-		this.jobId = jobId;
+		this.jobId = jobID;
 		this.numMapTasks = numMapTasks;
 		this.numReduceTasks = numReduceTasks;
 		this.mapProgress = mapProgress;
@@ -32,11 +32,11 @@ public class JobInfo implements Serializable {
 		this.jobName = jobName;
 	}
 
-	public int getJobId() {
+	public JobID getJobId() {
 		return jobId;
 	}
 
-	public void setJobId(int jobId) {
+	public void setJobId(JobID jobId) {
 		this.jobId = jobId;
 	}
 

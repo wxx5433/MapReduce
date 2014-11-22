@@ -530,6 +530,16 @@ public class JobInProgress {
 	public JobConf getJobConf() {
 		return this.conf;
 	}
+	
+	public float getMapProgress() {
+		return (float) this.numMapTasks * 100
+				/ this.finishedMapTasks;
+	}
+	
+	public float getReduceProgress() {
+		return (float) this.numReduceTasks * 100
+				/ this.finishedReduceTasks;
+	}
 
 	@Override
 	public int hashCode() {
