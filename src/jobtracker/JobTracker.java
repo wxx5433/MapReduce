@@ -236,6 +236,7 @@ public class JobTracker {
 	public synchronized boolean addJob(JobID jobID, JobConf conf) {
 		JobInProgress jip = null;
 		try {
+			System.out.println("In JobTracker-addJob: jobconf:  " + conf.getMapperClass());
 			jip = new JobInProgress(configuration, jobID, conf, this);
 			jip.initTasks();
 		} catch (IOException e) {

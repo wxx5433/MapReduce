@@ -118,7 +118,6 @@ public class JobInProgress {
 		this.runningReduces = new LinkedHashSet<TaskInProgress>();
 		this.nameNodeService = getNameNodeService();
 		this.runningMapCache = new ConcurrentHashMap<NodeID, Set<TaskInProgress>>();
-		System.out.println("In JobInProgress: jobconf:  " + conf.getMapperClass());
 	}
 
 
