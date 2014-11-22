@@ -99,6 +99,7 @@ public class JobInProgress {
 	 */
 	public JobInProgress(Configuration configuration, JobID jobid, JobConf conf,
 			JobTracker tracker) throws IOException {
+		this.configuration = configuration;
 		this.tasksInit= false;
 		this.jobComplete = false;
 		this.conf = conf;
@@ -111,7 +112,6 @@ public class JobInProgress {
 		this.nonRunningReduces = new TreeSet<TaskInProgress>();//failComparator);
 		this.runningReduces = new LinkedHashSet<TaskInProgress>();
 		this.nameNodeService = getNameNodeService();
-		this.configuration = configuration;
 	}
 
 	/**
