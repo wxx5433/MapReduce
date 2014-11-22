@@ -39,7 +39,7 @@ public class MapOutputCollectorImpl<K, V> implements MapOutputCollector<K, V> {
 	private void initHashMap(int reduceNum, String outputFileDirPath)
 			throws FileNotFoundException {
 		for (int i = 0; i < reduceNum; i++) {
-			String outputPath = outputFileDirPath + "/" + reduceNum;
+			String outputPath = outputFileDirPath + "/" + i;
 			System.out.println(outputPath);
 			outputPaths.add(outputPath);
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(

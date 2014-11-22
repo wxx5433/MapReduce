@@ -110,7 +110,7 @@ public class TaskTracker implements TaskTrackerInterface {
 						.getNewMappers();
 				for (MapTask mapTask : newMappers) {
 					System.out.println("recieve new maptasks!----"
-							+ mapTask.getTaskID().toString());
+							+ mapTask.getTaskID().getNodeID().toString());
 					subLeftMapperSlot();
 					addNewMapTask(mapTask);
 				}
@@ -119,8 +119,8 @@ public class TaskTracker implements TaskTrackerInterface {
 				ArrayList<ReduceTask> newReducers = heatBeatResponse
 						.getNewReducers();
 				for (ReduceTask reduceTask : newReducers) {
-					System.out.println("recieve new maptasks!----"
-							+ reduceTask.getTaskID().toString());
+					System.out.println("recieve new reducetasks!----"
+							+ reduceTask.getTaskID().getNodeID().toString());
 					reduceTask.setLocalPath(this.nodeId.getLocalPath());
 					subLeftReducerSlot();
 					addNewReduceTask(reduceTask);
@@ -148,7 +148,8 @@ public class TaskTracker implements TaskTrackerInterface {
 	}
 
 	public synchronized void updateCompletedTask(Task task) {
-		System.out.println("Finished taskID:" + task.getTaskID().toString());
+		System.out.println("Finished taskID:"
+				+ task.getTaskID().getNodeID().toString());
 		if (task instanceof MapTask) {
 			completedMapTask.add((MapTask) task);
 			addLeftMapperSlot();
