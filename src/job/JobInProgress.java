@@ -396,6 +396,7 @@ public class JobInProgress {
 		System.out.println("Finish a map task: " + mapTask.toString());
 		++this.finishedMapTasks;
 		TaskAttemptID taskAttemptId = mapTask.getTaskID();
+		System.out.println(taskAttemptId);
 		// get all the tasks on the node where the finish map task is running on
 		Set<TaskInProgress> tasks = runningMapCache.get(taskAttemptId.getNodeID());
 		// remove it
