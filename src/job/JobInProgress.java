@@ -438,7 +438,7 @@ public class JobInProgress {
 
 	public void setJobKilled() {
 		this.jobKilled = true;
-		jobTracker.killJob(this.jobId);
+//		jobTracker.killJob(this.jobId);
 	}
 
 	public boolean isJobKilled() {
