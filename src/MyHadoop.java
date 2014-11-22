@@ -1,13 +1,15 @@
 import java.io.File;
 import java.rmi.RemoteException;
-import java.util.List;
 
+import job.JobClient;
+import job.JobID;
+import job.JobInfo;
+import jobtracker.JobTrackerService;
 import nameNode.NameNodeService;
 import node.NodeID;
 import configuration.Configuration;
 import dfs.DFSClient;
 import dfs.Service;
-import fileSplit.RemoteSplitOperator;
 
 
 public abstract class MyHadoop {
@@ -16,16 +18,16 @@ public abstract class MyHadoop {
 		System.out.println("MyHadoop Usage: ");
 		System.out.println("\t dfs -- operating distributed file system");
 		System.out.println("\t\t get [fileName] -- download file from hdfs to local disk");
-		System.out.println("\t\t put [file] [dfsPath] -- upload local file to dfs");
+		System.out.println("\t\t put [file] -- upload local file to dfs");
 		System.out.println("\t\t ls -- list all files on dfs");
 		System.out.println("\t job  -- job operations on MyHadoop");
 		System.out.println("\t\t list -- list all jobs info on MyHadoop");
-		System.out.println("\t\t kill -- kill a job on MyHadoop");
+		System.out.println("\t\t kill [jobId] -- kill a job on MyHadoop");
 	}
 
 	private static void parseCommand(String[] args) {
 		// check parameter number
-		if (args.length == 0 || args.length > 4) {
+		if (args.length < 2 && args.length > 3) {
 			printHelpInfo();
 			return;
 		}
@@ -63,12 +65,11 @@ public abstract class MyHadoop {
 				e.printStackTrace();
 			}
 		} else if (command.equals("put")) {
-			if (args.length < 4) {
+			if (args.length < 3) {
 				printHelpInfo();
 				return;
 			}
 			String filePath = args[2];
-			String dfsPath = args[3];
 			String fileName = getFileName(filePath);
 			if (fileName == null) {
 				System.out.println("Invalid fileName");
@@ -106,7 +107,34 @@ public abstract class MyHadoop {
 	}
 	
 	private static void job(Configuration configuration, String[] args) {
-		
+		JobClient jobClient = new JobClient();
+		JobTrackerService jobTrackerService = jobClient.getJobTrackerService();
+		String command = args[1];
+		if (command.equals("list")) {
+			try {
+				JobInfo[] jobInfos = jobTrackerService.listAllJobs();
+				for (JobInfo jobInfo: jobInfos) {
+					System.out.println(jobInfo);
+				}
+			} catch (RemoteException e) {
+				System.out.println("Fail to connect job tracker");
+				e.printStackTrace();
+			}
+		} else if (command.equals("kill")) {
+			if (args.length != 3) {
+				printHelpInfo();
+				return;
+			}
+			JobID jobId = new JobID(Integer.parseInt(args[2]));
+			try {
+				jobTrackerService.killJob(jobId);
+			} catch (RemoteException e) {
+				System.out.println("Fail to connect job tracker");
+				e.printStackTrace();
+			}
+		} else {
+			printHelpInfo();
+		}
 	}
 
 	public static void main(String[] args) {

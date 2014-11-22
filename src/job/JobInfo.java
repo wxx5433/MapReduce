@@ -72,4 +72,16 @@ public class JobInfo implements Serializable {
 		this.reduceProgress = reduceProgress;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("JobName: " + jobName + ", JobID: " + jobId + "\n");
+		sb.append("Map tasks num: " + numMapTasks 
+				+ ", Reduce tasks num: " + numReduceTasks + "\n");
+		sb.append("Map task progress: " + mapProgress 
+				+ ", Reduce tasks progress: " + reduceProgress + "\n");
+		return new String(sb);
+	}
+	
+
 }
