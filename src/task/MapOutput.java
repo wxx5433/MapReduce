@@ -1,8 +1,14 @@
 package task;
 
+import java.io.Serializable;
+
 import node.NodeID;
 
-public class MapOutput {
+public class MapOutput implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6839957624053258682L;
 	private NodeID nodeID;
 	private String localFilePath;
 
