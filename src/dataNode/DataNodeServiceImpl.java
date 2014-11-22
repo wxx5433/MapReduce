@@ -24,7 +24,7 @@ public class DataNodeServiceImpl implements DataNodeService {
 
 	@Override
 	public List<String> readSplit(String filePath) throws Exception {
-		System.out.println("Successfully get data from DataNode!!");
+//		System.out.println("Successfully get data from DataNode!!");
 		return LocalSplitOperator.readSplit(filePath);
 	}
 
