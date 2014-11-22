@@ -119,7 +119,8 @@ public class ReduceTask implements Task {
 		reducer.run((Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context) reducerContext);
 		output.close();
 		DFSClient dfsClient = new DFSClient();
-		dfsClient.uploadFile(generateOutputPath(), taskAttemptID.toString());
+		dfsClient.uploadFile(generateOutputPath(), taskAttemptID.toString(),
+				jobConf.getOutputPath());
 	}
 
 	private DataOutputStream getDataOutputStream() throws FileNotFoundException {
