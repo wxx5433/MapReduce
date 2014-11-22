@@ -48,6 +48,7 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public HeartBeatResponse updateTaskTrackerStatus(HeartBeat heartBeat)
 			throws RemoteException {
+		System.out.println("Receive a heartBeat from: " + heartBeat.getNodeID());
 		NodeID taskTrackerNodeID = heartBeat.getNodeID();
 		// get all finish tasks
 		for (MapTask mapTask: heartBeat.getFinishedMappers()) {
@@ -93,6 +94,7 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public void registerTaskTracker(NodeID taskTrackerNodeID)
 			throws RemoteException {
+		System.out.println("New taskTracker online: " + taskTrackerNodeID);
 		jobTracker.addTaskTracker(taskTrackerNodeID);
 	}
 
