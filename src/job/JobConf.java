@@ -18,7 +18,7 @@ public class JobConf implements Serializable {
 	private String inputPath;
 	private String outputPath;
 
-	private static final Map<String, String> classMap = new HashMap<String, String>();
+	private Map<String, String> classMap = new HashMap<String, String>();
 
 	public void setJobId(JobID jobId) {
 		this.jobId = jobId;
