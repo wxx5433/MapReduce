@@ -34,6 +34,7 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public JobStatus submitJob(JobID jobID, JobConf jobConf)
 			throws RemoteException {
+		System.out.println("In JobTrackerService: jobConf: " + jobConf.getMapperClass());
 		JobStatus jobStatus = new JobStatus(jobID, jobConf);
 		jobTracker.addJob(jobID, jobConf);
 		return jobStatus;

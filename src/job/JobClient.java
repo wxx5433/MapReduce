@@ -65,6 +65,7 @@ public class JobClient {
 		// submit the job to jobTracker and get back jobStatus
 		JobStatus jobStatus = null;
 		try {
+			System.out.println("In JobClient - jobConf: " + jobConf.getMapperClass());
 			jobStatus = jobTrackerService.submitJob(jobID, jobConf);
 		} catch (RemoteException e) {
 			System.out.println("Fail to submit job to jobTracker");
