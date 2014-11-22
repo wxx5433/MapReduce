@@ -248,6 +248,7 @@ if (tip != null) {
 			Collection<TaskInProgress> tips) {
 		Iterator<TaskInProgress> iter = tips.iterator();
 		if (iter.hasNext()) {
+			System.out.println("fnid a non-cal task!");
 			return iter.next();
 		}
 		return null;
@@ -312,12 +313,13 @@ if (tip != null) {
 		// TODO Auto-generated method stub
 		// currently we do not consider locality
 		// NodeID taskTrackerNodeId = tt.getNodeId();
-		tip = findNonLocalTaskFromList(nonRunningReduces);
 		System.out.println("non-running reduces num: " + nonRunningReduces.size());
+		tip = findNonLocalTaskFromList(nonRunningReduces);
 		if (tip != null) {
 			scheduleReduce(tip);
 			System.out.println("Choosing a nonrunning reduce task");
 			nonRunningReduces.remove(tip);
+			System.out.println("Size of reduce tasks after choosing: " + nonRunningReduces.size());
 			return tip.getTIPId();
 		}
 		System.out.println("Cannot find a reduce task");
