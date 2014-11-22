@@ -11,5 +11,5 @@ heartBeatInterval=5000
 maxAttempsNum=4
 localPath=/Users/wxx/hadoop/local/
 DFSPath=/Users/wxx/hadoop/hdfs/
-reduceShufflePath=reducer/shuffle/
-reduceInterPath=reduce/output/
+reduceShufflePath=/reduce/shuffle/
+reduceInterPath=/reduce/output/
