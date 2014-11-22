@@ -43,6 +43,8 @@ public class TaskTracker implements TaskTrackerInterface {
 		System.out.println("Conf mapper slots number=" + conf.mapSlots);
 		mapperSlotNumber = conf.mapSlots;
 		reducerSlotNumber = conf.reduceSlots;
+		leftMapperSlot = mapperSlotNumber;
+		leftReducerSlot = reducerSlotNumber;
 		nodeId = new NodeID(InetAddress.getLocalHost().getHostAddress(),
 				conf.dataNodePort);
 	}
@@ -109,8 +111,10 @@ public class TaskTracker implements TaskTrackerInterface {
 				ArrayList<MapTask> newMappers = heatBeatResponse
 						.getNewMappers();
 				for (MapTask mapTask : newMappers) {
-					System.out.println("recieve new maptasks!----"
-							+ mapTask.getTaskAttemptID().getNodeID().toString());
+					System.out
+							.println("recieve new maptasks!----"
+									+ mapTask.getTaskAttemptID().getNodeID()
+											.toString());
 					subLeftMapperSlot();
 					addNewMapTask(mapTask);
 				}
@@ -120,7 +124,8 @@ public class TaskTracker implements TaskTrackerInterface {
 						.getNewReducers();
 				for (ReduceTask reduceTask : newReducers) {
 					System.out.println("recieve new reducetasks!----"
-							+ reduceTask.getTaskAttemptID().getNodeID().toString());
+							+ reduceTask.getTaskAttemptID().getNodeID()
+									.toString());
 					reduceTask.setLocalPath(this.nodeId.getLocalPath());
 					subLeftReducerSlot();
 					addNewReduceTask(reduceTask);
