@@ -49,10 +49,6 @@ class ReducerExecutionExecutor implements Runnable {
 		pool.execute(thread);
 	}
 
-	public int getRunningThreadNum() {
-		return Thread.currentThread().getThreadGroup().activeCount();
-	}
-
 	public void terminate() {
 		pool.shutdown();
 		isStop = true;

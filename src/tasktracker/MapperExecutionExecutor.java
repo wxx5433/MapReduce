@@ -24,6 +24,7 @@ class MapperExecutionExecutor implements Runnable {
 	public MapperExecutionExecutor(TaskTracker taskTracker) {
 		this.taskTracker = taskTracker;
 		this.isStop = false;
+		System.out.println(taskTracker.getMapperSlotNumber());
 		pool = Executors.newFixedThreadPool(taskTracker.getMapperSlotNumber());
 	}
 
@@ -46,11 +47,8 @@ class MapperExecutionExecutor implements Runnable {
 	public void execute(MapTask mapTask, TaskTracker taskTracker) {
 		TaskThread mapTaskThread = new TaskThread(mapTask, taskTracker);
 		Thread thread = new Thread(mapTaskThread);
+		System.out.println("Run new mapTasks!");
 		pool.execute(thread);
-	}
-
-	public int getRunningThreadNum() {
-		return Thread.currentThread().getThreadGroup().activeCount();
 	}
 
 	public void terminate() {

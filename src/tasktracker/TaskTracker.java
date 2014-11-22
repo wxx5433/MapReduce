@@ -24,6 +24,9 @@ public class TaskTracker implements TaskTrackerInterface {
 	private int mapperSlotNumber = 0;
 	private int reducerSlotNumber = 0;
 
+	private int leftMapperSlot = 4;
+	private int leftReducerSlot = 4;
+
 	private Thread mapperExecutor = null;
 	private MapperExecutionExecutor mapperExecutionExecutor = null;
 	private Thread reducerExecutor = null;
@@ -37,6 +40,7 @@ public class TaskTracker implements TaskTrackerInterface {
 	private ArrayList<ReduceTask> failedReduceTask = new ArrayList<ReduceTask>();
 
 	public TaskTracker(Configuration conf) throws UnknownHostException {
+		System.out.println("Conf mapper slots number=" + conf.mapSlots);
 		mapperSlotNumber = conf.mapSlots;
 		reducerSlotNumber = conf.reduceSlots;
 		nodeId = new NodeID(InetAddress.getLocalHost().getHostAddress(),
@@ -85,11 +89,11 @@ public class TaskTracker implements TaskTrackerInterface {
 
 	public void sendHeartbeat() {
 		System.out.println("send hearbeat with left slot num--"
-				+ getLeftMapperSlotNum() + "--| left reduce slot num--"
-				+ getLeftReducerSlotNum());
+				+ getLeftMapperSlot() + "--| left reduce slot num--"
+				+ getLeftReducerSlot());
 		HeartBeat heartBeat = new HeartBeat(this.nodeId)
-				.setLeftMapperSlot(getLeftMapperSlotNum())
-				.setLeftReducerSlot(getLeftReducerSlotNum())
+				.setLeftMapperSlot(getLeftMapperSlot())
+				.setLeftReducerSlot(getLeftReducerSlot())
 				.setFinishedMappers(getCompletedMapTask())
 				.setFinishedReducers(getCompletedReduceTask())
 				.setFailedMappers(getFailedMapTask())
@@ -104,6 +108,7 @@ public class TaskTracker implements TaskTrackerInterface {
 				for (MapTask mapTask : newMappers) {
 					System.out.println("recieve new maptasks!----"
 							+ mapTask.getTaskID().toString());
+					addLeftMapperSlot();
 					addNewMapTask(mapTask);
 				}
 			}
@@ -114,6 +119,7 @@ public class TaskTracker implements TaskTrackerInterface {
 					System.out.println("recieve new maptasks!----"
 							+ reduceTask.getTaskID().toString());
 					reduceTask.setLocalPath(this.nodeId.getLocalPath());
+					addLeftReducerSlot();
 					addNewReduceTask(reduceTask);
 				}
 			}
@@ -141,26 +147,21 @@ public class TaskTracker implements TaskTrackerInterface {
 	public synchronized void updateCompletedTask(Task task) {
 		if (task instanceof MapTask) {
 			completedMapTask.add((MapTask) task);
+			subLeftMapperSlot();
 		} else if (task instanceof ReduceTask) {
 			completedReduceTask.add((ReduceTask) task);
+			subLeftReducerSlot();
 		}
 	}
 
 	public synchronized void updateFailedTaskStatus(Task task) {
 		if (task instanceof MapTask) {
 			failedMapTask.add((MapTask) task);
+			subLeftMapperSlot();
 		} else if (task instanceof ReduceTask) {
 			failedReduceTask.add((ReduceTask) task);
+			subLeftReducerSlot();
 		}
-	}
-
-	public int getLeftMapperSlotNum() {
-		return mapperSlotNumber - mapperExecutionExecutor.getRunningThreadNum();
-	}
-
-	public int getLeftReducerSlotNum() {
-		return reducerSlotNumber
-				- reducerExecutionExecutor.getRunningThreadNum();
 	}
 
 	public ArrayList<MapTask> getCompletedMapTask() {
@@ -177,6 +178,38 @@ public class TaskTracker implements TaskTrackerInterface {
 
 	public ArrayList<ReduceTask> getFailedReduceTask() {
 		return failedReduceTask;
+	}
+
+	public int getLeftMapperSlot() {
+		return leftMapperSlot;
+	}
+
+	public void addLeftMapperSlot() {
+		++leftMapperSlot;
+	}
+
+	public void subLeftMapperSlot() {
+		--leftMapperSlot;
+	}
+
+	public void setLeftMapperSlot(int leftMapperSlot) {
+		this.leftMapperSlot = leftMapperSlot;
+	}
+
+	public int getLeftReducerSlot() {
+		return leftReducerSlot;
+	}
+
+	public void addLeftReducerSlot() {
+		++leftReducerSlot;
+	}
+
+	public void subLeftReducerSlot() {
+		--leftReducerSlot;
+	}
+
+	public void setLeftReducerSlot(int leftReducerSlot) {
+		this.leftReducerSlot = leftReducerSlot;
 	}
 
 	public static void main(String[] args) throws UnknownHostException {
