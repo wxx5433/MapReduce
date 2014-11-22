@@ -1,13 +1,19 @@
 package job;
 
-public class JobStatus {
+import java.io.Serializable;
 
+public class JobStatus implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 526973507263427352L;
 	private JobID jobID;
 	private JobConf conf;
 	private float mapProgress;
 	private float reduceProgress;
 	private State state;
-	
+
 	public JobStatus(JobID jobID, JobConf conf) {
 		this.jobID = jobID;
 		this.conf = conf;
@@ -15,14 +21,10 @@ public class JobStatus {
 	}
 
 	/**
-	 * Current state of the job 
+	 * Current state of the job
 	 */
 	public static enum State {
-		RUNNING(1),
-		COMPLETED(2),
-		FAILED(3),
-		PREP(4),
-		KILLED(5);
+		RUNNING(1), COMPLETED(2), FAILED(3), PREP(4), KILLED(5);
 
 		int value;
 
@@ -58,19 +60,19 @@ public class JobStatus {
 	public void setReduceProgress(float reduceProgress) {
 		this.reduceProgress = reduceProgress;
 	}
-	
+
 	public void setComplete() {
 		state = State.COMPLETED;
 	}
-	
+
 	public boolean isComplete() {
 		return state == State.COMPLETED;
 	}
-	
+
 	public int getState() {
 		return state.value;
 	}
-	
+
 	public void setState(State s) {
 		state = s;
 	}

@@ -57,9 +57,10 @@ public class TaskTracker implements TaskTrackerInterface {
 				.getHostAddress(), conf.dataNodePort);
 	}
 
-	public void start() {
+	public void start() throws RemoteException {
 		JobClient jobClient = new JobClient();
 		jobTrackerService = jobClient.getJobTrackerService();
+		jobTrackerService.registerTaskTracker(getNodeId());
 		heartBeat = new HeartBeatThread(this);
 		heartBeatThread = new Thread(heartBeat);
 		mapperExecutionExecutor = new MapperExecutionExecutor(this);
@@ -214,7 +215,8 @@ public class TaskTracker implements TaskTrackerInterface {
 		this.leftReducerSlot = leftReducerSlot;
 	}
 
-	public static void main(String[] args) throws UnknownHostException {
+	public static void main(String[] args) throws UnknownHostException,
+			RemoteException {
 		Configuration conf = new Configuration();
 		TaskTracker taskTracker;
 		if (args.length == 2)
