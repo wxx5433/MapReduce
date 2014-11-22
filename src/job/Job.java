@@ -23,15 +23,15 @@ public class Job {
 	private JobConf jobConf;
 	private JobID jobID;
 
-	public static Job getInstance() throws IOException {
-		return getInstance();
-	}
-
-	public static Job getInstance(String jobName) throws IOException {
-		Job result = getInstance();
-		result.setJobName(jobName);
-		return result;
-	}
+	// public static Job getInstance() throws IOException {
+	// return getInstance();
+	// }
+	//
+	// public static Job getInstance(String jobName) throws IOException {
+	// Job result = getInstance();
+	// result.setJobName(jobName);
+	// return result;
+	// }
 
 	public Job() {
 		// new jobConf, pass configuration to jobConf
@@ -39,6 +39,7 @@ public class Job {
 	}
 
 	public Job(String jobName) {
+		this();
 		setJobName(jobName);
 	}
 
