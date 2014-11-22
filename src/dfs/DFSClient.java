@@ -1,6 +1,7 @@
 package dfs;
 
 
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +18,6 @@ import java.util.Set;
 import nameNode.NameNodeService;
 import node.NodeID;
 import configuration.Configuration;
-import dataNode.DataNodeService;
 import fileSplit.FileSplit;
 import fileSplit.RemoteSplitOperator;
 
