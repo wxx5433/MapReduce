@@ -15,10 +15,11 @@ public class TaskAttemptID implements Serializable {
 	private boolean mapper;
 	private NodeID nodeID;
 
-	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptNum) {
+	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptNum, boolean mapper) {
 		this.jobID = jobID;
 		this.taskId = mapTaskNum;
 		this.attemptNum = attemptNum;
+		this.mapper = mapper;
 	}
 
 	public int getTaskID() {

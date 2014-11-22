@@ -18,7 +18,7 @@ public class TaskInProgress {
 //		this.jobId = jobId;
 //		this.taskId = taskId;
 		// initially the taskAttempNum = 1
-		this.taskAttemptID = new TaskAttemptID(jobId, taskId, 1);
+		this.taskAttemptID = new TaskAttemptID(jobId, taskId, 1, isMapper);
 		this.isMapper = isMapper;
 		this.mapOutputList = new ArrayList<MapOutput>();
 	}
