@@ -84,7 +84,7 @@ public class TaskInProgress {
 		}
 		if (obj instanceof TaskInProgress) {
 			TaskInProgress that = (TaskInProgress)obj;
-			if (this.taskAttemptID == that.taskAttemptID) {
+			if (this.taskAttemptID.compareTo(that.taskAttemptID)) {
 				return true;
 			}
 		}

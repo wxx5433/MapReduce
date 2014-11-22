@@ -165,7 +165,7 @@ public class JobInProgress {
 		for (int i = 0; i < numReduceTasks; i++) {
 			// reduces[i] = new TaskInProgress(jobId, jobFile, numMapTasks, i,
 			// jobtracker, conf, this, numSlotsPerReduce);
-			reduces[i] = new TaskInProgress(this.jobId, this.numMapTasks + i,
+			reduces[i] = new TaskInProgress(this.jobId, i,
 					false);
 			nonRunningReduces.add(reduces[i]);
 		}
@@ -273,7 +273,7 @@ public class JobInProgress {
 	}
 
 	public TaskInProgress getReduceTask(int taskId) {
-		return reduces[taskId - numMapTasks];
+		return reduces[taskId];
 	}
 
 	/**

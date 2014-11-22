@@ -65,10 +65,35 @@ public class TaskAttemptID implements Serializable {
 	}
 
 	public boolean compareTo(TaskAttemptID compare) {
-		if (this.taskId != compare.taskId)
+		if (this.mapper != compare.mapper) {
 			return false;
-		if (this.attemptNum != compare.attemptNum)
+		}
+		if (this.taskId != compare.taskId) {
 			return false;
+		}
+		if (this.attemptNum != compare.attemptNum) {
+			return false;
+		}
 		return true;
 	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj instanceof TaskAttemptID) {
+			TaskAttemptID that = (TaskAttemptID)obj;
+			if (this.compareTo(that)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
