@@ -189,10 +189,13 @@ public class JobInProgress {
 			return -1;
 		}
 		TaskInProgress tip = null;
-		// first schedule a fail map
-		tip = findTaskFromList(failedMaps);
+		// first schedule a local fail map
+		tip = findLocalTaskFromList(taskTrackerNodeID, failedMaps);
+		// no local fail map, then try a non local fail map
+		if (tip == null) {
+			tip = findNonLocalTaskFromList(failedMaps);
+		}
 		if (tip != null) {
-
 			scheduleMap(taskTrackerNodeID, tip);
 			System.out.println("Choosing a failed map task ");
 			// remove the map task from failedMaps
@@ -206,10 +209,11 @@ public class JobInProgress {
 			return tip.getTIPId();
 		}
 
-		// then schedule non-running map tasks
-		// TODO Auto-generated method stub
-		// currently we do not consider locality
-		tip = findTaskFromList(nonRunningMaps);
+		// no fail map, then schedule local non-running map tasks
+		tip = findLocalTaskFromList(taskTrackerNodeID, nonRunningMaps);
+		if (tip == null) {   // no local non-runnnig map tasks, arbitraly pick one.
+			tip = findNonLocalTaskFromList(nonRunningMaps);
+		}
 		if (tip != null) {
 			scheduleMap(taskTrackerNodeID, tip);
 			System.out.println("Choosing a nonrunning map task");
@@ -220,18 +224,52 @@ public class JobInProgress {
 	}
 
 	/**
-	 * return a task from the list
-	 * 
+	 * return a non local task from the list
 	 * @param tips
 	 * @return
 	 */
-	public synchronized TaskInProgress findTaskFromList(
+	public synchronized TaskInProgress findNonLocalTaskFromList(
 			Collection<TaskInProgress> tips) {
 		Iterator<TaskInProgress> iter = tips.iterator();
 		if (iter.hasNext()) {
 			return iter.next();
 		}
 		return null;
+	}
+	
+	/**
+	 * return a local task from the list
+	 * 
+	 * @param tips
+	 * @return
+	 */
+	public synchronized TaskInProgress findLocalTaskFromList(
+			NodeID taskTrackerNodeId, Collection<TaskInProgress> tips) {
+		Iterator<TaskInProgress> iter = tips.iterator();
+		TaskInProgress tip = null;
+		while (iter.hasNext()) {
+			 tip = iter.next();
+			 if (isLocal(taskTrackerNodeId, tip)) {
+				 return tip;
+			 }
+		}
+		return null;
+	}
+	
+	/**
+	 * judge if the taskInProgress's input split is local to the taskTracker
+	 * @param taskTrackerNodeId
+	 * @param tip
+	 * @return
+	 */
+	private synchronized boolean isLocal(NodeID taskTrackerNodeId, TaskInProgress tip) {
+		List<String> locations = tip.getSplitLocations();
+		for (String location: locations) {
+			if (location.equals(taskTrackerNodeId.toString())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -246,7 +284,7 @@ public class JobInProgress {
 		}
 		TaskInProgress tip = null;
 		// first schedule a fail reduce
-		tip = findTaskFromList(failedReduces);
+		tip = findNonLocalTaskFromList(failedReduces);
 		if (tip != null) {
 			scheduleReduce(tip);
 			System.out.println("Choosing a failed reduce task ");
@@ -258,7 +296,7 @@ public class JobInProgress {
 		// TODO Auto-generated method stub
 		// currently we do not consider locality
 		// NodeID taskTrackerNodeId = tt.getNodeId();
-		tip = findTaskFromList(nonRunningReduces);
+		tip = findNonLocalTaskFromList(nonRunningReduces);
 		if (tip != null) {
 			scheduleReduce(tip);
 			System.out.println("Choosing a nonrunning reduce task");
