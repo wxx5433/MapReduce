@@ -96,10 +96,10 @@ public class TaskInProgress {
 		return this.taskAttemptID.toString();
 	}
 
-	@Override
-	public int hashCode() {
-		return this.toString().hashCode();
-	}
+//	@Override
+//	public int hashCode() {
+//		return this.toString().hashCode();
+//	}
 
 	
 }

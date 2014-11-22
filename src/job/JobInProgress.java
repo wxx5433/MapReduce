@@ -168,7 +168,12 @@ public class JobInProgress {
 			// jobtracker, conf, this, numSlotsPerReduce);
 			reduces[i] = new TaskInProgress(this.jobId, i,
 					false);
+			System.out.println("print reduce array: " + reduces[i]);
 			nonRunningReduces.add(reduces[i]);
+System.out.println("Start printint reduces tasks");
+for (TaskInProgress tip: nonRunningReduces) {
+	System.out.println(tip);
+}
 		}
 		System.out
 		.println("Successfully initialized all reduce tasks for job: "
