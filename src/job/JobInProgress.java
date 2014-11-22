@@ -532,13 +532,13 @@ public class JobInProgress {
 	}
 	
 	public float getMapProgress() {
-		return (float) this.numMapTasks * 100
-				/ this.finishedMapTasks;
+		return (float) this.finishedMapTasks * 100
+				/ this.numMapTasks;
 	}
 	
 	public float getReduceProgress() {
-		return (float) this.numReduceTasks * 100
-				/ this.finishedReduceTasks;
+		return (float) this.finishedReduceTasks* 100
+				/ this.numReduceTasks;
 	}
 
 	@Override
