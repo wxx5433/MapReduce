@@ -36,11 +36,21 @@ public class JobID implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!super.equals(o))
-			return false;
-
-		JobID that = (JobID) o;
-		return this.id == that.id;
+//		if (!super.equals(o))
+//			return false;
+//
+//		JobID that = (JobID) o;
+//		return this.id == that.id;
+		if (this == o) {
+			return true;
+		}
+		if (o instanceof JobID) {
+			JobID that = (JobID)o;
+			if (this.id == that.id) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Compare JobIds by first jtIdentifiers, then by job numbers */
