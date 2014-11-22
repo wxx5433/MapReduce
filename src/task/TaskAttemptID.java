@@ -15,7 +15,8 @@ public class TaskAttemptID implements Serializable {
 	private boolean mapper;
 	private NodeID nodeID;
 
-	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptNum, boolean mapper) {
+	public TaskAttemptID(JobID jobID, int mapTaskNum, int attemptNum,
+			boolean mapper) {
 		this.jobID = jobID;
 		this.taskId = mapTaskNum;
 		this.attemptNum = attemptNum;
@@ -64,14 +65,10 @@ public class TaskAttemptID implements Serializable {
 	}
 
 	public boolean compareTo(TaskAttemptID compare) {
-		if ((this.jobID.hashCode() == compare.jobID.hashCode())
-				&& this.taskId == compare.taskId
-				&& this.attemptNum == compare.attemptNum
-				&& this.nodeID.equals(compare.nodeID)) {
-			return true;
-		} else {
+		if (this.taskId != compare.taskId)
 			return false;
-		}
-
+		if (this.attemptNum != compare.attemptNum)
+			return false;
+		return true;
 	}
 }

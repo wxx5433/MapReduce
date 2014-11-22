@@ -23,6 +23,7 @@ public class TaskThread extends Thread {
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | IOException | InterruptedException e) {
 			taskTracker.updateFailedTaskStatus(task);
+			throw new RuntimeException(e);
 		}
 	}
 }
