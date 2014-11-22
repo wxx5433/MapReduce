@@ -16,6 +16,7 @@ import job.JobConf;
 import job.JobID;
 import job.JobInProgress;
 import job.JobInfo;
+import job.JobStatus.State;
 import nameNode.NameNodeService;
 import node.NodeID;
 import task.MapTask;
@@ -306,8 +307,18 @@ public class JobTracker {
 		int index = 0;
 		for (JobInProgress jip: jobMapCopy.values()) {
 			JobConf jobConf = jip.getJobConf();
+			State s = null;
+			if (jip.isComplete()) {
+				s = State.COMPLETED;
+			} else if (jip.isJobKilled()) {
+				s = State.KILLED;
+			} else if (jip.isJobFailed()) {
+				s = State.FAILED;
+			} else {
+				s = State.RUNNING;
+			}
 			JobInfo jobInfo = new JobInfo(
-					jobConf.getJobName(), jobConf.getJobID(), 
+					jobConf.getJobName(), jobConf.getJobID(), s, 
 					jip.getNumMapTasks(), jip.getNumReduceTasks(),
 					jip.getMapProgress(), jip.getReduceProgress()
 					);

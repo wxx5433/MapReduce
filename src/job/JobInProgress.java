@@ -53,6 +53,8 @@ public class JobInProgress {
 	int failedMapTasks = 0;
 	int failedReduceTasks = 0;
 
+	private volatile boolean tasksInit;
+	private volatile boolean jobComplete;
 	private volatile boolean jobKilled = false;
 	private volatile boolean jobFailed = false;
 
@@ -78,9 +80,6 @@ public class JobInProgress {
 
 	// A set of running reduce TIPs
 	Map<Integer, TaskInProgress> runningReduces;
-
-	private volatile boolean tasksInit;
-	private volatile boolean jobComplete;
 
 	long startTime;
 	long launchTime;
