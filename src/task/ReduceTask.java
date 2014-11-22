@@ -112,7 +112,7 @@ public class ReduceTask implements Task {
 		ReduceRecordReader<INKEY, INVALUE> input = new ReduceRecordReader();
 		input.initialize(intermediateOutput);
 		ReduceContext<INKEY, INVALUE, OUTKEY, OUTVALUE> reduceContext = new ReduceContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
-				getTaskID(), input, output);
+				getTaskAttemptID(), input, output);
 
 		Reducer<String, String, OUTKEY, OUTVALUE>.Context reducerContext = new WrappedReducer<String, String, OUTKEY, OUTVALUE>()
 				.getReducerContext((ReduceContext<String, String, OUTKEY, OUTVALUE>) reduceContext);
@@ -154,7 +154,7 @@ public class ReduceTask implements Task {
 	}
 
 	@Override
-	public TaskAttemptID getTaskID() {
+	public TaskAttemptID getTaskAttemptID() {
 		return this.taskAttemptID;
 	}
 

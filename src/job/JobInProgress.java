@@ -62,7 +62,7 @@ public class JobInProgress {
 	// Map<Node, List<TaskInProgress>> nonRunningMapCache;
 
 	// Map of NetworkTopology Node to set of running TIPs
-	Map<NodeID, Set<TaskInProgress>> runningMapCache;
+	Map<NodeID, Map<Integer, TaskInProgress>> runningMapCache;
 
 	// A set of non-local running maps
 	Set<TaskInProgress> nonRunningMaps;
@@ -77,7 +77,7 @@ public class JobInProgress {
 	Set<TaskInProgress> failedReduces;
 
 	// A set of running reduce TIPs
-	Set<TaskInProgress> runningReduces;
+	Map<Integer, TaskInProgress> runningReduces;
 
 	private volatile boolean tasksInit;
 	private volatile boolean jobComplete;
@@ -112,9 +112,9 @@ public class JobInProgress {
 		this.failedReduces = new TreeSet<TaskInProgress>(failComparator);
 		this.nonRunningMaps = new LinkedHashSet<TaskInProgress>();
 		this.nonRunningReduces = new TreeSet<TaskInProgress>(failComparator);
-		this.runningReduces = new LinkedHashSet<TaskInProgress>();
+		this.runningReduces = new ConcurrentHashMap<Integer, TaskInProgress>();
 		this.nameNodeService = getNameNodeService();
-		this.runningMapCache = new ConcurrentHashMap<NodeID, Set<TaskInProgress>>();
+		this.runningMapCache = new ConcurrentHashMap<NodeID, Map<Integer, TaskInProgress>>();
 	}
 
 	/**
@@ -290,13 +290,13 @@ public class JobInProgress {
 			return;
 		}
 
-		Set<TaskInProgress> tasks = null;
+		Map<Integer, TaskInProgress> tasks = null;
 		if (!runningMapCache.containsKey(taskTrackerNodeId)) {
-			tasks = new LinkedHashSet<TaskInProgress>();
+			tasks = new ConcurrentHashMap<Integer, TaskInProgress>();
 		} else {
 			tasks = runningMapCache.get(taskTrackerNodeId);
 		}
-		tasks.add(tip);
+		tasks.put(tip.getTIPId(), tip);
 		runningMapCache.put(taskTrackerNodeId, tasks);
 		++runningMapTasks;
 	}
@@ -305,7 +305,7 @@ public class JobInProgress {
 	 * Schedule a reduce tasks
 	 */
 	public synchronized void scheduleReduce(TaskInProgress tip) {
-		runningReduces.add(tip);
+		runningReduces.put(tip.getTIPId(), tip);
 		++runningReduceTasks;
 	}
 
@@ -316,26 +316,29 @@ public class JobInProgress {
 	 */
 	public synchronized void failMap(NodeID taskTrackerNodeID, MapTask mapTask) {
 		if (runningMapCache.containsKey(taskTrackerNodeID)) {
-			TaskInProgress tip = getMapTaskInProgress(taskTrackerNodeID,
+			TaskInProgress tip = removeMapTaskInProgress(taskTrackerNodeID,
 					mapTask);
-			runningMapCache.get(taskTrackerNodeID).remove(tip);
+//			runningMapCache.get(taskTrackerNodeID).remove(tip);
 			failedMaps.add(tip);
 			++this.failedMapTasks;
 		}
 	}
 
-	public synchronized TaskInProgress getMapTaskInProgress(
+	/**
+	 * remove a task in the runningMapCache
+	 * @param taskTrackerNodeID
+	 * @param mapTask
+	 * @return
+	 */
+	public synchronized TaskInProgress removeMapTaskInProgress(
 			NodeID taskTrackerNodeID, MapTask mapTask) {
-		Set<TaskInProgress> runningMapSet = runningMapCache
+		Map<Integer, TaskInProgress> runningMap = runningMapCache
 				.get(taskTrackerNodeID);
 		TaskInProgress result = null;
-		for (TaskInProgress tip : runningMapSet) {
-			if (tip.getTaskAttemptID().compareTo(mapTask.getTaskID())) {
-				result = tip;
-				break;
-			}
+		int taskId = mapTask.getTaskAttemptID().getTaskID();
+		if (runningMap.containsKey(taskId)) {
+			runningMap.remove(taskId);
 		}
-		runningMapSet.remove(result);
 		return result;
 	}
 
@@ -346,7 +349,7 @@ public class JobInProgress {
 			ReduceTask reduceTask) {
 		TaskInProgress tip = getReduceTaskInProgress(taskTrackerNodeID,
 				reduceTask);
-		runningReduces.remove(tip);
+		runningReduces.remove(tip.getTIPId());
 		failedReduces.add(tip);
 		++this.failedReduceTasks;
 	}
@@ -354,13 +357,11 @@ public class JobInProgress {
 	public synchronized TaskInProgress getReduceTaskInProgress(
 			NodeID taskTrackerNodeID, ReduceTask reduceTask) {
 		TaskInProgress result = null;
-		for (TaskInProgress tip : runningReduces) {
-			if (tip.getTaskAttemptID().compareTo(reduceTask.getTaskID())) {
-				result = tip;
-				break;
-			}
+		int taskId = reduceTask.getTaskAttemptID().getTaskID();
+		if (runningReduces.containsKey(taskId)) {
+			result = runningReduces.get(taskId);
 		}
-		runningReduces.remove(result);
+		runningReduces.remove(taskId);
 		return result;
 	}
 
@@ -408,13 +409,13 @@ public class JobInProgress {
 	public synchronized void finishMapTask(MapTask mapTask) {
 		System.out.println("Finish a map task: " + mapTask.toString());
 		++this.finishedMapTasks;
-		TaskAttemptID taskAttemptId = mapTask.getTaskID();
+		TaskAttemptID taskAttemptId = mapTask.getTaskAttemptID();
 		System.out.println(taskAttemptId);
 		// get all the tasks on the node where the finish map task is running on
-		Set<TaskInProgress> tasks = runningMapCache.get(taskAttemptId
+		Map<Integer, TaskInProgress> tasks = runningMapCache.get(taskAttemptId
 				.getNodeID());
-		// remove it
-		tasks.remove(maps[taskAttemptId.getTaskID()]);
+		// remove it from runningMapCache
+		tasks.remove(taskAttemptId.getTaskID());
 		// add map's output to reducer's input
 		List<String> mapOutputPathLists = mapTask.getOutputPathsForReduce();
 		for (String data : mapOutputPathLists) {
@@ -430,8 +431,8 @@ public class JobInProgress {
 	public synchronized void finishReduceTask(ReduceTask reduceTask) {
 		System.out.println("Finish a reduce task: " + reduceTask.toString());
 		++this.finishedReduceTasks;
-		TaskAttemptID tai = reduceTask.getTaskID();
-		runningReduces.remove(reduces[tai.getTaskID() - this.numMapTasks]);
+		TaskAttemptID tai = reduceTask.getTaskAttemptID();
+		runningReduces.remove(tai.getTaskID());
 		// finish the last reduce tasks
 		if (this.finishedReduceTasks == this.numReduceTasks) {
 			setJobCompelete();

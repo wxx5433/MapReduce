@@ -67,7 +67,7 @@ public class MapTask implements Task {
 		return jobConf;
 	}
 
-	public TaskAttemptID getTaskID() {
+	public TaskAttemptID getTaskAttemptID() {
 		return taskAttemptID;
 	}
 
@@ -101,7 +101,7 @@ public class MapTask implements Task {
 		RecordWriter output = outputCollector;
 
 		MapContext<INKEY, INVALUE, OUTKEY, OUTVALUE> mapContext = new MapContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
-				getTaskID(), input, output, mapInputSplit);
+				getTaskAttemptID(), input, output, mapInputSplit);
 
 		Mapper<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context mapperContext = new WrappedMapper<INKEY, INVALUE, OUTKEY, OUTVALUE>()
 				.getMapContext(mapContext);
