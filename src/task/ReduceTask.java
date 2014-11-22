@@ -44,7 +44,7 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateInputPath() {
-		String path = localPath + "/" + conf.reduceShufflePath
+		String path = localPath + conf.reduceShufflePath
 				+ getTaskAttemptID().toString();
 		System.out.println("shuffle path: " + path);
 		File dir = new File(path);
@@ -58,7 +58,7 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateOutputPath() {
-		outputPath = localPath + "/" + conf.reduceInterPath;
+		outputPath = localPath + conf.reduceInterPath;
 		System.out.println("output path: " + outputPath);
 		File dir = new File(outputPath);
 		if (!dir.exists()) {

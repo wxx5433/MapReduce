@@ -30,41 +30,35 @@ public class WrappedReducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
 
 		@Override
 		public boolean nextKey() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
-			return false;
+			return reduceContext.nextKey();
 		}
 
 		@Override
 		public Iterable<String> getValues() throws IOException,
 				InterruptedException {
-			// TODO Auto-generated method stub
-			return null;
+			return reduceContext.getValues();
 		}
 
 		@Override
 		public boolean nextKeyValue() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
-			return false;
+			return reduceContext.nextKeyValue();
 		}
 
 		@Override
 		public String getCurrentKey() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
-			return null;
+			return reduceContext.getCurrentKey();
 		}
 
 		@Override
 		public String getCurrentValue() throws IOException,
 				InterruptedException {
-			// TODO Auto-generated method stub
-			return null;
+			return reduceContext.getCurrentValue();
 		}
 
 		@Override
 		public void write(KEYOUT key, VALUEOUT value) throws IOException,
 				InterruptedException {
-			// TODO Auto-generated method stub
-
+			reduceContext.write(key, value);
 		}
 	}
 }
