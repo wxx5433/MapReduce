@@ -111,7 +111,7 @@ public class JobInProgress {
 		this.failedMaps = new TreeSet<TaskInProgress>(failComparator);
 		this.failedReduces = new TreeSet<TaskInProgress>(failComparator);
 		this.nonRunningMaps = new LinkedHashSet<TaskInProgress>();
-		this.nonRunningReduces = new TreeSet<TaskInProgress>(failComparator);
+		this.nonRunningReduces = new LinkedHashSet<TaskInProgress>();
 		this.runningReduces = new ConcurrentHashMap<Integer, TaskInProgress>();
 		this.nameNodeService = getNameNodeService();
 		this.runningMapCache = new ConcurrentHashMap<NodeID, Map<Integer, TaskInProgress>>();
