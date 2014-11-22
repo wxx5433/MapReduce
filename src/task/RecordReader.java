@@ -8,7 +8,7 @@ import fileSplit.MapInputSplit;
 public abstract class RecordReader<KEYIN, VALUEIN> {
 
 	public abstract void initialize(MapInputSplit split, String host)
-			throws FileNotFoundException;
+			throws FileNotFoundException, IOException;
 
 	public abstract boolean nextKeyValue() throws IOException;
 

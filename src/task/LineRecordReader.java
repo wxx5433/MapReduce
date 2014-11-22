@@ -1,19 +1,23 @@
 package task;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
+import node.NodeID;
+import configuration.Configuration;
 import fileSplit.MapInputSplit;
+import fileSplit.RemoteSplitOperator;
 
 public class LineRecordReader extends RecordReader<Long, String> {
 
-	private BufferedReader br;
+	private List<String> br;
 	// key is the offset
 	private Long key;
 	private String value;
+	private NodeID nodeID;
+	private RemoteSplitOperator remoteSplit;
+	private int lineCount;
+	private int currentLine;
 
 	public LineRecordReader() {
 		key = null;
@@ -21,29 +25,29 @@ public class LineRecordReader extends RecordReader<Long, String> {
 	}
 
 	@Override
-	public void initialize(MapInputSplit split, String host)
-			throws FileNotFoundException {
-		String path = split.getPath();
+	public void initialize(MapInputSplit split, String host) throws IOException {
+		nodeID = new NodeID(split.getHost(), new Configuration().dataNodePort);
+		// String path = split.getPath();
 		// fileName here is the split fileName, not the original fileName
 		String fileName = split.getFileName() + "_" + split.getBlockIndex();
-		FileReader fr = null;
-		fr = new FileReader(path + File.separator + fileName);
-		br = new BufferedReader(fr);
+		remoteSplit = new RemoteSplitOperator();
+		br = remoteSplit.readBlock(nodeID, fileName);
+		lineCount = br.size();
+		currentLine = 0;
 	}
 
 	@Override
 	public boolean nextKeyValue() throws IOException {
-		String line;
-		line = br.readLine();
-		if (line == null) {
+		if (currentLine == lineCount) {
 			return false;
 		}
 		if (key == null) {
-			key = 0L;
+			key = (long) currentLine;
 		} else {
 			++key;
 		}
-		value = line;
+		value = br.get(currentLine);
+		currentLine++;
 		return true;
 	}
 
@@ -59,7 +63,6 @@ public class LineRecordReader extends RecordReader<Long, String> {
 
 	@Override
 	public void close() throws IOException {
-		br.close();
 	}
 
 }
