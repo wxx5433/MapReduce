@@ -21,6 +21,7 @@ public class ReduceRecordReader<KEYIN, VALUEIN> {
 	public void initialize(String reduceInputPath) throws FileNotFoundException {
 		// fileName here is the split fileName, not the original fileName
 		FileReader fr = null;
+		System.out.println("reduce input file path: " + reduceInputPath);
 		fr = new FileReader(reduceInputPath);
 		br = new BufferedReader(fr);
 	}
