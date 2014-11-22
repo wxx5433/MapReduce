@@ -5,6 +5,7 @@ import configuration.Configuration;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -94,6 +95,9 @@ public class JobInProgress {
 	private NameNodeService nameNodeService;
 	private Configuration configuration;
 
+	private static final FailComparator failComparator = 
+			new FailComparator();
+
 	/**
 	 * Create an almost empty JobInProgress, which can be used only for tests
 	 */
@@ -107,12 +111,13 @@ public class JobInProgress {
 		// this.numMapTasks = conf.getNumMapTasks();
 		this.numReduceTasks = conf.getNumReduceTasks();
 		this.jobTracker = tracker;
-		this.failedMaps = new TreeSet<TaskInProgress>();//failComparator);
+		this.failedMaps = new TreeSet<TaskInProgress>(failComparator);
 		this.nonRunningMaps = new LinkedHashSet<TaskInProgress>();
-		this.nonRunningReduces = new TreeSet<TaskInProgress>();//failComparator);
+		this.nonRunningReduces = new TreeSet<TaskInProgress>(failComparator);
 		this.runningReduces = new LinkedHashSet<TaskInProgress>();
 		this.nameNodeService = getNameNodeService();
 	}
+
 
 	/**
 	 * Construct the splits, etc. This is invoked from an async thread so that
@@ -355,12 +360,12 @@ public class JobInProgress {
 	public boolean isComplete() {
 		return this.jobComplete;
 	}
-	
+
 	public void setJobKilled() {
 		this.jobKilled = true;
 		jobTracker.killJob(this.jobId);
 	}
-	
+
 	public boolean isJobKilled() {
 		return this.jobKilled;
 	}
@@ -412,11 +417,11 @@ public class JobInProgress {
 			setJobCompelete();
 		}
 	}
-	
+
 	public boolean hasFinishedAllMapTasks() {
 		return this.numMapTasks == this.finishedMapTasks;
 	}
-	
+
 	public boolean isJobFailed() {
 		return jobFailed;
 	}
@@ -460,4 +465,12 @@ public class JobInProgress {
 		return false;
 	}
 
+}
+
+class FailComparator implements Comparator<TaskInProgress> {
+
+	@Override
+	public int compare(TaskInProgress o1, TaskInProgress o2) {
+		return o1.getTaskAttemptNum() - o2.getTaskAttemptNum();
+	}
 }
