@@ -32,7 +32,7 @@ public class Configuration implements Serializable {
 	}
 
 	public void setup() throws Exception {
-		FileReader fr = new FileReader("config");
+		FileReader fr = new FileReader("./config");
 		BufferedReader br = new BufferedReader(fr);
 
 		String line = null;
