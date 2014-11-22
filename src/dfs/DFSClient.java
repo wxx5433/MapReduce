@@ -41,7 +41,7 @@ public class DFSClient {
 	 * @param filePath local path of the upload file
 	 * @param fileName the file to upload
 	 */
-	public void uploadFile(String filePath, String fileName) {
+	public void uploadFile(String filePath, String fileName, String dfsFileName) {
 		FileReader fr  = null;
 		BufferedReader br = null;
 		int splitSize = configuration.splitSize;
@@ -60,10 +60,10 @@ public class DFSClient {
 				if (lineCount % splitSize == 0) {
 					int blockIndex = lineCount / splitSize;
 					// ask the nameNode where to upload the chunks
-					Iterable<NodeID> dataNodes = nameNodeService.getDataNodesToUpload(fileName, blockIndex);
+					Iterable<NodeID> dataNodes = nameNodeService.getDataNodesToUpload(dfsFileName, blockIndex);
 					RemoteSplitOperator rso = new RemoteSplitOperator();
 					try {
-						rso.writeSplit(dataNodes, fileName, blockIndex, contents);
+						rso.writeSplit(dataNodes, dfsFileName, blockIndex, contents);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -74,10 +74,10 @@ public class DFSClient {
 			if (lineCount % splitSize != 0) {
 				int blockIndex = lineCount / splitSize + 1;
 				// ask the nameNode where to upload the chunks
-				Iterable<NodeID> dataNodes = nameNodeService.getDataNodesToUpload(fileName, blockIndex);
+				Iterable<NodeID> dataNodes = nameNodeService.getDataNodesToUpload(dfsFileName, blockIndex);
 				RemoteSplitOperator rso = new RemoteSplitOperator();
 				try {
-					rso.writeSplit(dataNodes, fileName, blockIndex, contents);
+					rso.writeSplit(dataNodes, dfsFileName, blockIndex, contents);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
