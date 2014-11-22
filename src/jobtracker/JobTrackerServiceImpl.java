@@ -34,7 +34,8 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public JobStatus submitJob(JobID jobID, JobConf jobConf)
 			throws RemoteException {
-		System.out.println("In JobTrackerService: jobConf: " + jobConf.getMapperClass());
+//		System.out.println("In JobTrackerService: jobID: " + jobConf.getJobID());
+//		System.out.println("In JobTrackerService: jobConf: " + jobConf.getMapperClass());
 		JobStatus jobStatus = new JobStatus(jobID, jobConf);
 		jobTracker.addJob(jobID, jobConf);
 		return jobStatus;
@@ -55,19 +56,27 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 		for (MapTask mapTask: heartBeat.getFinishedMappers()) {
 			JobInProgress jip = jobTracker.getJobInProgress(mapTask.getJobID());
 			jip.finishMapTask(mapTask);
+			System.out.println("New finish map task " + mapTask.toString() 
+					+ " from " + taskTrackerNodeID);
 		}
 		for (ReduceTask reduceTask: heartBeat.getFinishedReducers()) {
 			JobInProgress jip = jobTracker.getJobInProgress(reduceTask.getJobID());
 			jip.finishReduceTask(reduceTask);
+			System.out.println("New finish reduce task " + reduceTask.toString() 
+					+ " from " + taskTrackerNodeID);
 		}
 		// get all fail tasks
 		for (MapTask mapTask: heartBeat.getFailedMappers()) {
 			JobInProgress jip = jobTracker.getJobInProgress(mapTask.getJobID());
 			jip.failMap(taskTrackerNodeID, mapTask);
+			System.out.println("New fail map task " + mapTask.toString() 
+					+ " from " + taskTrackerNodeID);
 		}
 		for (ReduceTask reduceTask: heartBeat.getFailedReducers()) {
 			JobInProgress jip = jobTracker.getJobInProgress(reduceTask.getJobID());
 			jip.failReduce(taskTrackerNodeID, reduceTask);
+			System.out.println("New fail reduce task " + reduceTask.toString() 
+					+ " from " + taskTrackerNodeID);
 		}
 		
 		HeartBeatResponse heartBeatResponse = new HeartBeatResponse();
