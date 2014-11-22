@@ -83,6 +83,7 @@ public class MapTask implements Task {
 			InstantiationException, IllegalAccessException {
 
 		// make a mapper
+		System.out.println("mapperClassName: " + jobConf.getMapperClass());
 		Class<?> mapperClass = Class.forName(jobConf.getMapperClass());
 		Mapper mapper = (Mapper) mapperClass.newInstance();
 
