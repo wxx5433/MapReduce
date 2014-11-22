@@ -44,7 +44,7 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateInputPath() {
-		String path = localPath + conf.reduceShufflePath
+		String path = localPath + "/" + conf.reduceShufflePath
 				+ getTaskID().toString();
 		System.out.println("shuffle path: " + path);
 		File dir = new File(path);
@@ -58,8 +58,7 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateOutputPath() {
-		outputPath = localPath + conf.reduceInterPath
-				+ taskAttemptID.toString();
+		outputPath = localPath + "/" + conf.reduceInterPath;
 		System.out.println("output path: " + outputPath);
 		File dir = new File(outputPath);
 		if (!dir.exists()) {
@@ -120,12 +119,12 @@ public class ReduceTask implements Task {
 		reducer.run((Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context) reducerContext);
 		output.close();
 		DFSClient dfsClient = new DFSClient();
-		dfsClient.uploadFile(generateOutputPath(), jobConf.getOutputPath()
-				+ taskAttemptID.toString());
+		dfsClient.uploadFile(generateOutputPath(), taskAttemptID.toString());
 	}
 
 	private DataOutputStream getDataOutputStream() throws FileNotFoundException {
-		return new DataOutputStream(new FileOutputStream(generateOutputPath()));
+		return new DataOutputStream(new FileOutputStream(generateOutputPath()
+				+ taskAttemptID.toString()));
 	}
 
 	@Override
