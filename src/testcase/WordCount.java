@@ -33,8 +33,7 @@ public class WordCount implements MyTool {
 	/**
 	 * Performs PageRank collection of all the values for each key.
 	 */
-	public static class PageRankReducer extends
-			Reducer<String, String, String, String> {
+	public static class PageRankReducer extends Reducer {
 
 		/**
 		 * Collect all the URLs within and writes them to the same key.

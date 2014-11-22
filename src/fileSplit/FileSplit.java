@@ -10,16 +10,18 @@ import node.NodeID;
 import configuration.Configuration;
 
 /**
- * Every file uploaded to DFS will be split into several parts. 
- * In our system, the file is split according to line number, which is specified
- * in the configuration file. 
- * In this way, we can avoid the potentiality to split one line into two
- * different parts, which is a problem if using file size to do the split. 
- * However, there may be vary length of lines, which will make the split skewed in size.
+ * Every file uploaded to DFS will be split into several parts. In our system,
+ * the file is split according to line number, which is specified in the
+ * configuration file. In this way, we can avoid the potentiality to split one
+ * line into two different parts, which is a problem if using file size to do
+ * the split. However, there may be vary length of lines, which will make the
+ * split skewed in size.
+ * 
  * @author Xiaoxiang Wu (xiaoxiaw)
  * @author Ye Zhou (yezhou)
  */
-public class FileSplit extends InputSplit implements Serializable, Comparable<FileSplit> {
+public class FileSplit extends InputSplit implements Serializable,
+		Comparable<FileSplit> {
 
 	private static final long serialVersionUID = -8773858158603105299L;
 
@@ -30,17 +32,19 @@ public class FileSplit extends InputSplit implements Serializable, Comparable<Fi
 	private int hostsCount;
 	private Configuration configuration;
 
-	public FileSplit(Configuration configuration, String fileName, int blockIndex) {
+	public FileSplit(Configuration configuration, String fileName,
+			int blockIndex) {
 		this.configuration = configuration;
 		this.fileName = fileName;
 		this.blockIndex = blockIndex;
 		this.paths = new ConcurrentHashMap<String, String>();
 		this.hostsCount = 0;
 	}
-	
+
 	public synchronized void addHost(String host, String path) throws Exception {
 		if (hostsCount >= configuration.replicaNum) {
-			throw new Exception("There are too many replica for the file split!");
+			throw new Exception(
+					"There are too many replica for the file split!");
 		}
 		paths.put(host, path);
 		++hostsCount;
@@ -70,7 +74,8 @@ public class FileSplit extends InputSplit implements Serializable, Comparable<Fi
 		}
 		if (obj instanceof FileSplit) {
 			FileSplit that = (FileSplit) obj;
-			if (this.fileName.equals(that.fileName) && this.blockIndex == that.blockIndex) {
+			if (this.fileName.equals(that.fileName)
+					&& this.blockIndex == that.blockIndex) {
 				return true;
 			}
 		}
@@ -81,14 +86,14 @@ public class FileSplit extends InputSplit implements Serializable, Comparable<Fi
 	public int compareTo(FileSplit o) {
 		if (!this.fileName.equals(o.getFileName())) {
 			return this.fileName.compareTo(o.getFileName());
-		} 
-		return Integer.compare(this.blockIndex, o.getBlockIndex());
+		}
+		return (this.blockIndex - o.getBlockIndex());
 	}
-	
+
 	public List<String> getHosts() {
 		return new ArrayList<String>(paths.keySet());
 	}
-	
+
 	@Override
 	public NodeID getOneDataNode() {
 		List<String> hosts = getHosts();
@@ -98,11 +103,11 @@ public class FileSplit extends InputSplit implements Serializable, Comparable<Fi
 		String host = getHosts().get(0);
 		return NodeID.constructFromString(host);
 	}
-	
+
 	public String getPath(String host) {
 		return paths.get(host);
 	}
-	
+
 	public String getFileName() {
 		return fileName;
 	}

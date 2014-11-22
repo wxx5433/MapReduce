@@ -2,14 +2,13 @@ package tool;
 
 import java.io.IOException;
 
-public class Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
+public class Reducer {
 
 	/**
 	 * The <code>Context</code> passed on to the {@link Reducer}
 	 * implementations.
 	 */
-	public abstract class Context implements
-			ReduceContext<String, String, KEYOUT, VALUEOUT> {
+	public abstract class Context implements ReduceContext {
 	}
 
 	/**
@@ -21,7 +20,7 @@ public class Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	protected void reduce(String key, Iterable<String> values, Context context)
 			throws IOException, InterruptedException {
 		for (String value : values) {
-			context.write((KEYOUT) key, (VALUEOUT) value);
+			context.write((String) key, (String) value);
 		}
 	}
 

@@ -3,7 +3,7 @@ package tool;
 import java.io.IOException;
 import java.util.Iterator;
 
-public interface ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
+public interface ReduceContext {
 	/** Start processing next unique key. */
 	public boolean nextKey() throws IOException, InterruptedException;
 
@@ -53,6 +53,6 @@ public interface ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	/**
 	 * Generate an output key/value pair.
 	 */
-	public void write(KEYOUT key, VALUEOUT value) throws IOException,
+	public void write(String key, String value) throws IOException,
 			InterruptedException;
 }
