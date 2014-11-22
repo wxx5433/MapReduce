@@ -106,7 +106,6 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public void registerTaskTracker(NodeID taskTrackerNodeID)
 			throws RemoteException {
-		System.out.println("New taskTracker online: " + taskTrackerNodeID);
 		jobTracker.addTaskTracker(taskTrackerNodeID);
 	}
 
