@@ -254,7 +254,7 @@ public class JobTracker {
 
 	public int getFinishedReduceTasksNum(JobID jobID) {
 		JobInProgress jip = jobMap.get(jobID);
-		return jip.getNumReduceTasks();
+		return jip.getNumFinishedReduceTasks();
 	}
 
 	public int getMapTasksNum(JobID jobID) {

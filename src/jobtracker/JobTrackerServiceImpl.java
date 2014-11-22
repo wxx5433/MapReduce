@@ -81,14 +81,16 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 
 	@Override
 	public float getMapTasksProgress(JobID jobID) throws RemoteException {
-		return (float) jobTracker.getFinishedMapTasksNum(jobID)
-				/ (float) jobTracker.getMapTasksNum(jobID);
+		return (float) jobTracker.getFinishedMapTasksNum(jobID) * 100
+				/ jobTracker.getMapTasksNum(jobID);
 	}
 
 	@Override
 	public float getReduceTasksProgress(JobID jobID) throws RemoteException {
-		return (float) jobTracker.getFinishedReduceTasksNum(jobID)
-				/ (float) jobTracker.getReduceTasksNum(jobID);
+		System.out.println("finish reduce: " + jobTracker.getFinishedReduceTasksNum(jobID));
+		System.out.println("reduce num: " + jobTracker.getReduceTasksNum(jobID));
+		return (float) jobTracker.getFinishedReduceTasksNum(jobID) * 100
+				/ jobTracker.getReduceTasksNum(jobID);
 	}
 
 	@Override

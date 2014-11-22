@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import dfs.Service;
 import fileSplit.FileSplit;
@@ -116,6 +117,7 @@ public class JobInProgress {
 		this.nonRunningReduces = new TreeSet<TaskInProgress>(failComparator);
 		this.runningReduces = new LinkedHashSet<TaskInProgress>();
 		this.nameNodeService = getNameNodeService();
+		this.runningMapCache = new ConcurrentHashMap<NodeID, Set<TaskInProgress>>();
 	}
 
 
