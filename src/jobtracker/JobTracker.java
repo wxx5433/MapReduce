@@ -236,6 +236,7 @@ public class JobTracker {
 		JobInProgress jip = null;
 		try {
 			jip = new JobInProgress(configuration, jobID, conf, this);
+			jip.initTasks();
 		} catch (IOException e) {
 			return false;
 		}

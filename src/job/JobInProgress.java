@@ -118,8 +118,7 @@ public class JobInProgress {
 	 * Construct the splits, etc. This is invoked from an async thread so that
 	 * split-computation doesn't block anyone.
 	 */
-	public synchronized void initTasks() throws IOException,
-	KillInterruptedException {
+	public synchronized void initTasks() throws IOException {
 		// return if the job has already initialize tasks or finished. 
 		if (tasksInit || isComplete()) {
 			return;
@@ -133,6 +132,7 @@ public class JobInProgress {
 		// read input splits and create a map per a split
 		FileSplit[] splits = createSplits();
 		numMapTasks = splits.length;
+		System.out.println("Number of map tasks: " + numMapTasks);
 		maps = new TaskInProgress[numMapTasks];
 		for (int i = 0; i < numMapTasks; ++i) {
 			maps[i] = new TaskInProgress(this.jobId, i, splits[i], true);
