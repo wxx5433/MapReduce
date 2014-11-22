@@ -161,6 +161,7 @@ public class JobInProgress {
 		// this.launchTime = jobtracker.getClock().getTime();
 
 		// Create reduce tasks
+		System.out.println("number of reduce tasks: " + numReduceTasks);
 		reduces = new TaskInProgress[numReduceTasks];
 		for (int i = 0; i < numReduceTasks; i++) {
 			// reduces[i] = new TaskInProgress(jobId, jobFile, numMapTasks, i,
@@ -402,14 +403,14 @@ if (tip != null) {
 	 */
 	public synchronized void failReduce(NodeID taskTrackerNodeID,
 			ReduceTask reduceTask) {
-		TaskInProgress tip = getReduceTaskInProgress(taskTrackerNodeID,
+		TaskInProgress tip = removeReduceTaskInProgress(taskTrackerNodeID,
 				reduceTask);
-		runningReduces.remove(tip.getTIPId());
+//		runningReduces.remove(tip.getTIPId());
 		failedReduces.add(tip);
 		++this.failedReduceTasks;
 	}
 
-	public synchronized TaskInProgress getReduceTaskInProgress(
+	public synchronized TaskInProgress removeReduceTaskInProgress(
 			NodeID taskTrackerNodeID, ReduceTask reduceTask) {
 		TaskInProgress result = null;
 		int taskId = reduceTask.getTaskAttemptID().getTaskID();
@@ -485,6 +486,7 @@ if (tip != null) {
 
 	public synchronized void finishReduceTask(ReduceTask reduceTask) {
 		System.out.println("Finish a reduce task: " + reduceTask.toString());
+		System.out.println("Finish reduce tasks num: " +  this.finishedReduceTasks);
 		++this.finishedReduceTasks;
 		TaskAttemptID tai = reduceTask.getTaskAttemptID();
 		runningReduces.remove(tai.getTaskID());
