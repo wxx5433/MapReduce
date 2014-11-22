@@ -159,6 +159,7 @@ public class JobTracker {
 				// randomly choose one location (no locality here)
 				MapInputSplit mis = new MapInputSplit(tip.getFileSplit());
 				System.out.println("Print in JobTracker -- JobConf: " + jip.getJobConf().getMapperClass());
+				tip.getTaskAttemptID().setNodeID(mis.getDataNodeID());
 				MapTask mapTask = new MapTask(mis, taskTrackerNodeID.getLocalPath(),
 						jip.getJobConf(), tip.getTaskAttemptID());
 				System.out.println("Task tracker: " + taskTrackerNodeID 

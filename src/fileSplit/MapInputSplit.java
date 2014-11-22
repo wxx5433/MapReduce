@@ -11,6 +11,7 @@ public class MapInputSplit extends InputSplit implements Serializable {
 	private int blockIndex;
 	private String host;
 	private String path;
+	private NodeID dataNodeID;
 
 	public MapInputSplit(String fileName, int blockIndex) {
 		this.fileName = fileName;
@@ -30,8 +31,8 @@ public class MapInputSplit extends InputSplit implements Serializable {
 	public MapInputSplit(FileSplit split) {
 		this.fileName = split.getFileName();
 		this.blockIndex = split.getBlockIndex();
-		NodeID dataNode = split.getOneDataNode();
-		this.host = dataNode.toString();
+		dataNodeID = split.getOneDataNode();
+		this.host = dataNodeID.toString();
 		this.path = split.getPath(this.host);
 	}
 	
@@ -70,6 +71,14 @@ public class MapInputSplit extends InputSplit implements Serializable {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public NodeID getDataNodeID() {
+		return dataNodeID;
+	}
+
+	public void setDataNodeID(NodeID dataNodeID) {
+		this.dataNodeID = dataNodeID;
 	}
 	
 }
