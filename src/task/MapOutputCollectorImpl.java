@@ -25,7 +25,7 @@ public class MapOutputCollectorImpl<K, V> implements MapOutputCollector<K, V> {
 	public void init(CollectorContext context) throws FileNotFoundException {
 		int reduceNum = context.getJobConf().getNumReduceTasks();
 		String mapOutputPath = outputPath;
-		String outputFilePath = mapOutputPath + "/"
+		String outputFilePath = mapOutputPath + "/mapper/"
 				+ context.getMapTask().getTaskAttemptID().toString();
 		File dir = new File(outputFilePath);
 		if (!dir.exists()) {
