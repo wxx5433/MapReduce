@@ -170,10 +170,10 @@ public class JobInProgress {
 					false);
 			System.out.println("print reduce array: " + reduces[i]);
 			nonRunningReduces.add(reduces[i]);
-System.out.println("Start printint reduces tasks");
-for (TaskInProgress tip: nonRunningReduces) {
-	System.out.println(tip);
-}
+			System.out.println("Start printint reduces tasks");
+			for (TaskInProgress tip: nonRunningReduces) {
+				System.out.println(tip);
+			}
 		}
 		System.out
 		.println("Successfully initialized all reduce tasks for job: "
@@ -197,12 +197,12 @@ for (TaskInProgress tip: nonRunningReduces) {
 		TaskInProgress tip = null;
 		// first schedule a local fail map
 		tip = findLocalTaskFromList(taskTrackerNodeID, failedMaps);
-		
-		
-if (tip != null) {
-	System.out.println("Task tracker: " + taskTrackerNodeID
-			+ " successfully get new local failed map task");
-}
+
+
+		if (tip != null) {
+			System.out.println("Task tracker: " + taskTrackerNodeID
+					+ " successfully get new local failed map task");
+		}
 
 
 		// no local fail map, then try a non local fail map
@@ -225,11 +225,11 @@ if (tip != null) {
 
 		// no fail map, then schedule local non-running map tasks
 		tip = findLocalTaskFromList(taskTrackerNodeID, nonRunningMaps);
-		
-if (tip != null) {
-	System.out.println("Task tracker: " + taskTrackerNodeID
-			+ " successfully get new local non-running map task");
-}
+
+		if (tip != null) {
+			System.out.println("Task tracker: " + taskTrackerNodeID
+					+ " successfully get new local non-running map task");
+		}
 
 
 		if (tip == null) {   // no local non-runnnig map tasks, arbitraly pick one.
@@ -412,7 +412,7 @@ if (tip != null) {
 			ReduceTask reduceTask) {
 		TaskInProgress tip = removeReduceTaskInProgress(taskTrackerNodeID,
 				reduceTask);
-//		runningReduces.remove(tip.getTIPId());
+		//		runningReduces.remove(tip.getTIPId());
 		failedReduces.add(tip);
 		++this.failedReduceTasks;
 	}
@@ -556,6 +556,10 @@ class FailComparator implements Comparator<TaskInProgress> {
 
 	@Override
 	public int compare(TaskInProgress o1, TaskInProgress o2) {
+		if (o1.getTaskAttemptNum() == o2.getTaskAttemptNum()) {
+			return o1.getTaskAttemptID().getTaskID() 
+					- o2.getTaskAttemptID().getTaskID();
+		}
 		return o1.getTaskAttemptNum() - o2.getTaskAttemptNum();
 	}
 }
