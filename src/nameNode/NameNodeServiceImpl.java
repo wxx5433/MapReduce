@@ -68,7 +68,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 		}
 		// Actually, we need to get response from dataNodes to update
 		nameNode.updateNameSpace(fileName, blockIndex, fileSplit);
-		System.out.println("Succesfully get dataNode info from NameNode!");
+//		System.out.println("Succesfully get dataNode info from NameNode!");
 		return dataNodeIDs;
 	}
 	
