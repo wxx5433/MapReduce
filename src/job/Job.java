@@ -83,6 +83,14 @@ public class Job {
 		jobConf.setPartionerClass(cls);
 	}
 
+	public void setMapOutputKeyClass(Class<?> cls) {
+		jobConf.setMapOutputKeyClass(cls);
+	}
+
+	public void setMapOutputValueClass(Class<?> cls) {
+		jobConf.setMapOutputValueClass(cls);
+	}
+
 	public void setJobName(String name) throws IllegalStateException {
 		jobConf.setJobName(name);
 	}

@@ -66,6 +66,8 @@ public class WordCount implements MyTool {
 		System.out.println("output:" + output);
 		Job job = new Job("WordCount");
 		job.setMapperClass(PageRankMapper.class);
+		job.setMapOutputKeyClass(String.class);
+		job.setMapOutputValueClass(String.class);
 		job.setReducerClass(PageRankReducer.class);
 		job.setNumReduceTasks(2);
 		job.setInputFormatClass(LineInputFormat.class);

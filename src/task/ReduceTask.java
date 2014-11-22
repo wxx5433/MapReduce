@@ -44,7 +44,7 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateInputPath() {
-		String path = conf.localPath + conf.reduceShufflePath
+		String path = localPath + conf.reduceShufflePath
 				+ getTaskID().toString();
 		System.out.println("shuffle path: " + path);
 		File dir = new File(path);
@@ -58,7 +58,7 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateOutputPath() {
-		outputPath = conf.localPath + conf.reduceInterPath
+		outputPath = localPath + conf.reduceInterPath
 				+ taskAttemptID.toString();
 		System.out.println("output path: " + outputPath);
 		File dir = new File(outputPath);
@@ -185,7 +185,7 @@ public class ReduceTask implements Task {
 				String intermediateOutput, TaskAttemptID taskAttemptID) {
 			this.inputData = inputData;
 			this.taskAttemptID = taskAttemptID;
-			this.intermediatePath = this.intermediatePath + "/"
+			this.intermediatePath = intermediateOutput + "/"
 					+ taskAttemptID.toString();
 		}
 
@@ -193,6 +193,7 @@ public class ReduceTask implements Task {
 		public boolean fetchOutputs() throws IOException {
 			for (MapOutput input : inputData) {
 				RemoteSplitOperator remoteSplitOperator = new RemoteSplitOperator();
+				System.out.println("fetch output: " + input.getLocalFilePath());
 				List<String> data = remoteSplitOperator.readBlock(
 						input.getNodeID(), input.getLocalFilePath());
 				for (String val : data) {
