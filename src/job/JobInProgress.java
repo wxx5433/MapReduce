@@ -56,7 +56,7 @@ public class JobInProgress {
 	private volatile boolean jobKilled = false;
 	private volatile boolean jobFailed = false;
 
-	final JobTracker jobtracker;
+	final JobTracker jobTracker;
 
 	// NetworkTopology Node to the set of TIPs
 	//	Map<Node, List<TaskInProgress>> nonRunningMapCache;
@@ -105,7 +105,7 @@ public class JobInProgress {
 		this.jobId = jobid;
 		// this.numMapTasks = conf.getNumMapTasks();
 		this.numReduceTasks = conf.getNumReduceTasks();
-		this.jobtracker = tracker;
+		this.jobTracker = tracker;
 		this.failedMaps = new TreeSet<TaskInProgress>();//failComparator);
 		this.nonRunningMaps = new LinkedHashSet<TaskInProgress>();
 		this.nonRunningReduces = new TreeSet<TaskInProgress>();//failComparator);
@@ -349,6 +349,7 @@ public class JobInProgress {
 
 	public void setJobCompelete() {
 		this.jobComplete = true;
+		jobTracker.jobComplete(this);
 	}
 
 	public boolean isComplete() {
@@ -397,6 +398,14 @@ public class JobInProgress {
 		++this.finishedReduceTasks;
 		TaskAttemptID tai = reduceTask.getTaskID();
 		runningReduces.remove(reduces[tai.getTaskID() - this.numMapTasks]);
+		// finish the last reduce tasks
+		if (this.finishedReduceTasks == this.numReduceTasks) {
+			setJobCompelete();
+		}
+	}
+	
+	public boolean isJobFailed() {
+		return jobFailed;
 	}
 
 	public int getNumMapTasks() {

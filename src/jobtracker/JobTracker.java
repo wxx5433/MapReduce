@@ -90,7 +90,6 @@ public class JobTracker {
 		completeJobQueue = new ConcurrentLinkedQueue<JobInProgress>();
 		jobMap = new ConcurrentHashMap<JobID, JobInProgress>();
 		//		taskPriorityQueue = new TaskPriorityQueue(taskPriorityQueueInitCapacity);
-		initialize();
 	}
 
 	private void initialize() {
@@ -211,6 +210,11 @@ public class JobTracker {
 	public boolean isJobComplete(JobID jobId) {
 		JobInProgress jip = jobMap.get(jobId);
 		return jip.isComplete();
+	}
+	
+	public boolean isJobFailed(JobID jobId) {
+		JobInProgress jip = jobMap.get(jobId);
+		return jip.isJobFailed();
 	}
 
 	public synchronized boolean addJob(JobID jobID, JobConf conf) {

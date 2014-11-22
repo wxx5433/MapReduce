@@ -66,7 +66,9 @@ public class RunningJob implements RunningJobInterface {
 	@Override
 	public void waitForCompletion() throws IOException {
 		// ask the jobTracker whether the job has complete
-		while (!jobTrackerService.isJobCompelete(jobID)) {
+		boolean isJobComplete =  false, isJobFailed = false;
+		while (!(isJobComplete = jobTrackerService.isJobCompelete(jobID))
+				&& !(isJobFailed = jobTrackerService.isJobFailed(jobID))) {
 //			Thread.sleep(// heart beat interval here);
 			StringBuilder sb = new StringBuilder();
 			sb.append("map: ");
@@ -77,6 +79,13 @@ public class RunningJob implements RunningJobInterface {
 			sb.append(jobTrackerService.getReduceTasksProgress(jobID));
 			sb.append("%\n");
 			System.out.println(sb.toString());
+		}
+		if (isJobComplete) {
+			setJobState(State.COMPLETED);
+			System.out.println("Job complete: " + jobID);
+		} else if (isJobFailed) {
+			setJobState(State.FAILED);
+			System.out.println("Job failed: " + jobID);
 		}
 	}
 
