@@ -89,6 +89,7 @@ public class MapTask implements Task {
 
 		// rebuild the input format
 		Class<?> inputFormatClass = Class.forName(jobConf.getInputFormat());
+		System.out.println("jobinputformat: " + jobConf.getInputFormat());
 		InputFormat inputFormat = (InputFormat) inputFormatClass.newInstance();
 
 		RecordReader input = inputFormat
@@ -113,6 +114,7 @@ public class MapTask implements Task {
 	}
 
 	private void statusUpdate() {
+		System.out.println("MapTaskFinish!");
 	}
 
 	@Override

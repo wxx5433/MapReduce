@@ -30,6 +30,8 @@ public class Mapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 	 */
 	public void run(Context context) throws IOException, InterruptedException {
 		while (context.nextKeyValue()) {
+			System.out.println("key: " + context.getCurrentKey());
+			System.out.println("Value:" + context.getCurrentValue());
 			map(context.getCurrentKey(), context.getCurrentValue(), context);
 		}
 	}
