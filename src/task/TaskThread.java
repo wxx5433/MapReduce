@@ -16,7 +16,7 @@ public class TaskThread extends Thread {
 
 	public void run() {
 		System.out.println("New Task starts!-----"
-				+ task.getTaskID().toString());
+				+ task.getTaskAttemptID().toString());
 		try {
 			task.run();
 			taskTracker.updateCompletedTask(task);

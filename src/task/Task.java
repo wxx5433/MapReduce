@@ -24,7 +24,7 @@ public interface Task extends Serializable {
 
 	public String getInputFile();
 
-	public TaskAttemptID getTaskID();
+	public TaskAttemptID getTaskAttemptID();
 
 	void run() throws ClassNotFoundException, InstantiationException,
 			IOException, InterruptedException, IllegalAccessException;
