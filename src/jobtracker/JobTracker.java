@@ -175,6 +175,10 @@ public class JobTracker {
 	public ReduceTask getNewReduceTask(NodeID taskTrackerNodeID) {
 		System.out.println("Task tracker: " + taskTrackerNodeID + " request new reduce task");
 		for (JobInProgress jip: jobQueue) {
+			// has not finish all map tasks for this job
+			if (!jip.hasFinishedAllMapTasks()) {
+				continue;
+			}
 			int taskId = jip.getNewReduceTask(taskTrackerNodeID);
 			if (taskId != -1) {
 				TaskInProgress tip = jip.getReduceTask(taskId);

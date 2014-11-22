@@ -413,6 +413,10 @@ public class JobInProgress {
 		}
 	}
 	
+	public boolean hasFinishedAllMapTasks() {
+		return this.numMapTasks == this.finishedMapTasks;
+	}
+	
 	public boolean isJobFailed() {
 		return jobFailed;
 	}
