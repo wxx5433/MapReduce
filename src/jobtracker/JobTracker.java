@@ -168,8 +168,8 @@ public class JobTracker {
 				MapTask mapTask = new MapTask(mis,
 						taskTrackerNodeID.getLocalPath(), jip.getJobConf(),
 						tip.getTaskAttemptID());
-				System.out.println("Task tracker: " + taskTrackerNodeID
-						+ " successfully get new map task");
+//				System.out.println("Task tracker: " + taskTrackerNodeID
+//						+ " successfully get new map task");
 				return mapTask;
 			}
 		}

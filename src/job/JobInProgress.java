@@ -170,8 +170,8 @@ public class JobInProgress {
 			nonRunningReduces.add(reduces[i]);
 		}
 		System.out
-				.println("Successfully initialized all reduce tasks for job: "
-						+ jobId);
+		.println("Successfully initialized all reduce tasks for job: "
+				+ jobId);
 
 		System.out.println("Job " + jobId + " initialized successfully with "
 				+ numMapTasks + " map tasks and " + numReduceTasks
@@ -191,6 +191,14 @@ public class JobInProgress {
 		TaskInProgress tip = null;
 		// first schedule a local fail map
 		tip = findLocalTaskFromList(taskTrackerNodeID, failedMaps);
+		
+		
+if (tip != null) {
+	System.out.println("Task tracker: " + taskTrackerNodeID
+			+ " successfully get new local failed map task");
+}
+
+
 		// no local fail map, then try a non local fail map
 		if (tip == null) {
 			tip = findNonLocalTaskFromList(failedMaps);
@@ -211,6 +219,13 @@ public class JobInProgress {
 
 		// no fail map, then schedule local non-running map tasks
 		tip = findLocalTaskFromList(taskTrackerNodeID, nonRunningMaps);
+		
+if (tip != null) {
+	System.out.println("Task tracker: " + taskTrackerNodeID
+			+ " successfully get new local non-running map task");
+}
+
+
 		if (tip == null) {   // no local non-runnnig map tasks, arbitraly pick one.
 			tip = findNonLocalTaskFromList(nonRunningMaps);
 		}
@@ -236,7 +251,7 @@ public class JobInProgress {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * return a local task from the list
 	 * 
@@ -248,14 +263,14 @@ public class JobInProgress {
 		Iterator<TaskInProgress> iter = tips.iterator();
 		TaskInProgress tip = null;
 		while (iter.hasNext()) {
-			 tip = iter.next();
-			 if (isLocal(taskTrackerNodeId, tip)) {
-				 return tip;
-			 }
+			tip = iter.next();
+			if (isLocal(taskTrackerNodeId, tip)) {
+				return tip;
+			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * judge if the taskInProgress's input split is local to the taskTracker
 	 * @param taskTrackerNodeId
@@ -356,7 +371,7 @@ public class JobInProgress {
 		if (runningMapCache.containsKey(taskTrackerNodeID)) {
 			TaskInProgress tip = removeMapTaskInProgress(taskTrackerNodeID,
 					mapTask);
-//			runningMapCache.get(taskTrackerNodeID).remove(tip);
+			//			runningMapCache.get(taskTrackerNodeID).remove(tip);
 			failedMaps.add(tip);
 			++this.failedMapTasks;
 		}
@@ -432,7 +447,7 @@ public class JobInProgress {
 			return nameNodeService.getAllSplits(inputPath);
 		} catch (RemoteException e) {
 			System.out
-					.println("Fail to get file splits from nameNode when initializing tasks");
+			.println("Fail to get file splits from nameNode when initializing tasks");
 			e.printStackTrace();
 		}
 		return null;
