@@ -207,9 +207,6 @@ public class JobTracker {
 		completeJobQueue.add(jip);
 	}
 	
-	public synchronized void jobKilled(JobInProgress jip) {
-		jobQueue.remove(jip);
-	}
 
 	public boolean isJobComplete(JobID jobId) {
 		JobInProgress jip = jobMap.get(jobId);
@@ -224,6 +221,11 @@ public class JobTracker {
 	public boolean isJobKilled(JobID jobId) {
 		JobInProgress jip = jobMap.get(jobId);
 		return jip.isJobKilled();
+	}
+	
+	public synchronized void killJob(JobID jobId) {
+		JobInProgress jip = jobMap.get(jobId);
+		jobQueue.remove(jip);
 	}
 
 	public synchronized boolean addJob(JobID jobID, JobConf conf) {

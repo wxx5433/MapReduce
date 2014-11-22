@@ -122,4 +122,9 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 		return jobTracker.isJobKilled(jobID);
 	}
 
+	@Override
+	public void killJob(JobID jobID) throws RemoteException {
+		jobTracker.killJob(jobID);
+	}
+
 }
