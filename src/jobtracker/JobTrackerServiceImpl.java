@@ -117,4 +117,9 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 		return jobTracker.isJobFailed(jobID);
 	}
 
+	@Override
+	public boolean isJobKilled(JobID jobID) throws RemoteException {
+		return jobTracker.isJobKilled(jobID);
+	}
+
 }

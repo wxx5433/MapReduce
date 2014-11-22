@@ -25,6 +25,8 @@ public interface JobTrackerService extends Remote {
 	
 	public boolean isJobFailed(JobID jobID) throws RemoteException;
 	
+	public boolean isJobKilled(JobID jobID) throws RemoteException;
+	
 	public boolean finishMapTasks(JobID jobID) throws RemoteException;
 	
 	public HeartBeatResponse updateTaskTrackerStatus(HeartBeat heartBeat) throws RemoteException;

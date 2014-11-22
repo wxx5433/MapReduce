@@ -355,6 +355,15 @@ public class JobInProgress {
 	public boolean isComplete() {
 		return this.jobComplete;
 	}
+	
+	public void setJobKilled() {
+		this.jobKilled = true;
+		jobTracker.jobKilled(this);
+	}
+	
+	public boolean isJobKilled() {
+		return this.jobKilled;
+	}
 
 	/**
 	 * Contact nameNode and get all the FileSplits
