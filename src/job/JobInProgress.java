@@ -273,7 +273,7 @@ public class JobInProgress {
 	}
 
 	public TaskInProgress getReduceTask(int taskId) {
-		return reduces[taskId];
+		return reduces[taskId - numMapTasks];
 	}
 
 	/**
