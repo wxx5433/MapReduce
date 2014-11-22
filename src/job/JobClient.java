@@ -4,9 +4,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import jobtracker.JobTrackerService;
 import nameNode.NameNodeService;
 import node.NodeID;
-import jobtracker.JobTrackerService;
 import configuration.Configuration;
 import dfs.Service;
 
@@ -23,7 +23,7 @@ public class JobClient {
 		configuration = new Configuration();
 		jobTrackerService = getJobTrackerService();
 		// get NameNodeService
-		NodeID nameNodeID = new NodeID(configuration.nameNodeIP, 
+		NodeID nameNodeID = new NodeID(configuration.nameNodeIP,
 				configuration.nameNodePort);
 		this.nameNodeService = Service.getNameNodeService(nameNodeID);
 	}
@@ -33,13 +33,14 @@ public class JobClient {
 		this.conf = configuration;
 	}
 
-	//	public static RunningJob runJob(JobConf job) {
-	//		JobClient jc = new JobClient(job);
-	//		RunningJob rj = jc.submitJobInternal(job);
-	//		return rj;
-	//	}
+	// public static RunningJob runJob(JobConf job) {
+	// JobClient jc = new JobClient(job);
+	// RunningJob rj = jc.submitJobInternal(job);
+	// return rj;
+	// }
 
 	public RunningJob submitJobInternal(JobConf jobConf) {
+		System.out.println("Mapper class: " +  jobConf.getMapperClass());
 		// get jobID from jobTracer
 		try {
 			jobID = jobTrackerService.getJobID();
@@ -56,7 +57,8 @@ public class JobClient {
 
 		CheckMessage checkMessage = checkJobConf(jobConf);
 		if (!checkMessage.isValid()) {
-			System.out.println("Invalid job configuration:" + checkMessage.getMessage());
+			System.out.println("Invalid job configuration:"
+					+ checkMessage.getMessage());
 			return null;
 		}
 
@@ -77,8 +79,10 @@ public class JobClient {
 		NodeID jobTrackerNodeID = new NodeID(configuration.jobTrackerIP,
 				configuration.jobTrackerPort);
 		try {
-			Registry registry = LocateRegistry.getRegistry(jobTrackerNodeID.getIp());
-			String name = "rmi://" + jobTrackerNodeID.toString() + "/JobTrackerService";
+			Registry registry = LocateRegistry.getRegistry(jobTrackerNodeID
+					.getIp());
+			String name = "rmi://" + jobTrackerNodeID.toString()
+					+ "/JobTrackerService";
 			return (JobTrackerService) registry.lookup(name);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,10 +97,12 @@ public class JobClient {
 
 		try {
 			if (!nameNodeService.containsFile(jobConf.getInputPath())) {
-				return new CheckMessage(false, "Input files do not exist in DFS");
+				return new CheckMessage(false,
+						"Input files do not exist in DFS");
 			}
 		} catch (RemoteException e) {
-			System.out.println("Failt to contact nameNode service when checking input path");
+			System.out
+					.println("Failt to contact nameNode service when checking input path");
 			e.printStackTrace();
 		}
 

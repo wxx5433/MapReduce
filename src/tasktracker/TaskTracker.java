@@ -111,7 +111,7 @@ public class TaskTracker implements TaskTrackerInterface {
 				for (MapTask mapTask : newMappers) {
 					System.out.println("recieve new maptasks!----"
 							+ mapTask.getTaskID().toString());
-					addLeftMapperSlot();
+					subLeftMapperSlot();
 					addNewMapTask(mapTask);
 				}
 			}
@@ -122,7 +122,7 @@ public class TaskTracker implements TaskTrackerInterface {
 					System.out.println("recieve new maptasks!----"
 							+ reduceTask.getTaskID().toString());
 					reduceTask.setLocalPath(this.nodeId.getLocalPath());
-					addLeftReducerSlot();
+					subLeftReducerSlot();
 					addNewReduceTask(reduceTask);
 				}
 			}
@@ -150,20 +150,20 @@ public class TaskTracker implements TaskTrackerInterface {
 	public synchronized void updateCompletedTask(Task task) {
 		if (task instanceof MapTask) {
 			completedMapTask.add((MapTask) task);
-			subLeftMapperSlot();
+			addLeftMapperSlot();
 		} else if (task instanceof ReduceTask) {
 			completedReduceTask.add((ReduceTask) task);
-			subLeftReducerSlot();
+			addLeftReducerSlot();
 		}
 	}
 
 	public synchronized void updateFailedTaskStatus(Task task) {
 		if (task instanceof MapTask) {
 			failedMapTask.add((MapTask) task);
-			subLeftMapperSlot();
+			addLeftMapperSlot();
 		} else if (task instanceof ReduceTask) {
 			failedReduceTask.add((ReduceTask) task);
-			subLeftReducerSlot();
+			addLeftReducerSlot();
 		}
 	}
 
