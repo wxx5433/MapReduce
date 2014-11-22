@@ -1,6 +1,6 @@
-jobTrackerIP=128.237.223.184
+jobTrackerIP=128.237.166.204
 jobTrackerPort=5434
-nameNodeIP=128.237.223.184
+nameNodeIP=128.237.166.204
 nameNodePort=5433
 dataNodePort=5435
 mapSlots=4
