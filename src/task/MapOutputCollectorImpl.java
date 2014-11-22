@@ -26,7 +26,7 @@ public class MapOutputCollectorImpl<K, V> implements MapOutputCollector<K, V> {
 		int reduceNum = context.getJobConf().getNumReduceTasks();
 		String mapOutputPath = outputPath;
 		String outputFilePath = mapOutputPath + "/mapper/"
-				+ context.getMapTask().getTaskID().toString();
+				+ context.getMapTask().getTaskAttemptID().toString();
 		File dir = new File(outputFilePath);
 		if (!dir.exists()) {
 			if (!dir.mkdirs()) {
