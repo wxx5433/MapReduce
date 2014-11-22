@@ -12,7 +12,7 @@ import configuration.Configuration;
 public abstract class LocalSplitOperator {
 
 	private final static Configuration configuration = new Configuration();
-	
+
 	/**
 	 * This method will be invoked on the DataNode to write a block to its local
 	 * disk.
@@ -49,9 +49,9 @@ public abstract class LocalSplitOperator {
 		}
 		br.close();
 		fr.close();
-		if (result.size() > configuration.splitSize) {
-			throw new Exception("There are too many lines in the block!");
-		}
+		// if (result.size() > configuration.splitSize) {
+		// throw new Exception("There are too many lines in the block!");
+		// }
 		return result;
 	}
 }

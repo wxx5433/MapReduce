@@ -44,10 +44,12 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateInputPath() {
-		String path = conf.reduceShufflePath + getTaskID().toString();
+		String path = conf.localPath + conf.reduceShufflePath
+				+ getTaskID().toString();
+		System.out.println("shuffle path: " + path);
 		File dir = new File(path);
 		if (!dir.exists()) {
-			if (!dir.mkdir()) {
+			if (!dir.mkdirs()) {
 				throw new RuntimeErrorException(null,
 						"make reduce shuffle path dir error!");
 			}
@@ -56,10 +58,12 @@ public class ReduceTask implements Task {
 	}
 
 	private String generateOutputPath() {
-		outputPath = conf.reduceInterPath + taskAttemptID.toString();
+		outputPath = conf.localPath + conf.reduceInterPath
+				+ taskAttemptID.toString();
+		System.out.println("output path: " + outputPath);
 		File dir = new File(outputPath);
 		if (!dir.exists()) {
-			if (!dir.mkdir()) {
+			if (!dir.mkdirs()) {
 				throw new RuntimeErrorException(null,
 						"make reduce local output path dir error!");
 			}
