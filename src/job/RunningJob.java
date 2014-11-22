@@ -3,6 +3,7 @@ package job;
 import java.io.IOException;
 import java.util.Map;
 
+import configuration.Configuration;
 import job.JobStatus.State;
 import jobtracker.JobTrackerService;
 import node.NodeID;
@@ -66,13 +67,18 @@ public class RunningJob implements RunningJobInterface {
 	@Override
 	public void waitForCompletion() throws IOException {
 		// ask the jobTracker whether the job has complete
+		Configuration configuration = new Configuration();
 		boolean isJobComplete =  false;
 		boolean isJobFailed = false;
 		boolean isJobKilled = false;
 		while (!(isJobComplete = jobTrackerService.isJobCompelete(jobID))
 				&& !(isJobFailed = jobTrackerService.isJobFailed(jobID))
 				&& !(isJobKilled = jobTrackerService.isJobKilled(jobID))) {
-//			Thread.sleep(// heart beat interval here);
+			try {
+				Thread.sleep(configuration.heartBeatInterval);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			StringBuilder sb = new StringBuilder();
 			sb.append("map: ");
 			sb.append(jobTrackerService.getMapTasksProgress(jobID));
