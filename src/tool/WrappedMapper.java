@@ -28,28 +28,24 @@ public class WrappedMapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
 
 		@Override
 		public boolean nextKeyValue() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
-			return false;
+			return mapContext.nextKeyValue();
 		}
 
 		@Override
 		public KEYIN getCurrentKey() throws IOException, InterruptedException {
-			// TODO Auto-generated method stub
-			return null;
+			return mapContext.getCurrentKey();
 		}
 
 		@Override
 		public VALUEIN getCurrentValue() throws IOException,
 				InterruptedException {
-			// TODO Auto-generated method stub
-			return null;
+			return mapContext.getCurrentValue();
 		}
 
 		@Override
 		public void write(KEYOUT key, VALUEOUT value) throws IOException,
 				InterruptedException {
-			// TODO Auto-generated method stub
-
+			mapContext.write(key, value);
 		}
 
 	}

@@ -18,9 +18,9 @@ public class WordCount implements MyTool {
 	 * Maps each line and output the filter result with data format needed
 	 */
 	public static class PageRankMapper extends
-			Mapper<String, String, String, String> {
+			Mapper<Long, String, String, String> {
 
-		public void map(String key, String value, Context context)
+		public void map(Long key, String value, Context context)
 				throws IOException, InterruptedException {
 			String data = value.toString();
 			String[] dataArray = data.split("\t");

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import node.NodeID;
-import configuration.Configuration;
 import fileSplit.MapInputSplit;
 import fileSplit.RemoteSplitOperator;
 
@@ -26,12 +25,13 @@ public class LineRecordReader extends RecordReader<Long, String> {
 
 	@Override
 	public void initialize(MapInputSplit split, String host) throws IOException {
-		nodeID = new NodeID(split.getHost(), new Configuration().dataNodePort);
-		// String path = split.getPath();
+		nodeID = NodeID.constructFromString(split.getHost());
+		String path = split.getPath();
 		// fileName here is the split fileName, not the original fileName
 		String fileName = split.getFileName() + "_" + split.getBlockIndex();
+		String fullPath = path + fileName;
 		remoteSplit = new RemoteSplitOperator();
-		br = remoteSplit.readBlock(nodeID, fileName);
+		br = remoteSplit.readBlock(nodeID, path);
 		lineCount = br.size();
 		currentLine = 0;
 	}

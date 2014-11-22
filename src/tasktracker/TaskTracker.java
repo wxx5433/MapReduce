@@ -148,6 +148,7 @@ public class TaskTracker implements TaskTrackerInterface {
 	}
 
 	public synchronized void updateCompletedTask(Task task) {
+		System.out.println("Finished taskID:" + task.getTaskID().toString());
 		if (task instanceof MapTask) {
 			completedMapTask.add((MapTask) task);
 			addLeftMapperSlot();

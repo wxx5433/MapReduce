@@ -40,17 +40,19 @@ public class MapOutputCollectorImpl<K, V> implements MapOutputCollector<K, V> {
 			throws FileNotFoundException {
 		for (int i = 0; i < reduceNum; i++) {
 			String outputPath = outputFileDirPath + "/" + reduceNum;
+			System.out.println(outputPath);
 			outputPaths.add(outputPath);
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(
 					outputPath));
 			@SuppressWarnings("rawtypes")
 			RecordWriter recordWriter = new LineRecordWriter(out);
-			mapOutputMap.put(reduceNum, recordWriter);
+			mapOutputMap.put(i, recordWriter);
 		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void collect(K key, V value, int partition) throws IOException {
+		System.out.println("partition: " + partition);
 		RecordWriter recordWriter = mapOutputMap.get(partition);
 		recordWriter.write(key, value);
 	}
