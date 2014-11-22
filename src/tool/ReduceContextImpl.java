@@ -28,11 +28,6 @@ public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 	}
 
 	@Override
-	public boolean nextKeyValue() throws IOException, InterruptedException {
-		return reader.nextKeyValue();
-	}
-
-	@Override
 	public String getCurrentKey() throws IOException, InterruptedException {
 		return reader.getCurrentKey();
 	}
@@ -44,7 +39,7 @@ public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 
 	@Override
 	public boolean nextKey() throws IOException, InterruptedException {
-		return false;
+		return reader.nextKey();
 	}
 
 	@Override
@@ -57,6 +52,12 @@ public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 	public void write(KEYOUT key, VALUEOUT value) throws IOException,
 			InterruptedException {
 		writer.write(key, value);
+	}
+
+	@Override
+	public boolean nextKeyValue() throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -26,7 +26,7 @@ public class ReduceRecordReader<KEYIN, VALUEIN> {
 		br = new BufferedReader(fr);
 	}
 
-	public boolean nextKeyValue() throws IOException {
+	public boolean nextKey() throws IOException {
 		String line;
 		line = br.readLine();
 		System.out.println("reducer record reader read one line: " + line);
