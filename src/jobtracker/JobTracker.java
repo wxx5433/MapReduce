@@ -150,8 +150,8 @@ public class JobTracker {
 	public MapTask getNewMapTask(NodeID taskTrackerNodeID) {
 		// allocate next job's map tasks until
 		// there is no map task in the current job
-		System.out.println("Task tracker: " + taskTrackerNodeID
-				+ " request new map task");
+//		System.out.println("Task tracker: " + taskTrackerNodeID
+//				+ " request new map task");
 		for (JobInProgress jip : jobQueue) {
 			int taskId = jip.getNewMapTask(taskTrackerNodeID);
 			if (taskId != -1) {
@@ -182,13 +182,14 @@ public class JobTracker {
 	 * @return
 	 */
 	public ReduceTask getNewReduceTask(NodeID taskTrackerNodeID) {
-		System.out.println("Task tracker: " + taskTrackerNodeID
-				+ " request new reduce task");
+//		System.out.println("Task tracker: " + taskTrackerNodeID
+//				+ " request new reduce task");
 		for (JobInProgress jip : jobQueue) {
 			// has not finish all map tasks for this job
 			if (!jip.hasFinishedAllMapTasks()) {
 				continue;
 			}
+			System.out.println("Has finished all map tasks, try to find a reduce task");
 			int taskId = jip.getNewReduceTask(taskTrackerNodeID);
 			if (taskId != -1) {
 				TaskInProgress tip = jip.getReduceTask(taskId);

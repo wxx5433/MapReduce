@@ -80,9 +80,13 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 		}
 		
 		HeartBeatResponse heartBeatResponse = new HeartBeatResponse();
+		System.out.println("Task tracker: " + taskTrackerNodeID
+				+ " request " + heartBeat.getLeftMapperSlot() + " map tasks ");
 		for (int i = 0; i < heartBeat.getLeftMapperSlot(); ++i) {
 			heartBeatResponse.addNewMapper(jobTracker.getNewMapTask(taskTrackerNodeID));
 		}
+		System.out.println("Task tracker: " + taskTrackerNodeID
+				+ " request " + heartBeat.getLeftReducerSlot() + " reduce tasks");
 		for (int i = 0; i < heartBeat.getLeftReducerSlot(); ++i) {
 			heartBeatResponse.addNewReducer(jobTracker.getNewReduceTask(taskTrackerNodeID));
 		}

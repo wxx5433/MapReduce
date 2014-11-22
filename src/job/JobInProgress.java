@@ -312,12 +312,14 @@ if (tip != null) {
 		// currently we do not consider locality
 		// NodeID taskTrackerNodeId = tt.getNodeId();
 		tip = findNonLocalTaskFromList(nonRunningReduces);
+		System.out.println("non-running reduces num: " + nonRunningReduces.size());
 		if (tip != null) {
 			scheduleReduce(tip);
 			System.out.println("Choosing a nonrunning reduce task");
 			nonRunningReduces.remove(tip);
 			return tip.getTIPId();
 		}
+		System.out.println("Cannot find a reduce task");
 		return -1;
 	}
 
