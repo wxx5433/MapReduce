@@ -109,6 +109,7 @@ public class JobInProgress {
 		this.numReduceTasks = conf.getNumReduceTasks();
 		this.jobTracker = tracker;
 		this.failedMaps = new TreeSet<TaskInProgress>(failComparator);
+		this.failedReduces = new TreeSet<TaskInProgress>(failComparator);
 		this.nonRunningMaps = new LinkedHashSet<TaskInProgress>();
 		this.nonRunningReduces = new TreeSet<TaskInProgress>(failComparator);
 		this.runningReduces = new LinkedHashSet<TaskInProgress>();
