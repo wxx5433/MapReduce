@@ -11,6 +11,7 @@ import tasktracker.HeartBeat;
 import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
+import job.JobInfo;
 import job.JobStatus;
 
 public interface JobTrackerService extends Remote {
@@ -40,5 +41,7 @@ public interface JobTrackerService extends Remote {
 	public MapTask getNewMapTask(NodeID taskTrackerNodeID) throws RemoteException;
 	
 	public ReduceTask getNewReduceTask(NodeID taskTrackerNodeID) throws RemoteException;
+	
+	public JobInfo[] listAllJobs() throws RemoteException;
 	
 }

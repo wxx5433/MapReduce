@@ -12,6 +12,7 @@ import tasktracker.TaskTracker;
 import job.JobConf;
 import job.JobID;
 import job.JobInProgress;
+import job.JobInfo;
 import job.JobStatus;
 
 public class JobTrackerServiceImpl implements JobTrackerService {
@@ -95,16 +96,12 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 
 	@Override
 	public float getMapTasksProgress(JobID jobID) throws RemoteException {
-		return (float) jobTracker.getFinishedMapTasksNum(jobID) * 100
-				/ jobTracker.getMapTasksNum(jobID);
+		return jobTracker.getMapProgress(jobID);
 	}
 
 	@Override
 	public float getReduceTasksProgress(JobID jobID) throws RemoteException {
-//		System.out.println("finish reduce: " + jobTracker.getFinishedReduceTasksNum(jobID));
-//		System.out.println("reduce num: " + jobTracker.getReduceTasksNum(jobID));
-		return (float) jobTracker.getFinishedReduceTasksNum(jobID) * 100
-				/ jobTracker.getReduceTasksNum(jobID);
+		return jobTracker.getReduceProgress(jobID);
 	}
 
 	@Override
@@ -142,6 +139,11 @@ public class JobTrackerServiceImpl implements JobTrackerService {
 	@Override
 	public void killJob(JobID jobID) throws RemoteException {
 		jobTracker.killJob(jobID);
+	}
+
+	@Override
+	public JobInfo[] listAllJobs() throws RemoteException {
+		return jobTracker.listAllJobs();
 	}
 
 }

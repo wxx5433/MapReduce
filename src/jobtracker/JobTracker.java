@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import job.JobConf;
 import job.JobID;
 import job.JobInProgress;
+import job.JobInfo;
 import nameNode.NameNodeService;
 import node.NodeID;
 import task.MapTask;
@@ -285,6 +287,33 @@ public class JobTracker {
 			return null;
 		}
 		return jobMap.get(jobID);
+	}
+	
+	public float getMapProgress(JobID jobId) {
+		return jobMap.get(jobId).getMapProgress();
+	}
+	
+	public float getReduceProgress(JobID jobId) {
+		return jobMap.get(jobId).getReduceProgress();
+	}
+	
+	public JobInfo[] listAllJobs() {
+		Map<JobID, JobInProgress> jobMapCopy = null;
+		synchronized(this) {
+			jobMapCopy = new HashMap<JobID, JobInProgress>(jobMap);
+		}
+		JobInfo[] jobInfos = new JobInfo[jobMapCopy.size()];
+		int index = 0;
+		for (JobInProgress jip: jobMapCopy.values()) {
+			JobConf jobConf = jip.getJobConf();
+			JobInfo jobInfo = new JobInfo(
+					jobConf.getJobName(), jobConf.getJobID(), 
+					jip.getNumMapTasks(), jip.getNumReduceTasks(),
+					jip.getMapProgress(), jip.getReduceProgress()
+					);
+			jobInfos[index++] = jobInfo; 
+		}
+		return jobInfos;
 	}
 
 	//
