@@ -16,6 +16,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import node.NodeID;
 import configuration.Configuration;
+import dataNode.HeartBeat;
 import fileSplit.FileSplit;
 
 public class NameNodeServiceImpl implements NameNodeService {
@@ -119,5 +120,12 @@ public class NameNodeServiceImpl implements NameNodeService {
 	@Override
 	public FileSplit[] getAllSplits(String path) throws RemoteException {
 		return nameNode.getAllSplits(path);
+	}
+
+	@Override
+	public HeartBeatResponse updateDataNodeStatus(HeartBeat heartBeat)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

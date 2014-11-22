@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Set;
 
+import dataNode.HeartBeat;
 import node.NodeID;
 import fileSplit.FileSplit;
 
@@ -21,5 +22,7 @@ public interface NameNodeService extends Remote {
 	public boolean containsFile(String path) throws RemoteException;
 	
 	public FileSplit[] getAllSplits(String path) throws RemoteException;
+	
+	public HeartBeatResponse updateDataNodeStatus(HeartBeat heartBeat) throws RemoteException; 
 	
 }
