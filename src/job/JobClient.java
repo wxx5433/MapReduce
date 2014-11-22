@@ -40,6 +40,7 @@ public class JobClient {
 	//	}
 
 	public RunningJob submitJobInternal(JobConf jobConf) {
+		System.out.println("Mapper class: " +  jobConf.getMapperClass());
 		// get jobID from jobTracer
 		try {
 			jobID = jobTrackerService.getJobID();
