@@ -21,6 +21,7 @@ public class NameNode {
 	private NameNodeService nameNodeService; 
 	private Configuration configuration;
 	private Queue<NodeID> nodes;
+	// key: fileName Value: {key: splitIndex, value: fileSplit}
 	private Map<String, Map<Integer, FileSplit>> nameSpace;
 
 	public NameNode() {
