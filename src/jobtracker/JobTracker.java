@@ -116,10 +116,10 @@ public class JobTracker {
 			stub = (JobTrackerService) UnicastRemoteObject.exportObject(
 					jobTrackerService, 0);
 			try {
-				Registry registry = LocateRegistry.getRegistry();
+				Registry registry = LocateRegistry.getRegistry(configuration.rmiPort);
 				registry.rebind(name, stub);
 			} catch (Exception e) {
-				Registry registry = LocateRegistry.createRegistry(1099);
+				Registry registry = LocateRegistry.createRegistry(configuration.rmiPort);
 				registry.rebind(name, stub);
 			}
 			System.out.println("Job tracker start service!!");

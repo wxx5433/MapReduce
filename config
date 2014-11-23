@@ -8,6 +8,7 @@ reduceSlots=1
 splitSize=3
 replicaNum=2
 heartBeatInterval=5000
+rmiPort=3199
 maxAttempsNum=4
 localPath=/afs/andrew.cmu.edu/usr17/xiaoxiaw/tmp/hadoop/local/
 DFSPath=/afs/andrew.cmu.edu/usr17/xiaoxiaw/tmp/hadoop/hdfs/

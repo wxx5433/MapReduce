@@ -61,10 +61,10 @@ public class DataNode {
 					.exportObject(dataNodeService, 0);
 			Registry registry = null;
 			try {
-				registry = LocateRegistry.getRegistry();
+				registry = LocateRegistry.getRegistry(configuration.rmiPort);
 				registry.rebind(name, stub);
 			} catch (Exception e) {
-				registry = LocateRegistry.createRegistry(1099);
+				registry = LocateRegistry.createRegistry(configuration.rmiPort);
 				registry.rebind(name, stub);
 			}
 			System.out.println("DataNodeService start!!");

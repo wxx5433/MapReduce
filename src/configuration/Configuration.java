@@ -21,6 +21,7 @@ public class Configuration implements Serializable {
 	public String DFSPath;
 	public String reduceShufflePath;
 	public String reduceInterPath;
+	public int rmiPort;
 
 	public Configuration() {
 		try {
@@ -75,6 +76,8 @@ public class Configuration implements Serializable {
 				reduceShufflePath = value;
 			} else if (key.equals("reduceInterPath")) {
 				reduceInterPath = value;
+			} else if (key.equals("rmiPort")) {
+				rmiPort = Integer.parseInt(value);
 			} else {
 				br.close();
 				throw new Exception("Undefined key-value in config file");

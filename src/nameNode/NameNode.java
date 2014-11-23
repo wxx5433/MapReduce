@@ -43,10 +43,10 @@ public class NameNode {
 			NameNodeService stub = 
 					(NameNodeService) UnicastRemoteObject.exportObject(nameNodeService, 0);
 			try {
-				Registry registry = LocateRegistry.getRegistry();
+				Registry registry = LocateRegistry.getRegistry(configuration.rmiPort);
 				registry.rebind(name, stub);
 			} catch (Exception e) {
-				Registry registry = LocateRegistry.createRegistry(1099);
+				Registry registry = LocateRegistry.createRegistry(configuration.rmiPort);
 				registry.rebind(name, stub);
 			}
 		} catch (RemoteException e) {
