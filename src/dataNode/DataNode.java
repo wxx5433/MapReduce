@@ -17,6 +17,9 @@ public class DataNode {
 
 	private NodeID dataNodeID;
 	private Configuration configuration;
+	private NameNodeService nameNodeService;
+	private Thread heartBeat;
+	private HeartBeatThread heartBeatThread;
 
 	public DataNode() {
 		configuration = new Configuration();
@@ -81,17 +84,26 @@ public class DataNode {
 		NodeID nameNodeID = new NodeID(configuration.nameNodeIP,
 				configuration.nameNodePort);
 		try {
-			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp(), 
+			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp(),
 					configuration.rmiPort);
 			String name = "rmi://" + nameNodeID.toString() + "/NameNodeService";
-			NameNodeService nameNodeService = (NameNodeService) registry
-					.lookup(name);
+			nameNodeService = (NameNodeService) registry.lookup(name);
 			nameNodeService.registerDataNode(dataNodeID);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (NotBoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void startHeartBeat() {
+		heartBeatThread = new HeartBeatThread(this);
+		heartBeat = new Thread(heartBeatThread);
+		heartBeat.start();
+	}
+
+	public void sendHeartbeat() throws RemoteException {
+		String response = nameNodeService.updateDataNodeStatus(this.dataNodeID);
 	}
 
 	/**
@@ -115,5 +127,7 @@ public class DataNode {
 		// register the dataNode to the NameNode
 		dataNode.registerToNameNode();
 		dataNode.bindService();
+		dataNode.startHeartBeat();
 	}
+
 }

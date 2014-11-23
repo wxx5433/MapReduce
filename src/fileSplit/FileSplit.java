@@ -123,4 +123,10 @@ public class FileSplit extends InputSplit implements Serializable,
 	public void setBlockIndex(int blockIndex) {
 		this.blockIndex = blockIndex;
 	}
+
+	public void removeHost(NodeID nodeID) {
+		String host = nodeID.toString();
+		if (paths.containsKey(host))
+			paths.remove(host);
+	}
 }

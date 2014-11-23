@@ -22,6 +22,7 @@ public class Configuration implements Serializable {
 	public String reduceShufflePath;
 	public String reduceInterPath;
 	public int rmiPort;
+	public long maximumHeartBeatInterval;
 
 	public Configuration() {
 		try {
@@ -78,6 +79,8 @@ public class Configuration implements Serializable {
 				reduceInterPath = value;
 			} else if (key.equals("rmiPort")) {
 				rmiPort = Integer.parseInt(value);
+			} else if (key.equals("maximumHeartBeatInterval")) {
+				maximumHeartBeatInterval = Long.parseLong(value);
 			} else {
 				br.close();
 				throw new Exception("Undefined key-value in config file");
