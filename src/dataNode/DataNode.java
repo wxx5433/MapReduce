@@ -81,7 +81,8 @@ public class DataNode {
 		NodeID nameNodeID = new NodeID(configuration.nameNodeIP,
 				configuration.nameNodePort);
 		try {
-			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp());
+			Registry registry = LocateRegistry.getRegistry(nameNodeID.getIp(), 
+					configuration.rmiPort);
 			String name = "rmi://" + nameNodeID.toString() + "/NameNodeService";
 			NameNodeService nameNodeService = (NameNodeService) registry
 					.lookup(name);

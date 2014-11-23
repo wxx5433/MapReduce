@@ -81,7 +81,7 @@ public class JobClient {
 				configuration.jobTrackerPort);
 		try {
 			Registry registry = LocateRegistry.getRegistry(jobTrackerNodeID
-					.getIp());
+					.getIp(), configuration.rmiPort);
 			String name = "rmi://" + jobTrackerNodeID.toString()
 					+ "/JobTrackerService";
 			return (JobTrackerService) registry.lookup(name);
