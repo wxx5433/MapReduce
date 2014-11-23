@@ -76,7 +76,7 @@ public interface RunningJobInterface {
   public float reduceProgress() throws IOException;
 
   /**
-   * Get the <i>progress</i> of the job's setup-tasks, as a float between 0.0 
+   * Set the <i>progress</i> of the job's setup-tasks, as a float between 0.0 
    * and 1.0.  When all setup tasks have completed, the function returns 1.0.
    * 
    * @return the progress of the job's setup-tasks.
@@ -88,7 +88,6 @@ public interface RunningJobInterface {
 
   /**
    * Check if the job is finished or not. 
-   * This is a non-blocking call.
    * 
    * @return <code>true</code> if the job is complete, else <code>false</code>.
    * @throws IOException
@@ -119,41 +118,5 @@ public interface RunningJobInterface {
    */
   public JobStatus getJobStatus() throws IOException;
 
-  /**
-   * Kill the running job. Blocks until all job tasks have been killed as well.
-   * If the job is no longer running, it simply returns.
-   * 
-   * @throws IOException
-   */
-  public void killJob() throws IOException;
-  
-  /**
-   * Kill indicated task attempt.
-   * 
-   * @param taskId the id of the task to be terminated.
-   * @param shouldFail if true the task is failed and added to failed tasks 
-   *                   list, otherwise it is just killed, w/o affecting 
-   *                   job failure status.  
-   * @throws IOException
-   */
-  public void killTask(TaskAttemptID taskId, boolean shouldFail) throws IOException;
-  
-  /** @deprecated Applications should rather use {@link #killTask(TaskAttemptID, boolean)}*/
-  @Deprecated
-  public void killTask(String taskId, boolean shouldFail) throws IOException;
-  
-  /**
-   * Get failure info for the job.
-   * @return the failure info for the job.
-   */
-  public String getFailureInfo() throws IOException;
-  
-  /**
-   * Gets the diagnostic messages for a given task attempt.
-   * @param taskid
-   * @return the list of diagnostic messages for the task
-   * @throws IOException
-   */
-  public String[] getTaskDiagnostics(TaskAttemptID taskid) throws IOException;
 
 }

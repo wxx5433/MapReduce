@@ -116,36 +116,5 @@ public class RunningJob implements RunningJobInterface {
 		return jobStatus;
 	}
 
-	@Override
-	public void killJob() throws IOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void killTask(TaskAttemptID taskId, boolean shouldFail)
-			throws IOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void killTask(String taskId, boolean shouldFail) throws IOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getFailureInfo() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String[] getTaskDiagnostics(TaskAttemptID taskid) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

@@ -107,9 +107,9 @@ public class Job {
 		return info.isComplete();
 	}
 
-	public void killJob() throws IOException {
-		info.killJob();
-	}
+//	public void killJob() throws IOException {
+//		info.killJob();
+//	}
 
 	/**
 	 * Submit the job to the cluster.
