@@ -2,8 +2,7 @@ package tool;
 
 import java.io.IOException;
 
-public class WrappedReducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
-		Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
+public class WrappedReducer extends Reducer {
 
 	/**
 	 * A a wrapped {@link Reducer.Context} for custom implementations.
@@ -12,19 +11,15 @@ public class WrappedReducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
 	 *            <code>ReduceContext</code> to be wrapped
 	 * @return a wrapped <code>Reducer.Context</code> for custom implementations
 	 */
-	public Reducer<String, String, KEYOUT, VALUEOUT>.Context getReducerContext(
-			ReduceContext<String, String, KEYOUT, VALUEOUT> reduceContext) {
-		return (Reducer<String, String, KEYOUT, VALUEOUT>.Context) new Context(
-				reduceContext);
+	public Reducer.Context getReducerContext(ReduceContext reduceContext) {
+		return (Reducer.Context) new Context(reduceContext);
 	}
 
-	public class Context extends
-			Reducer<String, String, KEYOUT, VALUEOUT>.Context {
+	public class Context extends Reducer.Context {
 
-		protected ReduceContext<String, String, KEYOUT, VALUEOUT> reduceContext;
+		protected ReduceContext reduceContext;
 
-		public Context(
-				ReduceContext<String, String, KEYOUT, VALUEOUT> reduceContext) {
+		public Context(ReduceContext reduceContext) {
 			this.reduceContext = reduceContext;
 		}
 
@@ -56,7 +51,7 @@ public class WrappedReducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends
 		}
 
 		@Override
-		public void write(KEYOUT key, VALUEOUT value) throws IOException,
+		public void write(String key, String value) throws IOException,
 				InterruptedException {
 			reduceContext.write(key, value);
 		}

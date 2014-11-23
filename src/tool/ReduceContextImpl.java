@@ -7,22 +7,21 @@ import task.ReduceRecordReader;
 import task.TaskAttemptID;
 import fileSplit.MapInputSplit;
 
-public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
-		ReduceContext<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
+public class ReduceContextImpl implements ReduceContext {
 
-	private RecordWriter<KEYOUT, VALUEOUT> writer;
-	private ReduceRecordReader<KEYIN, VALUEIN> reader;
+	private RecordWriter<String, String> writer;
+	private ReduceRecordReader<String, String> reader;
 
 	public ReduceContextImpl(TaskAttemptID taskid,
-			ReduceRecordReader<KEYIN, VALUEIN> reader,
-			RecordWriter<KEYOUT, VALUEOUT> writer) {
+			ReduceRecordReader<String, String> reader,
+			RecordWriter<String, String> writer) {
 		this.reader = reader;
 		this.writer = writer;
 	}
 
 	public ReduceContextImpl(TaskAttemptID taskid,
-			ReduceRecordReader<KEYIN, VALUEIN> reader,
-			RecordWriter<KEYOUT, VALUEOUT> writer, MapInputSplit split) {
+			ReduceRecordReader<String, String> reader,
+			RecordWriter<String, String> writer, MapInputSplit split) {
 		this.reader = reader;
 		this.writer = writer;
 	}
@@ -49,7 +48,7 @@ public class ReduceContextImpl<KEYIN, VALUEIN, KEYOUT, VALUEOUT> implements
 	}
 
 	@Override
-	public void write(KEYOUT key, VALUEOUT value) throws IOException,
+	public void write(String key, String value) throws IOException,
 			InterruptedException {
 		writer.write(key, value);
 	}

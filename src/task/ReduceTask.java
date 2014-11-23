@@ -100,23 +100,22 @@ public class ReduceTask implements Task {
 
 		// make a reducer
 		Class<?> reduceClass = Class.forName(jobConf.getReducerClass());
-		Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE> reducer = (Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>) reduceClass
-				.newInstance();
+		Reducer reducer = (Reducer) reduceClass.newInstance();
 		// make the output
 		Class<?> outputFormatClass = Class.forName(jobConf.getOutputFormat());
 		OutputFormat outputFormat = (OutputFormat) outputFormatClass
 				.newInstance();
-		RecordWriter<OUTKEY, OUTVALUE> output = outputFormat
+		RecordWriter output = outputFormat
 				.getRecordWriter(getDataOutputStream());
 		// make the input
-		ReduceRecordReader<INKEY, INVALUE> input = new ReduceRecordReader();
+		ReduceRecordReader input = new ReduceRecordReader();
 		input.initialize(intermediateOutput);
-		ReduceContext<INKEY, INVALUE, OUTKEY, OUTVALUE> reduceContext = new ReduceContextImpl<INKEY, INVALUE, OUTKEY, OUTVALUE>(
-				getTaskAttemptID(), input, output);
+		ReduceContext reduceContext = new ReduceContextImpl(getTaskAttemptID(),
+				input, output);
 
-		Reducer<String, String, OUTKEY, OUTVALUE>.Context reducerContext = new WrappedReducer<String, String, OUTKEY, OUTVALUE>()
-				.getReducerContext((ReduceContext<String, String, OUTKEY, OUTVALUE>) reduceContext);
-		reducer.run((Reducer<INKEY, INVALUE, OUTKEY, OUTVALUE>.Context) reducerContext);
+		Reducer.Context reducerContext = new WrappedReducer()
+				.getReducerContext((ReduceContext) reduceContext);
+		reducer.run(reducerContext);
 		output.close();
 		DFSClient dfsClient = new DFSClient();
 		dfsClient.uploadFile(generateOutputPath(), taskAttemptID.toString(),

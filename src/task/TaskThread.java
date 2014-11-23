@@ -20,8 +20,19 @@ public class TaskThread extends Thread {
 		try {
 			task.run();
 			taskTracker.updateCompletedTask(task);
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | IOException | InterruptedException e) {
+		} catch (ClassNotFoundException e) {
+			taskTracker.updateFailedTaskStatus(task);
+			throw new RuntimeException(e);
+		} catch (InstantiationException e) {
+			taskTracker.updateFailedTaskStatus(task);
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			taskTracker.updateFailedTaskStatus(task);
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			taskTracker.updateFailedTaskStatus(task);
+			throw new RuntimeException(e);
+		} catch (InterruptedException e) {
 			taskTracker.updateFailedTaskStatus(task);
 			throw new RuntimeException(e);
 		}
