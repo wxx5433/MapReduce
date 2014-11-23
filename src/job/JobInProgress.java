@@ -477,7 +477,9 @@ public class JobInProgress {
 		Map<Integer, TaskInProgress> tasks = runningMapCache.get(taskAttemptId
 				.getNodeID());
 		// remove it from runningMapCache
-		tasks.remove(taskAttemptId.getTaskID());
+		if (taskAttemptId != null && tasks.containsKey(taskAttemptId.getTaskID())) {
+			tasks.remove(taskAttemptId.getTaskID());
+		}
 		// add map's output to reducer's input
 		List<String> mapOutputPathLists = mapTask.getOutputPathsForReduce();
 		for (String data : mapOutputPathLists) {
